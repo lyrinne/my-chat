@@ -12,12 +12,10 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background 0.5s ease;
         }
 
         .container {
@@ -74,12 +72,6 @@
             border-radius: 50%;
             cursor: pointer;
             font-size: 20px;
-            transition: all 0.3s;
-        }
-
-        .settings-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-50%) rotate(90deg);
         }
 
         .settings-panel {
@@ -97,10 +89,7 @@
             overflow-y: auto;
         }
 
-        .settings-panel.show {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
+        .settings-panel.show { display: block; animation: slideDown 0.3s ease; }
 
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
@@ -108,19 +97,8 @@
         }
 
         .settings-panel h3 { font-size: 16px; margin-bottom: 16px; color: #333; }
-
-        .settings-section {
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .settings-section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
+        .settings-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
+        .settings-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .settings-section h4 { font-size: 14px; color: #666; margin-bottom: 10px; }
 
         .name-input {
@@ -160,17 +138,7 @@
         }
 
         .css-actions { display: flex; gap: 8px; margin-top: 8px; }
-
-        .css-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
+        .css-btn { flex: 1; padding: 10px; border: none; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; }
         .apply-btn { background: #667eea; color: white; }
         .clear-btn { background: #f5f5f5; color: #666; }
 
@@ -187,8 +155,6 @@
             margin-top: 8px;
         }
 
-        .upload-btn:hover { border-color: #667eea; color: #667eea; }
-
         .reset-btn {
             width: 100%;
             padding: 10px;
@@ -202,30 +168,10 @@
         }
 
         .bg-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-
-        .bg-option {
-            width: 100%;
-            height: 50px;
-            border-radius: 12px;
-            cursor: pointer;
-            border: 3px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .bg-option:hover { transform: scale(1.05); }
-
-        .bg-option span {
-            position: absolute;
-            bottom: 3px;
-            left: 5px;
-            font-size: 9px;
-            color: white;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-        }
+        .bg-option { width: 100%; height: 50px; border-radius: 12px; cursor: pointer; border: 3px solid transparent; position: relative; overflow: hidden; }
+        .bg-option span { position: absolute; bottom: 3px; left: 5px; font-size: 9px; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 
         .avatar-options { display: flex; gap: 8px; flex-wrap: wrap; }
-
         .avatar-option {
             width: 40px;
             height: 40px;
@@ -238,8 +184,6 @@
             font-size: 20px;
             background: #f5f5f5;
         }
-
-        .avatar-option:hover { transform: scale(1.1); }
 
         .messages {
             flex: 1;
@@ -314,22 +258,10 @@
             margin: 0 2px;
         }
 
-        .message.user .message-time {
-            order: -1;
-        }
+        .message.user .message-time { order: -1; }
 
-        .message-sticker {
-            padding: 5px !important;
-            background: transparent !important;
-            border: none !important;
-        }
-
-        .message-sticker img {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            display: block;
-        }
+        .message-sticker { padding: 5px !important; background: transparent !important; border: none !important; }
+        .message-sticker img { width: 100px; height: 100px; object-fit: contain; display: block; }
 
         .red-packet {
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%) !important;
@@ -388,16 +320,8 @@
 
         .sticker-panel.show { display: flex; }
 
-        .sticker-item {
-            font-size: 40px;
-            cursor: pointer;
-            transition: all 0.2s;
-            padding: 5px;
-            position: relative;
-        }
-
+        .sticker-item { font-size: 40px; cursor: pointer; transition: all 0.2s; padding: 5px; position: relative; }
         .sticker-item:hover { transform: scale(1.2); }
-
         .sticker-item img { width: 50px; height: 50px; object-fit: contain; border-radius: 8px; }
 
         .sticker-item .delete-btn {
@@ -454,7 +378,6 @@
             border-radius: 25px;
             font-size: 14px;
             outline: none;
-            transition: all 0.3s;
         }
 
         .input-area input:focus { border-color: #667eea; }
@@ -471,15 +394,7 @@
         }
 
         .typing-indicator { display: flex; gap: 4px; padding: 12px 16px; }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: #999;
-            border-radius: 50%;
-            animation: typing 1.4s infinite;
-        }
-
+        .typing-dot { width: 8px; height: 8px; background: #999; border-radius: 50%; animation: typing 1.4s infinite; }
         .typing-dot:nth-child(2) { animation-delay: 0.2s; }
         .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
@@ -659,6 +574,7 @@
             if (savedMessages) {
                 document.getElementById('messages').innerHTML = savedMessages;
                 document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+                addDeleteEvents();
             }
         }
 
@@ -673,6 +589,36 @@
             `;
             localStorage.removeItem('chatHistory');
             localStorage.removeItem('chatMessages');
+            addDeleteEvents();
+        }
+
+        function addDeleteEvents() {
+            document.querySelectorAll('#messages .message').forEach(msg => {
+                if (msg.dataset.hasEvent) return;
+                msg.dataset.hasEvent = '1';
+                msg.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    if (confirm('删除这条消息？')) {
+                        msg.remove();
+                        saveHistory();
+                    }
+                });
+                let longPressTimer = null;
+                msg.addEventListener('touchstart', function(e) {
+                    longPressTimer = setTimeout(function() {
+                        if (confirm('删除这条消息？')) {
+                            msg.remove();
+                            saveHistory();
+                        }
+                    }, 500);
+                });
+                msg.addEventListener('touchend', function() {
+                    clearTimeout(longPressTimer);
+                });
+                msg.addEventListener('touchmove', function() {
+                    clearTimeout(longPressTimer);
+                });
+            });
         }
 
         function sendSticker(emoji) {
@@ -695,6 +641,7 @@
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             saveHistory();
+            addDeleteEvents();
             document.getElementById('stickerPanel').classList.remove('show');
         }
 
@@ -717,6 +664,7 @@
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             saveHistory();
+            addDeleteEvents();
             document.getElementById('stickerPanel').classList.remove('show');
         }
 
@@ -790,6 +738,7 @@
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             saveHistory();
+            addDeleteEvents();
         }
 
         function sendTransfer() {
@@ -818,6 +767,7 @@
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             saveHistory();
+            addDeleteEvents();
         }
 
         function changeAIName() {
@@ -1108,6 +1058,7 @@
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             saveHistory();
+            addDeleteEvents();
         }
 
         function showTyping() {
