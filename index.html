@@ -1,1 +1,1205 @@
-<h1>我的第一个GitHub项目</h1>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的AI助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.5s ease;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            height: 90vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .header-info h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header-info p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .settings-btn {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-50%) rotate(90deg);
+        }
+
+        .settings-panel {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 100;
+            display: none;
+            width: 340px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .settings-panel.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .settings-panel h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .settings-section {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .settings-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .settings-section h4 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 8px;
+        }
+
+        .name-btn {
+            width: 100%;
+            padding: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .css-editor {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
+            outline: none;
+            background: #f8f9fa;
+        }
+
+        .css-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .css-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .apply-btn { background: #667eea; color: white; }
+        .clear-btn { background: #f5f5f5; color: #666; }
+
+        .upload-btn {
+            width: 100%;
+            padding: 10px;
+            background: #f5f5f5;
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .upload-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 10px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            color: #666;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .bg-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .bg-option {
+            width: 100%;
+            height: 50px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bg-option:hover {
+            transform: scale(1.05);
+        }
+
+        .bg-option span {
+            position: absolute;
+            bottom: 3px;
+            left: 5px;
+            font-size: 9px;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .avatar-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .avatar-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: #f5f5f5;
+        }
+
+        .avatar-option:hover {
+            transform: scale(1.1);
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: transparent;
+        }
+
+        .message {
+            display: flex;
+            gap: 10px;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease;
+            align-items: flex-start;
+            min-width: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .message-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .message-content {
+            padding: 12px 16px;
+            border-radius: 18px;
+            line-height: 1.6;
+            font-size: 14px;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .message.ai .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-top-left-radius: 4px;
+        }
+
+        .message.user .message-content {
+            background: #667eea;
+            color: white;
+            border-top-right-radius: 4px;
+        }
+
+        .message-sticker {
+            padding: 5px !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .message-sticker img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .red-packet {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%) !important;
+            color: white !important;
+            border: none !important;
+            padding: 16px 20px !important;
+            min-width: 200px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .red-packet::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: #ffd32a;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .red-packet .packet-title {
+            font-size: 14px;
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+
+        .red-packet .packet-amount {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+
+        .red-packet .packet-note {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .red-packet.opened {
+            background: #ddd !important;
+            color: #999 !important;
+        }
+
+        .transfer-card {
+            background: #fff8e1 !important;
+            border: 1px solid #f0d060 !important;
+            color: #333 !important;
+            padding: 16px 20px !important;
+            min-width: 220px;
+            text-align: center;
+            position: relative;
+        }
+
+        .transfer-card .transfer-icon {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .transfer-card .transfer-amount {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e65100;
+        }
+
+        .transfer-card .transfer-status {
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        .sticker-panel {
+            display: none;
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .sticker-panel.show {
+            display: flex;
+        }
+
+        .sticker-item {
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 5px;
+            position: relative;
+        }
+
+        .sticker-item:hover {
+            transform: scale(1.2);
+        }
+
+        .sticker-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .sticker-item .delete-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 18px;
+            height: 18px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            font-size: 10px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .sticker-item:hover .delete-btn {
+            display: flex;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            padding: 8px 24px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        .toolbar-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 20px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .toolbar-btn:hover {
+            background: #f5f5f5;
+            transform: scale(1.1);
+        }
+
+        .input-area {
+            padding: 0 24px 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-area input:focus {
+            border-color: #667eea;
+        }
+
+        .input-area button {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-10px); opacity: 1; }
+        }
+
+        .messages::-webkit-scrollbar { width: 6px; }
+        .messages::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+
+        @media (max-width: 600px) {
+            .container { width: 100%; height: 100vh; border-radius: 0; }
+            .message { max-width: 90%; }
+        }
+    </style>
+    <style id="customStyle"></style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="avatar" id="headerAvatar">🤖</div>
+            <div class="header-info">
+                <h1 id="headerName">AI 助手</h1>
+                <p>● 在线</p>
+            </div>
+            <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
+        </div>
+
+        <div class="settings-panel" id="settingsPanel">
+            <h3>个性化设置</h3>
+
+            <div class="settings-section">
+                <h4>✏️ 修改名字</h4>
+                <input class="name-input" id="aiNameInput" placeholder="AI的名字">
+                <button class="name-btn" onclick="changeAIName()">保存AI名字</button>
+                <input class="name-input" id="userNameInput" placeholder="你的名字">
+                <button class="name-btn" onclick="changeUserName()">保存我的名字</button>
+            </div>
+
+            <div class="settings-section">
+                <h4>🎨 自定义CSS</h4>
+                <textarea class="css-editor" id="cssEditor" placeholder="粘贴CSS代码..."></textarea>
+                <div class="css-actions">
+                    <button class="css-btn apply-btn" onclick="applyCSS()">应用</button>
+                    <button class="css-btn clear-btn" onclick="clearCSS()">清空</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h4>🤖 AI 头像</h4>
+                <div class="avatar-options">
+                    <div class="avatar-option" onclick="changeAvatar('🤖')">🤖</div>
+                    <div class="avatar-option" onclick="changeAvatar('🦊')">🦊</div>
+                    <div class="avatar-option" onclick="changeAvatar('🐱')">🐱</div>
+                    <div class="avatar-option" onclick="changeAvatar('🐶')">🐶</div>
+                    <div class="avatar-option" onclick="changeAvatar('🐼')">🐼</div>
+                    <div class="avatar-option" onclick="changeAvatar('🦄')">🦄</div>
+                </div>
+                <button class="upload-btn" onclick="document.getElementById('avatarInput').click()">📁 上传头像</button>
+                <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(event)">
+            </div>
+
+            <div class="settings-section">
+                <h4>👤 我的头像</h4>
+                <div class="avatar-options">
+                    <div class="avatar-option" onclick="changeUserAvatar('👤')">👤</div>
+                    <div class="avatar-option" onclick="changeUserAvatar('😊')">😊</div>
+                    <div class="avatar-option" onclick="changeUserAvatar('😎')">😎</div>
+                    <div class="avatar-option" onclick="changeUserAvatar('🥰')">🥰</div>
+                    <div class="avatar-option" onclick="changeUserAvatar('🤓')">🤓</div>
+                    <div class="avatar-option" onclick="changeUserAvatar('🐻')">🐻</div>
+                </div>
+                <button class="upload-btn" onclick="document.getElementById('userAvatarInput').click()">📁 上传头像</button>
+                <input type="file" id="userAvatarInput" accept="image/*" style="display:none" onchange="uploadUserAvatar(event)">
+            </div>
+
+            <div class="settings-section">
+                <h4>🖼️ 背景</h4>
+                <div class="bg-options">
+                    <div class="bg-option" style="background: linear-gradient(135deg, #667eea, #764ba2);" onclick="changeBg('gradient1')"><span>紫色</span></div>
+                    <div class="bg-option" style="background: linear-gradient(135deg, #f093fb, #f5576c);" onclick="changeBg('gradient2')"><span>粉色</span></div>
+                    <div class="bg-option" style="background: linear-gradient(135deg, #4facfe, #00f2fe);" onclick="changeBg('gradient3')"><span>蓝色</span></div>
+                    <div class="bg-option" style="background: linear-gradient(135deg, #43e97b, #38f9d7);" onclick="changeBg('gradient4')"><span>绿色</span></div>
+                    <div class="bg-option" style="background: #1a1a2e;" onclick="changeBg('dark')"><span>暗夜</span></div>
+                </div>
+                <button class="upload-btn" onclick="document.getElementById('bgInput').click()">📁 上传自定义背景</button>
+                <input type="file" id="bgInput" accept="image/*" style="display:none" onchange="uploadBg(event)">
+                <button class="reset-btn" onclick="resetAll()">恢复默认</button>
+                <button class="reset-btn" onclick="clearChat()">🗑️ 清空聊天记录</button>
+            </div>
+        </div>
+
+        <div class="messages" id="messages">
+            <div class="message ai">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">你好！点⚙️设置，点😊表情，点🧧红包，点💸转账</div>
+            </div>
+        </div>
+
+        <div class="sticker-panel" id="stickerPanel">
+            <span class="sticker-item" onclick="sendSticker('😂')">😂</span>
+            <span class="sticker-item" onclick="sendSticker('😍')">😍</span>
+            <span class="sticker-item" onclick="sendSticker('😎')">😎</span>
+            <span class="sticker-item" onclick="sendSticker('🥰')">🥰</span>
+            <span class="sticker-item" onclick="sendSticker('😭')">😭</span>
+            <span class="sticker-item" onclick="sendSticker('🤣')">🤣</span>
+            <span class="sticker-item" onclick="sendSticker('😡')">😡</span>
+            <span class="sticker-item" onclick="sendSticker('🤔')">🤔</span>
+            <span class="sticker-item" onclick="sendSticker('👍')">👍</span>
+            <span class="sticker-item" onclick="sendSticker('👎')">👎</span>
+            <span class="sticker-item" onclick="sendSticker('🙏')">🙏</span>
+            <span class="sticker-item" onclick="sendSticker('💪')">💪</span>
+            <span class="sticker-item" onclick="sendSticker('🎉')">🎉</span>
+            <span class="sticker-item" onclick="sendSticker('❤️')">❤️</span>
+            <span class="sticker-item" onclick="sendSticker('💔')">💔</span>
+            <span class="sticker-item" onclick="sendSticker('🔥')">🔥</span>
+            <span class="sticker-item" onclick="sendSticker('💯')">💯</span>
+            <span class="sticker-item" onclick="sendSticker('🐶')">🐶</span>
+            <span class="sticker-item" onclick="sendSticker('🐱')">🐱</span>
+            <span class="sticker-item" onclick="sendSticker('🌈')">🌈</span>
+            
+            <div style="width:100%; border-top:1px dashed #ddd; margin:5px 0;"></div>
+            
+            <div id="customStickers" style="display:contents;"></div>
+            
+            <span class="sticker-item" onclick="document.getElementById('stickerUpload').click()" style="opacity:0.5;" title="添加表情包">➕</span>
+            <input type="file" id="stickerUpload" accept="image/*" multiple style="display:none" onchange="uploadStickers(event)">
+        </div>
+
+        <div class="toolbar">
+            <button class="toolbar-btn" onclick="toggleStickerPanel()">😊</button>
+            <button class="toolbar-btn" onclick="sendRedPacket()">🧧</button>
+            <button class="toolbar-btn" onclick="sendTransfer()">💸</button>
+        </div>
+
+        <div class="input-area">
+            <input id="userInput" placeholder="输入消息..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">发送</button>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = 'sk-J3UbNLkc7GruSOoA4aIwBVhNsXGQeVqk0EZB2fmjnpw0bg7m';
+        let conversationHistory = [];
+        let aiAvatar = '🤖';
+        let userAvatar = '👤';
+        let aiName = 'AI 助手';
+        let userName = '我';
+
+        function toggleSettings() {
+            document.getElementById('settingsPanel').classList.toggle('show');
+        }
+
+        document.addEventListener('click', function(e) {
+            const panel = document.getElementById('settingsPanel');
+            const btn = document.querySelector('.settings-btn');
+            if (!panel.contains(e.target) && !btn.contains(e.target)) {
+                panel.classList.remove('show');
+            }
+        });
+
+        function toggleStickerPanel() {
+            document.getElementById('stickerPanel').classList.toggle('show');
+        }
+
+        function saveHistory() {
+            localStorage.setItem('chatHistory', JSON.stringify(conversationHistory));
+            localStorage.setItem('chatMessages', document.getElementById('messages').innerHTML);
+        }
+
+        function loadHistory() {
+            const savedHistory = localStorage.getItem('chatHistory');
+            const savedMessages = localStorage.getItem('chatMessages');
+            if (savedHistory) {
+                conversationHistory = JSON.parse(savedHistory);
+            }
+            if (savedMessages) {
+                document.getElementById('messages').innerHTML = savedMessages;
+                document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+            }
+        }
+
+        function clearChat() {
+            conversationHistory = [];
+            document.getElementById('messages').innerHTML = `
+                <div class="message ai">
+                    <div class="message-avatar">${aiAvatar}</div>
+                    <div class="message-content">对话已清空，重新开始吧！</div>
+                </div>
+            `;
+            localStorage.removeItem('chatHistory');
+            localStorage.removeItem('chatMessages');
+        }
+
+        function sendSticker(emoji) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = userAvatar;
+            
+            const content = document.createElement('div');
+            content.className = 'message-content message-sticker';
+            content.style.fontSize = '60px';
+            content.textContent = emoji;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            saveHistory();
+            
+            document.getElementById('stickerPanel').classList.remove('show');
+        }
+
+        function sendImageSticker(imageData) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = userAvatar;
+            
+            const content = document.createElement('div');
+            content.className = 'message-content message-sticker';
+            content.innerHTML = `<img src="${imageData}" style="width:100px;height:100px;object-fit:contain;">`;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            saveHistory();
+            
+            document.getElementById('stickerPanel').classList.remove('show');
+        }
+
+        function uploadStickers(event) {
+            const files = event.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    addCustomSticker(e.target.result, file.name);
+                    saveCustomStickers();
+                };
+                reader.readAsDataURL(file);
+            }
+            event.target.value = '';
+        }
+
+        function addCustomSticker(imageData, name) {
+            const container = document.getElementById('customStickers');
+            const span = document.createElement('span');
+            span.className = 'sticker-item';
+            span.innerHTML = `<img src="${imageData}" alt="${name}"><div class="delete-btn" onclick="deleteSticker(this)">×</div>`;
+            span.onclick = function() {
+                sendImageSticker(imageData);
+            };
+            container.appendChild(span);
+        }
+
+        function deleteSticker(btn) {
+            btn.parentElement.remove();
+            saveCustomStickers();
+        }
+
+        function saveCustomStickers() {
+            const container = document.getElementById('customStickers');
+            const stickers = [];
+            container.querySelectorAll('.sticker-item img').forEach(img => {
+                stickers.push(img.src);
+            });
+            localStorage.setItem('customStickers', JSON.stringify(stickers));
+        }
+
+        function loadCustomStickers() {
+            const saved = localStorage.getItem('customStickers');
+            if (saved) {
+                const stickers = JSON.parse(saved);
+                stickers.forEach(src => {
+                    addCustomSticker(src, 'custom');
+                });
+            }
+        }
+
+        function sendRedPacket() {
+            const amount = prompt('输入红包金额（虚拟）：', '8.88');
+            if (!amount) return;
+            
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = userAvatar;
+            
+            const content = document.createElement('div');
+            content.className = 'message-content red-packet';
+            content.innerHTML = `
+                <div class="packet-title">🧧 恭喜发财，大吉大利</div>
+                <div class="packet-amount">¥${amount}</div>
+                <div class="packet-note">点击领取（虚拟红包）</div>
+            `;
+            content.onclick = function() {
+                if (!this.classList.contains('opened')) {
+                    this.classList.add('opened');
+                    this.innerHTML = `<div style="font-size:30px;">🎉</div><div style="font-size:14px;margin-top:5px;">已被领取</div>`;
+                    saveHistory();
+                }
+            };
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            saveHistory();
+        }
+
+        function sendTransfer() {
+            const amount = prompt('输入转账金额（虚拟）：', '100.00');
+            if (!amount) return;
+            
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = userAvatar;
+            
+            const content = document.createElement('div');
+            content.className = 'message-content transfer-card';
+            content.innerHTML = `
+                <div class="transfer-icon">💸</div>
+                <div>转账给 ${aiName}</div>
+                <div class="transfer-amount">¥${amount}</div>
+                <div class="transfer-status">待确认收款（虚拟）</div>
+            `;
+            content.onclick = function() {
+                this.querySelector('.transfer-status').textContent = '✅ 已收款';
+                this.style.background = '#e8f5e9';
+                saveHistory();
+            };
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            saveHistory();
+        }
+
+        function changeAIName() {
+            const name = document.getElementById('aiNameInput').value.trim();
+            if (name) {
+                aiName = name;
+                document.getElementById('headerName').textContent = name;
+                localStorage.setItem('aiName', name);
+                document.getElementById('aiNameInput').value = '';
+            }
+        }
+
+        function changeUserName() {
+            const name = document.getElementById('userNameInput').value.trim();
+            if (name) {
+                userName = name;
+                localStorage.setItem('userName', name);
+                document.getElementById('userNameInput').value = '';
+            }
+        }
+
+        function applyCSS() {
+            const css = document.getElementById('cssEditor').value;
+            document.getElementById('customStyle').textContent = css;
+            localStorage.setItem('customCSS', css);
+        }
+
+        function clearCSS() {
+            document.getElementById('cssEditor').value = '';
+            document.getElementById('customStyle').textContent = '';
+            localStorage.removeItem('customCSS');
+        }
+
+        function changeAvatar(emoji) {
+            aiAvatar = emoji;
+            document.getElementById('headerAvatar').textContent = emoji;
+            localStorage.setItem('aiAvatar', emoji);
+        }
+
+        function changeUserAvatar(emoji) {
+            userAvatar = emoji;
+            localStorage.setItem('userAvatar', emoji);
+        }
+
+        function uploadAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    aiAvatar = e.target.result;
+                    document.getElementById('headerAvatar').innerHTML = `<img src="${e.target.result}">`;
+                    localStorage.setItem('aiAvatar', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function uploadUserAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    userAvatar = e.target.result;
+                    localStorage.setItem('userAvatar', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function changeBg(type) {
+            const gradients = {
+                gradient1: 'linear-gradient(135deg, #667eea, #764ba2)',
+                gradient2: 'linear-gradient(135deg, #f093fb, #f5576c)',
+                gradient3: 'linear-gradient(135deg, #4facfe, #00f2fe)',
+                gradient4: 'linear-gradient(135deg, #43e97b, #38f9d7)',
+                dark: '#1a1a2e'
+            };
+            document.body.style.background = gradients[type];
+            document.body.style.backgroundImage = gradients[type];
+            localStorage.setItem('chatBg', type);
+        }
+
+        function uploadBg(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.body.style.background = `url(${e.target.result})`;
+                    document.body.style.backgroundSize = 'cover';
+                    document.body.style.backgroundPosition = 'center';
+                    document.body.style.backgroundAttachment = 'fixed';
+                    localStorage.setItem('chatBg', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function resetAll() {
+            document.body.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            aiAvatar = '🤖';
+            userAvatar = '👤';
+            aiName = 'AI 助手';
+            userName = '我';
+            document.getElementById('headerAvatar').textContent = '🤖';
+            document.getElementById('headerName').textContent = 'AI 助手';
+            document.getElementById('customStyle').textContent = '';
+            document.getElementById('cssEditor').value = '';
+            document.getElementById('customStickers').innerHTML = '';
+            localStorage.clear();
+        }
+
+        window.onload = function() {
+            const savedBg = localStorage.getItem('chatBg');
+            const savedAiAvatar = localStorage.getItem('aiAvatar');
+            const savedUserAvatar = localStorage.getItem('userAvatar');
+            const savedCSS = localStorage.getItem('customCSS');
+            const savedAiName = localStorage.getItem('aiName');
+            const savedUserName = localStorage.getItem('userName');
+            
+            if (savedBg) {
+                if (savedBg.startsWith('data:image')) {
+                    document.body.style.background = `url(${savedBg})`;
+                    document.body.style.backgroundSize = 'cover';
+                    document.body.style.backgroundPosition = 'center';
+                } else {
+                    changeBg(savedBg);
+                }
+            }
+            if (savedAiAvatar) {
+                aiAvatar = savedAiAvatar;
+                if (savedAiAvatar.startsWith('data:image')) {
+                    document.getElementById('headerAvatar').innerHTML = `<img src="${savedAiAvatar}">`;
+                } else {
+                    document.getElementById('headerAvatar').textContent = savedAiAvatar;
+                }
+            }
+            if (savedUserAvatar) userAvatar = savedUserAvatar;
+            if (savedCSS) {
+                document.getElementById('customStyle').textContent = savedCSS;
+                document.getElementById('cssEditor').value = savedCSS;
+            }
+            if (savedAiName) {
+                aiName = savedAiName;
+                document.getElementById('headerName').textContent = savedAiName;
+            }
+            if (savedUserName) userName = savedUserName;
+            
+            loadCustomStickers();
+            loadHistory();
+        };
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            conversationHistory.push({ role: 'user', content: message });
+            saveHistory();
+            input.value = '';
+            
+            const typingId = showTyping();
+            
+            try {
+                const response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'kimi-k2.7-code',
+                        messages: conversationHistory,
+                        temperature: 1,
+                        max_tokens: 2000
+                    })
+                });
+
+                const data = await response.json();
+                hideTyping(typingId);
+                
+                if (data.choices && data.choices[0]) {
+                    const reply = data.choices[0].message.content;
+                    conversationHistory.push({ role: 'assistant', content: reply });
+                    
+                    const sentences = reply.split(/(?<=[。！？!?\n])/);
+                    const chunks = [];
+                    let current = '';
+                    
+                    for (let sentence of sentences) {
+                        if ((current + sentence).length > 50) {
+                            if (current) chunks.push(current);
+                            current = sentence;
+                        } else {
+                            current += sentence;
+                        }
+                    }
+                    if (current) chunks.push(current);
+                    
+                    for (let i = 0; i < chunks.length; i++) {
+                        await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 800));
+                        addMessage(chunks[i], 'ai');
+                    }
+                } else {
+                    addMessage('出错了：' + JSON.stringify(data), 'ai');
+                }
+            } catch (error) {
+                hideTyping(typingId);
+                addMessage('网络错误：' + error.message, 'ai');
+            }
+        }
+
+        function addMessage(text, type) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + type;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            if (type === 'user') {
+                if (userAvatar.startsWith('data:image')) {
+                    avatar.innerHTML = `<img src="${userAvatar}">`;
+                } else {
+                    avatar.textContent = userAvatar;
+                }
+            } else {
+                if (aiAvatar.startsWith('data:image')) {
+                    avatar.innerHTML = `<img src="${aiAvatar}">`;
+                } else {
+                    avatar.textContent = aiAvatar;
+                }
+            }
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.textContent = text;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            saveHistory();
+        }
+
+        function showTyping() {
+            const messagesDiv = document.getElementById('messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message ai';
+            typingDiv.id = 'typing-' + Date.now();
+            
+            const avatarHtml = aiAvatar.startsWith('data:image') 
+                ? `<img src="${aiAvatar}">` 
+                : aiAvatar;
+            
+            typingDiv.innerHTML = `
+                <div class="message-avatar">${avatarHtml}</div>
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            return typingDiv.id;
+        }
+
+        function hideTyping(id) {
+            const typingDiv = document.getElementById(id);
+            if (typingDiv) typingDiv.remove();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') sendMessage();
+        }
+    </script>
+</body>
+</html>
