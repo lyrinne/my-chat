@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的AI助手</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
@@ -60,21 +56,10 @@
             flex-shrink: 0;
         }
 
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        .header-info h1 {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .header-info p {
-            font-size: 12px;
-            opacity: 0.8;
-        }
+        .header-info h1 { font-size: 18px; font-weight: 600; }
+        .header-info p { font-size: 12px; opacity: 0.8; }
 
         .settings-btn {
             position: absolute;
@@ -122,11 +107,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .settings-panel h3 {
-            font-size: 16px;
-            margin-bottom: 16px;
-            color: #333;
-        }
+        .settings-panel h3 { font-size: 16px; margin-bottom: 16px; color: #333; }
 
         .settings-section {
             margin-bottom: 20px;
@@ -140,11 +121,7 @@
             padding-bottom: 0;
         }
 
-        .settings-section h4 {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
-        }
+        .settings-section h4 { font-size: 14px; color: #666; margin-bottom: 10px; }
 
         .name-input {
             width: 100%;
@@ -182,11 +159,7 @@
             background: #f8f9fa;
         }
 
-        .css-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-        }
+        .css-actions { display: flex; gap: 8px; margin-top: 8px; }
 
         .css-btn {
             flex: 1;
@@ -214,10 +187,7 @@
             margin-top: 8px;
         }
 
-        .upload-btn:hover {
-            border-color: #667eea;
-            color: #667eea;
-        }
+        .upload-btn:hover { border-color: #667eea; color: #667eea; }
 
         .reset-btn {
             width: 100%;
@@ -231,11 +201,7 @@
             margin-top: 8px;
         }
 
-        .bg-options {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
+        .bg-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
         .bg-option {
             width: 100%;
@@ -247,9 +213,7 @@
             overflow: hidden;
         }
 
-        .bg-option:hover {
-            transform: scale(1.05);
-        }
+        .bg-option:hover { transform: scale(1.05); }
 
         .bg-option span {
             position: absolute;
@@ -260,11 +224,7 @@
             text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
-        .avatar-options {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+        .avatar-options { display: flex; gap: 8px; flex-wrap: wrap; }
 
         .avatar-option {
             width: 40px;
@@ -279,9 +239,7 @@
             background: #f5f5f5;
         }
 
-        .avatar-option:hover {
-            transform: scale(1.1);
-        }
+        .avatar-option:hover { transform: scale(1.1); }
 
         .messages {
             flex: 1;
@@ -307,10 +265,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .message.user {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
+        .message.user { align-self: flex-end; flex-direction: row-reverse; }
 
         .message-avatar {
             width: 36px;
@@ -324,11 +279,7 @@
             overflow: hidden;
         }
 
-        .message-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .message-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
         .message-content {
             padding: 12px 16px;
@@ -393,27 +344,10 @@
             border-radius: 50% 50% 0 0;
         }
 
-        .red-packet .packet-title {
-            font-size: 14px;
-            margin-top: 8px;
-            opacity: 0.9;
-        }
-
-        .red-packet .packet-amount {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 8px 0;
-        }
-
-        .red-packet .packet-note {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
-        .red-packet.opened {
-            background: #ddd !important;
-            color: #999 !important;
-        }
+        .red-packet .packet-title { font-size: 14px; margin-top: 8px; opacity: 0.9; }
+        .red-packet .packet-amount { font-size: 24px; font-weight: bold; margin: 8px 0; }
+        .red-packet .packet-note { font-size: 12px; opacity: 0.8; }
+        .red-packet.opened { background: #ddd !important; color: #999 !important; }
 
         .transfer-card {
             background: #fff8e1 !important;
@@ -425,22 +359,9 @@
             position: relative;
         }
 
-        .transfer-card .transfer-icon {
-            font-size: 30px;
-            margin-bottom: 8px;
-        }
-
-        .transfer-card .transfer-amount {
-            font-size: 20px;
-            font-weight: bold;
-            color: #e65100;
-        }
-
-        .transfer-card .transfer-status {
-            font-size: 12px;
-            color: #999;
-            margin-top: 6px;
-        }
+        .transfer-card .transfer-icon { font-size: 30px; margin-bottom: 8px; }
+        .transfer-card .transfer-amount { font-size: 20px; font-weight: bold; color: #e65100; }
+        .transfer-card .transfer-status { font-size: 12px; color: #999; margin-top: 6px; }
 
         .sticker-panel {
             display: none;
@@ -454,9 +375,7 @@
             overflow-y: auto;
         }
 
-        .sticker-panel.show {
-            display: flex;
-        }
+        .sticker-panel.show { display: flex; }
 
         .sticker-item {
             font-size: 40px;
@@ -466,16 +385,9 @@
             position: relative;
         }
 
-        .sticker-item:hover {
-            transform: scale(1.2);
-        }
+        .sticker-item:hover { transform: scale(1.2); }
 
-        .sticker-item img {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            border-radius: 8px;
-        }
+        .sticker-item img { width: 50px; height: 50px; object-fit: contain; border-radius: 8px; }
 
         .sticker-item .delete-btn {
             position: absolute;
@@ -493,9 +405,7 @@
             cursor: pointer;
         }
 
-        .sticker-item:hover .delete-btn {
-            display: flex;
-        }
+        .sticker-item:hover .delete-btn { display: flex; }
 
         .toolbar {
             display: flex;
@@ -516,10 +426,7 @@
             transition: all 0.2s;
         }
 
-        .toolbar-btn:hover {
-            background: #f5f5f5;
-            transform: scale(1.1);
-        }
+        .toolbar-btn:hover { background: #f5f5f5; transform: scale(1.1); }
 
         .input-area {
             padding: 0 24px 20px;
@@ -539,9 +446,7 @@
             transition: all 0.3s;
         }
 
-        .input-area input:focus {
-            border-color: #667eea;
-        }
+        .input-area input:focus { border-color: #667eea; }
 
         .input-area button {
             padding: 14px 28px;
@@ -554,11 +459,7 @@
             font-weight: 600;
         }
 
-        .typing-indicator {
-            display: flex;
-            gap: 4px;
-            padding: 12px 16px;
-        }
+        .typing-indicator { display: flex; gap: 4px; padding: 12px 16px; }
 
         .typing-dot {
             width: 8px;
@@ -742,9 +643,7 @@
         function loadHistory() {
             const savedHistory = localStorage.getItem('chatHistory');
             const savedMessages = localStorage.getItem('chatMessages');
-            if (savedHistory) {
-                conversationHistory = JSON.parse(savedHistory);
-            }
+            if (savedHistory) conversationHistory = JSON.parse(savedHistory);
             if (savedMessages) {
                 document.getElementById('messages').innerHTML = savedMessages;
                 document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
@@ -767,22 +666,18 @@
             const messagesDiv = document.getElementById('messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message user';
-            
             const avatar = document.createElement('div');
             avatar.className = 'message-avatar';
             avatar.textContent = userAvatar;
-            
             const content = document.createElement('div');
             content.className = 'message-content message-sticker';
             content.style.fontSize = '60px';
             content.textContent = emoji;
-            
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(content);
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             saveHistory();
-            
             document.getElementById('stickerPanel').classList.remove('show');
         }
 
@@ -790,21 +685,17 @@
             const messagesDiv = document.getElementById('messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message user';
-            
             const avatar = document.createElement('div');
             avatar.className = 'message-avatar';
             avatar.textContent = userAvatar;
-            
             const content = document.createElement('div');
             content.className = 'message-content message-sticker';
             content.innerHTML = `<img src="${imageData}" style="width:100px;height:100px;object-fit:contain;">`;
-            
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(content);
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             saveHistory();
-            
             document.getElementById('stickerPanel').classList.remove('show');
         }
 
@@ -827,9 +718,7 @@
             const span = document.createElement('span');
             span.className = 'sticker-item';
             span.innerHTML = `<img src="${imageData}" alt="${name}"><div class="delete-btn" onclick="deleteSticker(this)">×</div>`;
-            span.onclick = function() {
-                sendImageSticker(imageData);
-            };
+            span.onclick = function() { sendImageSticker(imageData); };
             container.appendChild(span);
         }
 
@@ -841,41 +730,29 @@
         function saveCustomStickers() {
             const container = document.getElementById('customStickers');
             const stickers = [];
-            container.querySelectorAll('.sticker-item img').forEach(img => {
-                stickers.push(img.src);
-            });
+            container.querySelectorAll('.sticker-item img').forEach(img => stickers.push(img.src));
             localStorage.setItem('customStickers', JSON.stringify(stickers));
         }
 
         function loadCustomStickers() {
             const saved = localStorage.getItem('customStickers');
             if (saved) {
-                const stickers = JSON.parse(saved);
-                stickers.forEach(src => {
-                    addCustomSticker(src, 'custom');
-                });
+                JSON.parse(saved).forEach(src => addCustomSticker(src, 'custom'));
             }
         }
 
         function sendRedPacket() {
             const amount = prompt('输入红包金额（虚拟）：', '8.88');
             if (!amount) return;
-            
             const messagesDiv = document.getElementById('messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message user';
-            
             const avatar = document.createElement('div');
             avatar.className = 'message-avatar';
             avatar.textContent = userAvatar;
-            
             const content = document.createElement('div');
             content.className = 'message-content red-packet';
-            content.innerHTML = `
-                <div class="packet-title">🧧 恭喜发财，大吉大利</div>
-                <div class="packet-amount">¥${amount}</div>
-                <div class="packet-note">点击领取（虚拟红包）</div>
-            `;
+            content.innerHTML = `<div class="packet-title">🧧 恭喜发财，大吉大利</div><div class="packet-amount">¥${amount}</div><div class="packet-note">点击领取（虚拟红包）</div>`;
             content.onclick = function() {
                 if (!this.classList.contains('opened')) {
                     this.classList.add('opened');
@@ -883,7 +760,6 @@
                     saveHistory();
                 }
             };
-            
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(content);
             messagesDiv.appendChild(messageDiv);
@@ -894,29 +770,20 @@
         function sendTransfer() {
             const amount = prompt('输入转账金额（虚拟）：', '100.00');
             if (!amount) return;
-            
             const messagesDiv = document.getElementById('messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message user';
-            
             const avatar = document.createElement('div');
             avatar.className = 'message-avatar';
             avatar.textContent = userAvatar;
-            
             const content = document.createElement('div');
             content.className = 'message-content transfer-card';
-            content.innerHTML = `
-                <div class="transfer-icon">💸</div>
-                <div>转账给 ${aiName}</div>
-                <div class="transfer-amount">¥${amount}</div>
-                <div class="transfer-status">待确认收款（虚拟）</div>
-            `;
+            content.innerHTML = `<div class="transfer-icon">💸</div><div>转账给 ${aiName}</div><div class="transfer-amount">¥${amount}</div><div class="transfer-status">待确认收款（虚拟）</div>`;
             content.onclick = function() {
                 this.querySelector('.transfer-status').textContent = '✅ 已收款';
                 this.style.background = '#e8f5e9';
                 saveHistory();
             };
-            
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(content);
             messagesDiv.appendChild(messageDiv);
@@ -1106,24 +973,16 @@
                 if (data.choices && data.choices[0]) {
                     const reply = data.choices[0].message.content;
                     conversationHistory.push({ role: 'assistant', content: reply });
+                    saveHistory();
                     
-                    const sentences = reply.split(/(?<=[。！？!?\n])/);
-                    const chunks = [];
-                    let current = '';
+                    const sentences = reply
+                        .split(/\n|(?<=[。！？!?；;])/)
+                        .map(s => s.trim())
+                        .filter(s => s.length > 0);
                     
-                    for (let sentence of sentences) {
-                        if ((current + sentence).length > 50) {
-                            if (current) chunks.push(current);
-                            current = sentence;
-                        } else {
-                            current += sentence;
-                        }
-                    }
-                    if (current) chunks.push(current);
-                    
-                    for (let i = 0; i < chunks.length; i++) {
-                        await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 800));
-                        addMessage(chunks[i], 'ai');
+                    for (let i = 0; i < sentences.length; i++) {
+                        await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 600));
+                        addMessage(sentences[i], 'ai');
                     }
                 } else {
                     addMessage('出错了：' + JSON.stringify(data), 'ai');
