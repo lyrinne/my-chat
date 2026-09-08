@@ -1333,7 +1333,36 @@
     saveHistory();
     addDeleteEvents();
 }
+function showTyping() {
+    const messagesDiv = document.getElementById('messages');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message ai';
+    typingDiv.id = 'typing-' + Date.now();
 
+    const avatarHtml = aiAvatar.startsWith('data:image')
+        ? `<img src="${aiAvatar}">`
+        : aiAvatar;
+
+    typingDiv.innerHTML = `
+        <div class="message-avatar">${avatarHtml}</div>
+        <div class="message-content">
+            <div class="typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+    `;
+
+    messagesDiv.appendChild(typingDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    return typingDiv.id;
+}
+
+function hideTyping(id) {
+    const typingDiv = document.getElementById(id);
+    if (typingDiv) typingDiv.remove();
+}
         function hideTyping(id) {
             const typingDiv = document.getElementById(id);
             if (typingDiv) typingDiv.remove();
