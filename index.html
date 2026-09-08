@@ -439,7 +439,11 @@
 
         <div class="settings-panel" id="settingsPanel">
             <h3>个性化设置</h3>
-
+<div class="settings-section">
+    <h4>🔑 API Key</h4>
+    <input class="name-input" id="apiKeyInput" placeholder="填写你的Kimi API Key">
+    <button class="name-btn" onclick="saveApiKey()">保存API Key</button>
+</div>
             <div class="settings-section">
                 <h4>✏️ 修改名字</h4>
                 <input class="name-input" id="aiNameInput" placeholder="AI的名字">
@@ -562,7 +566,7 @@
     </div>
 
     <script>
-        const API_KEY = 'sk-J3UbNLkc7GruSOoA4aIwBVhNsXGQeVqk0EZB2fmjnpw0bg7m';
+        let API_KEY = localStorage.getItem('userApiKey') || '';
         let conversationHistory = [];
         let aiAvatar = '🤖';
         let userAvatar = '👤';
@@ -572,6 +576,15 @@
         let pokeUserSuffix = '的脸';
 
         function toggleSettings() { document.getElementById('settingsPanel').classList.toggle('show'); }
+function saveApiKey() {
+    const key = document.getElementById('apiKeyInput').value.trim();
+    if (key) {
+        API_KEY = key;
+        localStorage.setItem('userApiKey', key);
+        alert('API Key已保存');
+        document.getElementById('apiKeyInput').value = '';
+    }
+}
         function toggleStickerPanel() { document.getElementById('stickerPanel').classList.toggle('show'); }
         function toggleNightMode() {
             document.body.classList.toggle('night-mode');
@@ -1096,12 +1109,20 @@
             loadCustomStickers();
             loadHistory();
             initPokeEvents();
+if (API_KEY) {
+    document.getElementById('apiKeyInput').value = API_KEY;
+}
         };
 
         async function sendMessage() {
-            const input = document.getElementById('userInput');
-            const message = input.value.trim();
-            if (!message) return;
+    if (!API_KEY) {
+        alert('请先在设置里填写API Key');
+        return;
+    }
+
+    const input = document.getElementById('userInput');
+    const message = input.value.trim();
+    if (!message) return;
 
             const quoteText = input.dataset.quote || '';
             const parts = message.split(/\n|(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s);
