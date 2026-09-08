@@ -268,30 +268,57 @@
     background: #f45b5b !important;
     color: white !important;
     border: none !important;
-    padding: 8px 12px !important;
-    min-width: 140px !important;
-    text-align: center !important;
+    padding: 8px 14px !important;
+    min-width: 200px !important;
+    max-width: 240px !important;
+    text-align: left !important;
     cursor: pointer !important;
-    border-radius: 12px !important;
-    box-shadow: none !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
 }
-.red-packet .packet-title { font-size: 11px !important; }
-.red-packet .packet-amount { font-size: 17px !important; font-weight: 600 !important; margin: 4px 0 !important; }
-.red-packet .packet-note { font-size: 10px !important; opacity: 0.8 !important; }
+.red-packet .packet-title {
+    font-size: 12px !important;
+    flex: 1 !important;
+}
+.red-packet .packet-amount {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+}
+.red-packet .packet-note {
+    display: none !important;
+}
 
         .transfer-card {
     background: #fff !important;
-    border: 1px solid #eee !important;
+    border: 1px solid #e8e8e8 !important;
     color: #333 !important;
-    padding: 8px 12px !important;
-    min-width: 140px !important;
-    text-align: center !important;
-    border-radius: 12px !important;
-    box-shadow: none !important;
+    padding: 8px 14px !important;
+    min-width: 200px !important;
+    max-width: 240px !important;
+    text-align: left !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
 }
-.transfer-card .transfer-icon { font-size: 20px !important; }
-.transfer-card .transfer-amount { font-size: 17px !important; font-weight: 600 !important; color: #333 !important; }
-.transfer-card .transfer-status { font-size: 10px !important; color: #999 !important; }
+.transfer-card .transfer-icon {
+    font-size: 18px !important;
+    margin: 0 !important;
+}
+.transfer-card .transfer-amount {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+    flex: 1 !important;
+}
+.transfer-card .transfer-status {
+    font-size: 10px !important;
+    color: #999 !important;
+    margin: 0 !important;
+}
 
         .sticker-panel {
             display: none;
