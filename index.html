@@ -16,6 +16,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: background 0.5s ease;
         }
 
         .container {
@@ -406,6 +407,71 @@
         .messages::-webkit-scrollbar { width: 6px; }
         .messages::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
 
+        .poke-message {
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            padding: 4px 0;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .voice-bubble {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f0f0f0;
+            border-radius: 16px;
+            padding: 8px 12px;
+            cursor: pointer;
+            min-width: 90px;
+        }
+
+        .voice-bubble .voice-icon { font-size: 16px; }
+        .voice-bubble .voice-duration { font-size: 11px; color: #666; }
+        .voice-bubble .voice-text {
+            display: none;
+            font-size: 12px;
+            color: #333;
+            margin-top: 4px;
+        }
+        .voice-bubble.open .voice-text { display: block; }
+
+        body.night-mode {
+            background: #0a0a0f !important;
+        }
+
+        body.night-mode .container {
+            background: rgba(20, 20, 28, 0.95) !important;
+        }
+
+        body.night-mode .header {
+            background: #111118 !important;
+        }
+
+        body.night-mode .input-area,
+        body.night-mode .toolbar,
+        body.night-mode .sticker-panel {
+            background: #16161e !important;
+            border-color: #222 !important;
+        }
+
+        body.night-mode .input-area input {
+            background: #1e1e26 !important;
+            color: #eee !important;
+            border-color: #333 !important;
+        }
+
+        body.night-mode .message.ai .message-content {
+            background: #1e1e26 !important;
+            color: #eee !important;
+            border-color: #333 !important;
+        }
+
+        body.night-mode .message.user .message-content {
+            background: #2a2a38 !important;
+            color: #fff !important;
+        }
+
         @media (max-width: 600px) {
             .container { width: 100%; height: 100vh; border-radius: 0; }
             .message { max-width: 90%; }
@@ -433,6 +499,19 @@
                 <button class="name-btn" onclick="changeAIName()">保存AI名字</button>
                 <input class="name-input" id="userNameInput" placeholder="你的名字">
                 <button class="name-btn" onclick="changeUserName()">保存我的名字</button>
+            </div>
+
+            <div class="settings-section">
+                <h4>👋 拍一拍后缀</h4>
+                <input class="name-input" id="pokeAISuffixInput" placeholder="你拍他的后缀，如：的屁股">
+                <button class="name-btn" onclick="setPokeAISuffix()">保存你拍他的后缀</button>
+                <input class="name-input" id="pokeUserSuffixInput" placeholder="他拍你的后缀，如：的脸">
+                <button class="name-btn" onclick="setPokeUserSuffix()">保存他拍你的后缀</button>
+            </div>
+
+            <div class="settings-section">
+                <h4>🌙 夜间模式</h4>
+                <button class="name-btn" onclick="toggleNightMode()">切换夜间模式</button>
             </div>
 
             <div class="settings-section">
@@ -491,7 +570,7 @@
         <div class="messages" id="messages">
             <div class="message ai">
                 <div class="message-avatar">🤖</div>
-                <div class="message-content">你好！点⚙️设置，点😊表情，点🧧红包，点💸转账</div>
+                <div class="message-content">你好！点⚙️设置，双击头像拍一拍</div>
                 <div class="message-time">00:00</div>
             </div>
         </div>
@@ -527,9 +606,9 @@
         </div>
 
         <div class="toolbar">
-            <button class="toolbar-btn" onclick="toggleStickerPanel()">😊</button>
-            <button class="toolbar-btn" onclick="sendRedPacket()">🧧</button>
-            <button class="toolbar-btn" onclick="sendTransfer()">💸</button>
+            <button class="toolbar-btn" onclick="toggleStickerPanel()">〇</button>
+            <button class="toolbar-btn" onclick="sendRedPacket()">￥</button>
+            <button class="toolbar-btn" onclick="sendTransfer()">⇋</button>
         </div>
 
         <div class="input-area">
@@ -545,6 +624,8 @@
         let userAvatar = '👤';
         let aiName = 'AI 助手';
         let userName = '我';
+        let pokeAISuffix = '的屁股';
+        let pokeUserSuffix = '的脸';
 
         function toggleSettings() {
             document.getElementById('settingsPanel').classList.toggle('show');
@@ -560,6 +641,33 @@
 
         function toggleStickerPanel() {
             document.getElementById('stickerPanel').classList.toggle('show');
+        }
+
+        function toggleNightMode() {
+            document.body.classList.toggle('night-mode');
+            if (document.body.classList.contains('night-mode')) {
+                localStorage.setItem('nightMode', 'on');
+            } else {
+                localStorage.setItem('nightMode', 'off');
+            }
+        }
+
+        function setPokeAISuffix() {
+            const v = document.getElementById('pokeAISuffixInput').value.trim();
+            if (v) {
+                pokeAISuffix = v;
+                localStorage.setItem('pokeAISuffix', v);
+                document.getElementById('pokeAISuffixInput').value = '';
+            }
+        }
+
+        function setPokeUserSuffix() {
+            const v = document.getElementById('pokeUserSuffixInput').value.trim();
+            if (v) {
+                pokeUserSuffix = v;
+                localStorage.setItem('pokeUserSuffix', v);
+                document.getElementById('pokeUserSuffixInput').value = '';
+            }
         }
 
         function saveHistory() {
@@ -919,6 +1027,7 @@
             document.getElementById('customStyle').textContent = '';
             document.getElementById('cssEditor').value = '';
             document.getElementById('customStickers').innerHTML = '';
+            document.body.classList.remove('night-mode');
             localStorage.clear();
         }
 
@@ -929,6 +1038,9 @@
             const savedCSS = localStorage.getItem('customCSS');
             const savedAiName = localStorage.getItem('aiName');
             const savedUserName = localStorage.getItem('userName');
+            const savedPokeAISuffix = localStorage.getItem('pokeAISuffix');
+            const savedPokeUserSuffix = localStorage.getItem('pokeUserSuffix');
+            const savedNightMode = localStorage.getItem('nightMode');
 
             if (savedBg) {
                 if (savedBg.startsWith('data:image')) {
@@ -958,9 +1070,13 @@
                 document.getElementById('headerName').textContent = savedAiName;
             }
             if (savedUserName) userName = savedUserName;
+            if (savedPokeAISuffix) pokeAISuffix = savedPokeAISuffix;
+            if (savedPokeUserSuffix) pokeUserSuffix = savedPokeUserSuffix;
+            if (savedNightMode === 'on') document.body.classList.add('night-mode');
 
             loadCustomStickers();
             loadHistory();
+            initPokeEvents();
         };
 
         function getTime() {
@@ -970,13 +1086,78 @@
             return h + ':' + m;
         }
 
+        function initPokeEvents() {
+            const headerAvatar = document.getElementById('headerAvatar');
+            if (headerAvatar) {
+                headerAvatar.addEventListener('dblclick', function() {
+                    addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
+                });
+            }
+            setTimeout(() => {
+                const messagesDiv = document.getElementById('messages');
+                messagesDiv.querySelectorAll('.message.ai .message-avatar').forEach(av => {
+                    av.addEventListener('dblclick', function() {
+                        addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
+                    });
+                });
+            }, 500);
+        }
+
+        function addPokeMessage(text) {
+            const messagesDiv = document.getElementById('messages');
+            const div = document.createElement('div');
+            div.className = 'poke-message';
+            div.textContent = text;
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            saveHistory();
+        }
+
+        function addVoiceMessage(text, type) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + type;
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            if (type === 'user') {
+                avatar.textContent = userAvatar;
+            } else {
+                avatar.textContent = aiAvatar;
+            }
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            const voice = document.createElement('div');
+            voice.className = 'voice-bubble';
+            voice.innerHTML = `<span class="voice-icon">🎤</span><span class="voice-duration">${Math.max(1, Math.round(text.length / 4))}″</span><div class="voice-text">${text}</div>`;
+            voice.onclick = function() {
+                voice.classList.toggle('open');
+            };
+            content.appendChild(voice);
+            const time = document.createElement('div');
+            time.className = 'message-time';
+            time.textContent = getTime();
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            messageDiv.appendChild(time);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            saveHistory();
+            addDeleteEvents();
+        }
+
         async function sendMessage() {
             const input = document.getElementById('userInput');
             const message = input.value.trim();
             if (!message) return;
 
-            addMessage(message, 'user');
-            conversationHistory.push({ role: 'user', content: message });
+            const parts = message.split(/(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s);
+
+            for (let i = 0; i < parts.length; i++) {
+                addMessage(parts[i], 'user');
+                conversationHistory.push({ role: 'user', content: parts[i] });
+                await new Promise(resolve => setTimeout(resolve, 400));
+            }
+
             saveHistory();
             input.value = '';
 
@@ -1002,7 +1183,9 @@
 
                 if (data.choices && data.choices[0]) {
                     const reply = data.choices[0].message.content;
-                    conversationHistory.push({ role: 'assistant', content: reply });
+                    if (reply && reply.trim()) {
+                        conversationHistory.push({ role: 'assistant', content: reply });
+                    }
                     saveHistory();
 
                     const sentences = reply
@@ -1012,7 +1195,11 @@
 
                     for (let i = 0; i < sentences.length; i++) {
                         await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 600));
-                        addMessage(sentences[i], 'ai');
+                        if (Math.random() < 0.15) {
+                            addVoiceMessage(sentences[i], 'ai');
+                        } else {
+                            addMessage(sentences[i], 'ai');
+                        }
                     }
                 } else {
                     addMessage('出错了：' + JSON.stringify(data), 'ai');
