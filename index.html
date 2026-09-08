@@ -590,7 +590,7 @@
         </div>
 
         <div class="input-area">
-            <input id="userInput" placeholder="输入消息..." onkeypress="handleKeyPress(event)">
+            <textarea id="userInput" placeholder="输入消息..." rows="1" onkeypress="handleKeyPress(event)"></textarea>
             <button onclick="sendMessage()">发送</button>
         </div>
     </div>
@@ -1297,8 +1297,11 @@
         }
 
         function handleKeyPress(event) {
-            if (event.key === 'Enter') sendMessage();
-        }
+    if (event.key === 'Enter' && !event.shiftKey) {
+        // 不发送，允许换行
+        return;
+    }
+}
     </script>
 </body>
 </html>
