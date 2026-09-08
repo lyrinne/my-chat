@@ -415,23 +415,19 @@
             animation: fadeIn 0.3s ease;
         }
 
-      .voice-bubble {
+     .voice-bubble {
     display: flex !important;
     align-items: center !important;
-    gap: 8px !important;
-    background: #ffffff !important;
-    border: 1px solid #e5e5e5 !important;
-    border-radius: 20px !important;
-    padding: 10px 16px !important;
+    gap: 6px !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 2px 0 !important;
     cursor: pointer !important;
-    min-width: 120px !important;
-    max-width: 220px !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+    min-width: 70px !important;
 }
 
 .voice-bubble .voice-icon {
-    font-size: 16px !important;
-    line-height: 1 !important;
+    display: none !important;
 }
 
 .voice-bubble .voice-duration {
@@ -442,14 +438,9 @@
 .voice-bubble .voice-text {
     display: none !important;
     font-size: 13px !important;
-    color: #333 !important;
-    margin-top: 8px !important;
-    line-height: 1.5 !important;
-    width: 100% !important;
-}
-
-.voice-bubble.open {
-    flex-wrap: wrap !important;
+    color: inherit !important;
+    margin-top: 2px !important;
+    line-height: 1.4 !important;
 }
 
 .voice-bubble.open .voice-text {
