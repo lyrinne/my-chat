@@ -252,82 +252,41 @@
             border-top-right-radius: 4px;
         }
 
-        .message-time {
-            font-size: 10px;
-            color: #999;
-            flex-shrink: 0;
-            margin: 0 2px;
-        }
-
+        .message-time { font-size: 10px; color: #999; flex-shrink: 0; margin: 0 2px; }
         .message.user .message-time { order: -1; }
 
         .message-sticker { padding: 5px !important; background: transparent !important; border: none !important; }
         .message-sticker img { width: 100px; height: 100px; object-fit: contain; display: block; }
 
-       .red-packet {
-    background: #f45b5b !important;
-    color: white !important;
-    border: none !important;
-    padding: 10px 16px !important;
-    min-width: 240px !important;
-    max-width: 280px !important;
-    text-align: center !important;
-    cursor: pointer !important;
-    border-radius: 10px !important;
-    line-height: 1.4 !important;
-}
+        .red-packet {
+            background: #f45b5b !important;
+            color: #fff !important;
+            border: none !important;
+            padding: 8px 16px !important;
+            width: 200px !important;
+            max-width: 200px !important;
+            text-align: center !important;
+            border-radius: 10px !important;
+            display: block !important;
+        }
+        .red-packet .packet-title { font-size: 12px !important; }
+        .red-packet .packet-amount { font-size: 16px !important; font-weight: 600 !important; margin: 2px 0 !important; }
+        .red-packet .packet-note { display: none !important; }
 
-.red-packet .packet-title {
-    font-size: 12px !important;
-    line-height: 1.3 !important;
-}
-
-.red-packet .packet-amount {
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    margin: 2px 0 !important;
-    line-height: 1.3 !important;
-}
-
-.red-packet .packet-note {
-    display: none !important;
-}
-
-       .transfer-card {
-    background: #fff !important;
-    border: 1px solid #e8e8e8 !important;
-    color: #333 !important;
-    padding: 10px 16px !important;
-    min-width: 240px !important;
-    max-width: 280px !important;
-    text-align: center !important;
-    border-radius: 10px !important;
-    line-height: 1.4 !important;
-}
-
-.transfer-card .transfer-icon {
-    font-size: 15px !important;
-    margin: 0 !important;
-    display: inline-block !important;
-    line-height: 1 !important;
-}
-
-.transfer-card .transfer-amount {
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    color: #333 !important;
-    display: block !important;
-    line-height: 1.3 !important;
-    margin-top: 2px !important;
-}
-
-.transfer-card .transfer-status {
-    font-size: 10px !important;
-    color: #999 !important;
-    margin-top: 2px !important;
-    display: block !important;
-    line-height: 1.2 !important;
-}
+        .transfer-card {
+            background: #fff !important;
+            border: 1px solid #e8e8e8 !important;
+            color: #333 !important;
+            padding: 8px 16px !important;
+            width: 200px !important;
+            max-width: 200px !important;
+            text-align: center !important;
+            border-radius: 10px !important;
+            display: block !important;
+        }
+        .transfer-card .transfer-icon { font-size: 15px !important; display: block !important; }
+        .transfer-card .transfer-amount { font-size: 16px !important; font-weight: 600 !important; }
+        .transfer-card .transfer-status { font-size: 10px !important; color: #999 !important; margin-top: 2px !important; }
 
         .sticker-panel {
             display: none;
@@ -340,7 +299,6 @@
             max-height: 200px;
             overflow-y: auto;
         }
-
         .sticker-panel.show { display: flex; }
 
         .sticker-item { font-size: 40px; cursor: pointer; transition: all 0.2s; padding: 5px; position: relative; }
@@ -349,10 +307,8 @@
 
         .sticker-item .delete-btn {
             position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 18px;
-            height: 18px;
+            top: -5px; right: -5px;
+            width: 18px; height: 18px;
             background: #ff4444;
             color: white;
             border-radius: 50%;
@@ -362,7 +318,6 @@
             justify-content: center;
             cursor: pointer;
         }
-
         .sticker-item:hover .delete-btn { display: flex; }
 
         .toolbar {
@@ -381,10 +336,7 @@
             cursor: pointer;
             font-size: 20px;
             border-radius: 50%;
-            transition: all 0.2s;
         }
-
-        .toolbar-btn:hover { background: #f5f5f5; transform: scale(1.1); }
 
         .input-area {
             padding: 0 24px 20px;
@@ -402,8 +354,6 @@
             font-size: 14px;
             outline: none;
         }
-
-        .input-area input:focus { border-color: #667eea; }
 
         .input-area button {
             padding: 14px 28px;
@@ -429,13 +379,7 @@
         .messages::-webkit-scrollbar { width: 6px; }
         .messages::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
 
-        .poke-message {
-            text-align: center;
-            font-size: 11px;
-            color: #999;
-            padding: 4px 0;
-            animation: fadeIn 0.3s ease;
-        }
+        .poke-message { text-align: center; font-size: 11px; color: #999; padding: 4px 0; }
 
         .msg-menu {
             position: absolute;
@@ -448,95 +392,37 @@
             display: flex;
             overflow: hidden;
         }
-
-        .msg-menu-item {
-            padding: 8px 14px;
-            font-size: 13px;
-            color: #333;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
+        .msg-menu-item { padding: 8px 14px; font-size: 13px; color: #333; cursor: pointer; white-space: nowrap; }
         .msg-menu-item:active { background: #f0f0f0; }
         .msg-menu-del { color: #e53935; }
 
         .quote-block {
-            background: rgba(0, 0, 0, 0.06);
-            border-left: 3px solid rgba(0, 0, 0, 0.2);
+            background: rgba(0,0,0,0.06);
+            border-left: 3px solid rgba(0,0,0,0.2);
             padding: 6px 10px;
             border-radius: 6px;
             font-size: 12px;
             margin-bottom: 6px;
-            opacity: 0.85;
-            word-break: break-all;
-            white-space: pre-wrap;
         }
+
+        .voice-bubble {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            padding: 2px 0;
+            cursor: pointer;
+            min-width: 70px;
+        }
+        .voice-bubble .voice-duration { font-size: 12px; color: #888; }
+        .voice-bubble .voice-text { display: none; font-size: 13px; color: inherit; margin-top: 4px; }
+        .voice-bubble.open .voice-text { display: block; }
 
         @media (max-width: 600px) {
             .container { width: 100%; height: 100vh; border-radius: 0; }
             .message { max-width: 90%; }
         }
-.voice-bubble {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: transparent;
-    border: none;
-    padding: 2px 0;
-    cursor: pointer;
-    min-width: 70px;
-}
-
-.voice-bubble .voice-duration {
-    font-size: 12px;
-    color: #888;
-}
-
-.voice-bubble .voice-text {
-    display: none;
-    font-size: 13px;
-    color: inherit;
-    margin-top: 4px;
-    line-height: 1.4;
-}
-
-.voice-bubble.open .voice-text {
-    display: block;
-}
-.input-area {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-}
-
-.input-area input,
-.input-area textarea {
-    flex: 1 !important;
-    min-width: 0 !important;
-    margin-right: 10px !important;
-}
-
-.input-area button {
-    flex-shrink: 0 !important;
-}
-.input-area input,
-.input-area textarea {
-    flex: 1 !important;
-    min-height: 42px !important;
-    max-height: 120px !important;
-    padding: 10px 16px !important;
-    font-size: 14px !important;
-    border-radius: 20px !important;
-}
-
-.input-area button {
-    height: 42px !important;
-    padding: 0 22px !important;
-    font-size: 14px !important;
-    border-radius: 20px !important;
-    flex-shrink: 0 !important;
-}
     </style>
     <style id="customStyle"></style>
 </head>
@@ -564,9 +450,9 @@
 
             <div class="settings-section">
                 <h4>👋 拍一拍后缀</h4>
-                <input class="name-input" id="pokeAISuffixInput" placeholder="你拍他的后缀，如：的屁股">
+                <input class="name-input" id="pokeAISuffixInput" placeholder="你拍他的后缀">
                 <button class="name-btn" onclick="setPokeAISuffix()">保存你拍他的后缀</button>
-                <input class="name-input" id="pokeUserSuffixInput" placeholder="他拍你的后缀，如：的脸">
+                <input class="name-input" id="pokeUserSuffixInput" placeholder="他拍你的后缀">
                 <button class="name-btn" onclick="setPokeUserSuffix()">保存他拍你的后缀</button>
             </div>
 
@@ -631,7 +517,7 @@
         <div class="messages" id="messages">
             <div class="message ai">
                 <div class="message-avatar">🤖</div>
-                <div class="message-content">你好！点⚙️设置，双击头像拍一拍，长按消息有菜单</div>
+                <div class="message-content">你好，长按消息有菜单</div>
                 <div class="message-time">00:00</div>
             </div>
         </div>
@@ -657,12 +543,9 @@
             <span class="sticker-item" onclick="sendSticker('🐶')">🐶</span>
             <span class="sticker-item" onclick="sendSticker('🐱')">🐱</span>
             <span class="sticker-item" onclick="sendSticker('🌈')">🌈</span>
-
-            <div style="width:100%; border-top:1px dashed #ddd; margin:5px 0;"></div>
-
+            <div style="width:100%; border-top:1px dashed #ddd;"></div>
             <div id="customStickers" style="display:contents;"></div>
-
-            <span class="sticker-item" onclick="document.getElementById('stickerUpload').click()" style="opacity:0.5;" title="添加表情包">➕</span>
+            <span class="sticker-item" onclick="document.getElementById('stickerUpload').click()">➕</span>
             <input type="file" id="stickerUpload" accept="image/*" multiple style="display:none" onchange="uploadStickers(event)">
         </div>
 
@@ -673,7 +556,7 @@
         </div>
 
         <div class="input-area">
-            <textarea id="userInput" placeholder="输入消息..." rows="1" onkeypress="handleKeyPress(event)"></textarea>
+            <input id="userInput" placeholder="输入消息..." onkeypress="handleKeyPress(event)">
             <button onclick="sendMessage()">发送</button>
         </div>
     </div>
@@ -688,54 +571,26 @@
         let pokeAISuffix = '的屁股';
         let pokeUserSuffix = '的脸';
 
-        function toggleSettings() {
-            document.getElementById('settingsPanel').classList.toggle('show');
-        }
-
-        document.addEventListener('click', function(e) {
-            const panel = document.getElementById('settingsPanel');
-            const btn = document.querySelector('.settings-btn');
-            if (!panel.contains(e.target) && !btn.contains(e.target)) {
-                panel.classList.remove('show');
-            }
-        });
-
-        function toggleStickerPanel() {
-            document.getElementById('stickerPanel').classList.toggle('show');
-        }
-
+        function toggleSettings() { document.getElementById('settingsPanel').classList.toggle('show'); }
+        function toggleStickerPanel() { document.getElementById('stickerPanel').classList.toggle('show'); }
         function toggleNightMode() {
             document.body.classList.toggle('night-mode');
-            if (document.body.classList.contains('night-mode')) {
-                localStorage.setItem('nightMode', 'on');
-            } else {
-                localStorage.setItem('nightMode', 'off');
-            }
+            localStorage.setItem('nightMode', document.body.classList.contains('night-mode') ? 'on' : 'off');
         }
 
         function setPokeAISuffix() {
             const v = document.getElementById('pokeAISuffixInput').value.trim();
-            if (v) {
-                pokeAISuffix = v;
-                localStorage.setItem('pokeAISuffix', v);
-                document.getElementById('pokeAISuffixInput').value = '';
-            }
+            if (v) { pokeAISuffix = v; localStorage.setItem('pokeAISuffix', v); document.getElementById('pokeAISuffixInput').value = ''; }
         }
-
         function setPokeUserSuffix() {
             const v = document.getElementById('pokeUserSuffixInput').value.trim();
-            if (v) {
-                pokeUserSuffix = v;
-                localStorage.setItem('pokeUserSuffix', v);
-                document.getElementById('pokeUserSuffixInput').value = '';
-            }
+            if (v) { pokeUserSuffix = v; localStorage.setItem('pokeUserSuffix', v); document.getElementById('pokeUserSuffixInput').value = ''; }
         }
 
         function saveHistory() {
             localStorage.setItem('chatHistory', JSON.stringify(conversationHistory));
             localStorage.setItem('chatMessages', document.getElementById('messages').innerHTML);
         }
-
         function loadHistory() {
             const savedHistory = localStorage.getItem('chatHistory');
             const savedMessages = localStorage.getItem('chatMessages');
@@ -746,103 +601,213 @@
                 addDeleteEvents();
             }
         }
-
         function clearChat() {
             conversationHistory = [];
-            document.getElementById('messages').innerHTML = `
-                <div class="message ai">
-                    <div class="message-avatar">${aiAvatar}</div>
-                    <div class="message-content">对话已清空，重新开始吧！</div>
-                    <div class="message-time">00:00</div>
-                </div>
-            `;
+            document.getElementById('messages').innerHTML = `<div class="message ai"><div class="message-avatar">${aiAvatar}</div><div class="message-content">对话已清空</div><div class="message-time">00:00</div></div>`;
             localStorage.removeItem('chatHistory');
             localStorage.removeItem('chatMessages');
-            addDeleteEvents();
         }
 
         function addDeleteEvents() {
             document.querySelectorAll('#messages .message').forEach(msg => {
                 if (msg.dataset.hasEvent) return;
                 msg.dataset.hasEvent = '1';
-
-                msg.addEventListener('contextmenu', function(e) {
-                    e.preventDefault();
-                    showMessageMenu(msg);
-                });
-
-                let longPressTimer = null;
-                msg.addEventListener('touchstart', function(e) {
-                    longPressTimer = setTimeout(function() {
-                        showMessageMenu(msg);
-                    }, 500);
-                });
-                msg.addEventListener('touchend', function() {
-                    clearTimeout(longPressTimer);
-                });
-                msg.addEventListener('touchmove', function() {
-                    clearTimeout(longPressTimer);
-                });
+                msg.addEventListener('contextmenu', e => { e.preventDefault(); showMessageMenu(msg); });
+                let t;
+                msg.addEventListener('touchstart', e => { t = setTimeout(() => showMessageMenu(msg), 500); });
+                msg.addEventListener('touchend', () => clearTimeout(t));
+                msg.addEventListener('touchmove', () => clearTimeout(t));
             });
         }
 
         function showMessageMenu(msg) {
             document.querySelectorAll('.msg-menu').forEach(m => m.remove());
-
             const menu = document.createElement('div');
             menu.className = 'msg-menu';
-            menu.innerHTML = `
-                <div class="msg-menu-item" onclick="copyMessage(this)">复制</div>
-                <div class="msg-menu-item" onclick="quoteMessage(this)">引用</div>
-                <div class="msg-menu-item msg-menu-del" onclick="deleteMessage(this)">删除</div>
-            `;
-
+            menu.innerHTML = `<div class="msg-menu-item" onclick="copyMessage(this)">复制</div><div class="msg-menu-item" onclick="quoteMessage(this)">引用</div><div class="msg-menu-item msg-menu-del" onclick="deleteMessage(this)">删除</div>`;
             msg.appendChild(menu);
         }
 
         function copyMessage(el) {
             const msg = el.closest('.message');
-            const text = msg.querySelector('.message-content').textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('已复制');
-            });
+            navigator.clipboard.writeText(msg.querySelector('.message-content').textContent).then(() => alert('已复制'));
             el.closest('.msg-menu').remove();
         }
 
         function quoteMessage(el) {
-    const input = document.getElementById('userInput');
-
-    if (input.dataset.quote) {
-        delete input.dataset.quote;
-        input.placeholder = '输入消息...';
-    } else {
-        const msg = el.closest('.message');
-        const text = msg.querySelector('.message-content').textContent;
-        input.dataset.quote = text;
-        input.value = '';
-        input.placeholder = '回复：' + text;
-        input.focus();
-    }
-
-    const menu = el.closest('.msg-menu');
-    if (menu) menu.remove();
-}
+            const input = document.getElementById('userInput');
+            if (input.dataset.quote) {
+                delete input.dataset.quote;
+                input.placeholder = '输入消息...';
+            } else {
+                const text = el.closest('.message').querySelector('.message-content').textContent;
+                input.dataset.quote = text;
+                input.value = '';
+                input.placeholder = '回复：' + text;
+                input.focus();
+            }
+            el.closest('.msg-menu').remove();
+        }
 
         function deleteMessage(el) {
             const msg = el.closest('.message');
-            if (confirm('删除这条消息？')) {
-                msg.remove();
-                saveHistory();
+            if (confirm('删除这条消息？')) { msg.remove(); saveHistory(); }
+        }
+
+        function getTime() {
+            const n = new Date();
+            return n.getHours().toString().padStart(2, '0') + ':' + n.getMinutes().toString().padStart(2, '0');
+        }
+
+        function addMessage(text, type, quoteText) {
+            const messagesDiv = document.getElementById('messages');
+            const div = document.createElement('div');
+            div.className = 'message ' + type;
+
+            const av = document.createElement('div');
+            av.className = 'message-avatar';
+            const src = type === 'user' ? userAvatar : aiAvatar;
+            if (src.startsWith('data:image')) av.innerHTML = `<img src="${src}">`;
+            else av.textContent = src;
+
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            if (quoteText) {
+                const q = document.createElement('div');
+                q.className = 'quote-block';
+                q.textContent = quoteText;
+                content.appendChild(q);
             }
+            const r = document.createElement('div');
+            r.textContent = text;
+            content.appendChild(r);
+
+            const time = document.createElement('div');
+            time.className = 'message-time';
+            time.textContent = getTime();
+
+            div.appendChild(av);
+            div.appendChild(content);
+            div.appendChild(time);
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            saveHistory();
+            addDeleteEvents();
+        }
+
+        function addVoiceMessage(text, type) {
+            addMessage(text, type);
+        }
+
+        function addRedPacketFromAI(amount) {
+            const messagesDiv = document.getElementById('messages');
+            const div = document.createElement('div');
+            div.className = 'message ai';
+            const av = document.createElement('div');
+            av.className = 'message-avatar';
+            av.textContent = aiAvatar;
+            const content = document.createElement('div');
+            content.className = 'message-content red-packet';
+            content.innerHTML = `<div class="packet-title">🧧 恭喜发财</div><div class="packet-amount">¥${amount}</div>`;
+            content.onclick = function() {
+                if (!this.classList.contains('opened')) {
+                    this.classList.add('opened');
+                    this.innerHTML = `<div>🎉 已领取</div>`;
+                    saveHistory();
+                }
+            };
+            const time = document.createElement('div');
+            time.className = 'message-time';
+            time.textContent = getTime();
+            div.appendChild(av);
+            div.appendChild(content);
+            div.appendChild(time);
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            saveHistory();
+            addDeleteEvents();
+        }
+
+        function addTransferFromAI(amount) {
+            const messagesDiv = document.getElementById('messages');
+            const div = document.createElement('div');
+            div.className = 'message ai';
+            const av = document.createElement('div');
+            av.className = 'message-avatar';
+            av.textContent = aiAvatar;
+            const content = document.createElement('div');
+            content.className = 'message-content transfer-card';
+            content.innerHTML = `<div class="transfer-icon">⇋</div><div class="transfer-amount">¥${amount}</div><div class="transfer-status">待确认收款</div>`;
+            content.onclick = function() {
+                this.querySelector('.transfer-status').textContent = '✅ 已收款';
+                saveHistory();
+            };
+            const time = document.createElement('div');
+            time.className = 'message-time';
+            time.textContent = getTime();
+            div.appendChild(av);
+            div.appendChild(content);
+            div.appendChild(time);
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            saveHistory();
+            addDeleteEvents();
+        }
+
+        function sendRedPacket() {
+            const amount = prompt('红包金额（虚拟）：', '8.88');
+            if (!amount) return;
+            const div = document.createElement('div');
+            div.className = 'message user';
+            const av = document.createElement('div');
+            av.className = 'message-avatar';
+            av.textContent = userAvatar;
+            const content = document.createElement('div');
+            content.className = 'message-content red-packet';
+            content.innerHTML = `<div class="packet-title">🧧 恭喜发财</div><div class="packet-amount">¥${amount}</div>`;
+            const time = document.createElement('div');
+            time.className = 'message-time';
+            time.textContent = getTime();
+            div.appendChild(av);
+            div.appendChild(content);
+            div.appendChild(time);
+            document.getElementById('messages').appendChild(div);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+            saveHistory();
+            addDeleteEvents();
+            conversationHistory.push({ role: 'user', content: '我给你发了一个' + amount + '元的红包' });
+        }
+
+        function sendTransfer() {
+            const amount = prompt('转账金额（虚拟）：', '100.00');
+            if (!amount) return;
+            const div = document.createElement('div');
+            div.className = 'message user';
+            const av = document.createElement('div');
+            av.className = 'message-avatar';
+            av.textContent = userAvatar;
+            const content = document.createElement('div');
+            content.className = 'message-content transfer-card';
+            content.innerHTML = `<div class="transfer-icon">⇋</div><div class="transfer-amount">¥${amount}</div><div class="transfer-status">待确认收款</div>`;
+            const time = document.createElement('div');
+            time.className = 'message-time';
+            time.textContent = getTime();
+            div.appendChild(av);
+            div.appendChild(content);
+            div.appendChild(time);
+            document.getElementById('messages').appendChild(div);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+            saveHistory();
+            addDeleteEvents();
+            conversationHistory.push({ role: 'user', content: '我给你转账' + amount + '元' });
         }
 
         function sendSticker(emoji) {
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message user';
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.textContent = userAvatar;
+            const div = document.createElement('div');
+            div.className = 'message user';
+            const av = document.createElement('div');
+            av.className = 'message-avatar';
+            av.textContent = userAvatar;
             const content = document.createElement('div');
             content.className = 'message-content message-sticker';
             content.style.fontSize = '60px';
@@ -850,34 +815,11 @@
             const time = document.createElement('div');
             time.className = 'message-time';
             time.textContent = getTime();
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(content);
-            messageDiv.appendChild(time);
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            saveHistory();
-            addDeleteEvents();
-            document.getElementById('stickerPanel').classList.remove('show');
-        }
-
-        function sendImageSticker(imageData) {
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message user';
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.textContent = userAvatar;
-            const content = document.createElement('div');
-            content.className = 'message-content message-sticker';
-            content.innerHTML = `<img src="${imageData}" style="width:100px;height:100px;object-fit:contain;">`;
-            const time = document.createElement('div');
-            time.className = 'message-time';
-            time.textContent = getTime();
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(content);
-            messageDiv.appendChild(time);
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            div.appendChild(av);
+            div.appendChild(content);
+            div.appendChild(time);
+            document.getElementById('messages').appendChild(div);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
             saveHistory();
             addDeleteEvents();
             document.getElementById('stickerPanel').classList.remove('show');
@@ -889,7 +831,7 @@
                 const file = files[i];
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    addCustomSticker(e.target.result, file.name);
+                    addCustomSticker(e.target.result);
                     saveCustomStickers();
                 };
                 reader.readAsDataURL(file);
@@ -897,13 +839,35 @@
             event.target.value = '';
         }
 
-        function addCustomSticker(imageData, name) {
+        function addCustomSticker(imageData) {
             const container = document.getElementById('customStickers');
             const span = document.createElement('span');
             span.className = 'sticker-item';
-            span.innerHTML = `<img src="${imageData}" alt="${name}"><div class="delete-btn" onclick="deleteSticker(this)">×</div>`;
+            span.innerHTML = `<img src="${imageData}"><div class="delete-btn" onclick="deleteSticker(this)">×</div>`;
             span.onclick = function() { sendImageSticker(imageData); };
             container.appendChild(span);
+        }
+
+        function sendImageSticker(imageData) {
+            const div = document.createElement('div');
+            div.className = 'message user';
+            const av = document.createElement('div');
+            av.className = 'message-avatar';
+            av.textContent = userAvatar;
+            const content = document.createElement('div');
+            content.className = 'message-content message-sticker';
+            content.innerHTML = `<img src="${imageData}">`;
+            const time = document.createElement('div');
+            time.className = 'message-time';
+            time.textContent = getTime();
+            div.appendChild(av);
+            div.appendChild(content);
+            div.appendChild(time);
+            document.getElementById('messages').appendChild(div);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+            saveHistory();
+            addDeleteEvents();
+            document.getElementById('stickerPanel').classList.remove('show');
         }
 
         function deleteSticker(btn) {
@@ -912,98 +876,23 @@
         }
 
         function saveCustomStickers() {
-            const container = document.getElementById('customStickers');
-            const stickers = [];
-            container.querySelectorAll('.sticker-item img').forEach(img => stickers.push(img.src));
-            localStorage.setItem('customStickers', JSON.stringify(stickers));
+            const arr = [];
+            document.querySelectorAll('#customStickers img').forEach(img => arr.push(img.src));
+            localStorage.setItem('customStickers', JSON.stringify(arr));
         }
 
         function loadCustomStickers() {
             const saved = localStorage.getItem('customStickers');
-            if (saved) {
-                JSON.parse(saved).forEach(src => addCustomSticker(src, 'custom'));
-            }
-        }
-
-        function sendRedPacket() {
-            const amount = prompt('输入红包金额（虚拟）：', '8.88');
-            if (!amount) return;
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message user';
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.textContent = userAvatar;
-            const content = document.createElement('div');
-            content.className = 'message-content red-packet';
-            content.innerHTML = `<div class="packet-title">🧧 恭喜发财，大吉大利</div><div class="packet-amount">¥${amount}</div><div class="packet-note">点击领取（虚拟红包）</div>`;
-            content.onclick = function() {
-                if (!this.classList.contains('opened')) {
-                    this.classList.add('opened');
-                    this.innerHTML = `<div style="font-size:30px;">🎉</div><div style="font-size:14px;margin-top:5px;">已被领取</div>`;
-                    saveHistory();
-                }
-            };
-            const time = document.createElement('div');
-            time.className = 'message-time';
-            time.textContent = getTime();
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(content);
-            messageDiv.appendChild(time);
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            saveHistory();
-            addDeleteEvents();
-            conversationHistory.push({ role: 'user', content: '我给你发了一个' + amount + '元的红包' });
-        }
-
-        function sendTransfer() {
-            const amount = prompt('输入转账金额（虚拟）：', '100.00');
-            if (!amount) return;
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message user';
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.textContent = userAvatar;
-            const content = document.createElement('div');
-            content.className = 'message-content transfer-card';
-            content.innerHTML = `<div class="transfer-icon">⇋</div><div>转账给 ${aiName}</div><div class="transfer-amount">¥${amount}</div><div class="transfer-status">待确认收款（虚拟）</div>`;
-            content.onclick = function() {
-                this.querySelector('.transfer-status').textContent = '✅ 已收款';
-                this.style.background = '#e8f5e9';
-                saveHistory();
-            };
-            const time = document.createElement('div');
-            time.className = 'message-time';
-            time.textContent = getTime();
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(content);
-            messageDiv.appendChild(time);
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            saveHistory();
-            addDeleteEvents();
-            conversationHistory.push({ role: 'user', content: '我给你转账' + amount + '元' });
+            if (saved) JSON.parse(saved).forEach(src => addCustomSticker(src));
         }
 
         function changeAIName() {
-            const name = document.getElementById('aiNameInput').value.trim();
-            if (name) {
-                aiName = name;
-                document.getElementById('headerName').textContent = name;
-                localStorage.setItem('aiName', name);
-                document.getElementById('aiNameInput').value = '';
-            }
+            const v = document.getElementById('aiNameInput').value.trim();
+            if (v) { aiName = v; document.getElementById('headerName').textContent = v; localStorage.setItem('aiName', v); }
         }
-
         function changeUserName() {
-            const name = document.getElementById('userNameInput').value.trim();
-            if (name) {
-                userName = name;
-                localStorage.setItem('userName', name);
-                document.getElementById('userNameInput').value = '';
-            }
+            const v = document.getElementById('userNameInput').value.trim();
+            if (v) { userName = v; localStorage.setItem('userName', v); }
         }
 
         function applyCSS() {
@@ -1011,7 +900,6 @@
             document.getElementById('customStyle').textContent = css;
             localStorage.setItem('customCSS', css);
         }
-
         function clearCSS() {
             document.getElementById('cssEditor').value = '';
             document.getElementById('customStyle').textContent = '';
@@ -1023,7 +911,6 @@
             document.getElementById('headerAvatar').textContent = emoji;
             localStorage.setItem('aiAvatar', emoji);
         }
-
         function changeUserAvatar(emoji) {
             userAvatar = emoji;
             localStorage.setItem('userAvatar', emoji);
@@ -1031,49 +918,41 @@
 
         function uploadAvatar(event) {
             const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const size = 100;
-                        canvas.width = size;
-                        canvas.height = size;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, size, size);
-                        const compressed = canvas.toDataURL('image/jpeg', 0.7);
-                        aiAvatar = compressed;
-                        document.getElementById('headerAvatar').innerHTML = `<img src="${compressed}">`;
-                        localStorage.setItem('aiAvatar', compressed);
-                    };
-                    img.src = e.target.result;
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = canvas.height = 100;
+                    canvas.getContext('2d').drawImage(img, 0, 0, 100, 100);
+                    const compressed = canvas.toDataURL('image/jpeg', 0.7);
+                    aiAvatar = compressed;
+                    document.getElementById('headerAvatar').innerHTML = `<img src="${compressed}">`;
+                    localStorage.setItem('aiAvatar', compressed);
                 };
-                reader.readAsDataURL(file);
-            }
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
         function uploadUserAvatar(event) {
             const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const size = 100;
-                        canvas.width = size;
-                        canvas.height = size;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, size, size);
-                        const compressed = canvas.toDataURL('image/jpeg', 0.7);
-                        userAvatar = compressed;
-                        localStorage.setItem('userAvatar', compressed);
-                    };
-                    img.src = e.target.result;
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = canvas.height = 100;
+                    canvas.getContext('2d').drawImage(img, 0, 0, 100, 100);
+                    const compressed = canvas.toDataURL('image/jpeg', 0.7);
+                    userAvatar = compressed;
+                    localStorage.setItem('userAvatar', compressed);
                 };
-                reader.readAsDataURL(file);
-            }
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
         function changeBg(type) {
@@ -1111,8 +990,7 @@
                     }
                     canvas.width = width;
                     canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
+                    canvas.getContext('2d').drawImage(img, 0, 0, width, height);
                     const compressed = canvas.toDataURL('image/jpeg', 0.6);
                     document.body.style.background = 'url(' + compressed + ')';
                     document.body.style.backgroundSize = 'cover';
@@ -1126,18 +1004,27 @@
         }
 
         function resetAll() {
-            document.body.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-            aiAvatar = '🤖';
-            userAvatar = '👤';
-            aiName = 'AI 助手';
-            userName = '我';
-            document.getElementById('headerAvatar').textContent = '🤖';
-            document.getElementById('headerName').textContent = 'AI 助手';
-            document.getElementById('customStyle').textContent = '';
-            document.getElementById('cssEditor').value = '';
-            document.getElementById('customStickers').innerHTML = '';
-            document.body.classList.remove('night-mode');
             localStorage.clear();
+            location.reload();
+        }
+
+        function initPokeEvents() {
+            const headerAvatar = document.getElementById('headerAvatar');
+            if (headerAvatar) {
+                headerAvatar.addEventListener('dblclick', function() {
+                    addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
+                });
+            }
+        }
+
+        function addPokeMessage(text) {
+            const div = document.createElement('div');
+            div.className = 'poke-message';
+            div.textContent = text;
+            document.getElementById('messages').appendChild(div);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+            saveHistory();
+            conversationHistory.push({ role: 'user', content: '我拍了拍你' });
         }
 
         window.onload = function() {
@@ -1156,7 +1043,6 @@
                     document.body.style.background = 'url(' + savedBg + ')';
                     document.body.style.backgroundSize = 'cover';
                     document.body.style.backgroundPosition = 'center';
-                    document.body.style.backgroundImage = 'url(' + savedBg + ')';
                 } else {
                     changeBg(savedBg);
                 }
@@ -1188,77 +1074,12 @@
             initPokeEvents();
         };
 
-        function getTime() {
-            const now = new Date();
-            const h = now.getHours().toString().padStart(2, '0');
-            const m = now.getMinutes().toString().padStart(2, '0');
-            return h + ':' + m;
-        }
-
-        function initPokeEvents() {
-            const headerAvatar = document.getElementById('headerAvatar');
-            if (headerAvatar) {
-                headerAvatar.addEventListener('dblclick', function() {
-                    addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
-                });
-            }
-            setTimeout(() => {
-                document.querySelectorAll('#messages .message.ai .message-avatar').forEach(av => {
-                    av.addEventListener('dblclick', function() {
-                        addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
-                    });
-                });
-            }, 500);
-        }
-
-        function addPokeMessage(text) {
-            const messagesDiv = document.getElementById('messages');
-            const div = document.createElement('div');
-            div.className = 'poke-message';
-            div.textContent = text;
-            messagesDiv.appendChild(div);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            saveHistory();
-            conversationHistory.push({ role: 'user', content: '我拍了拍你' });
-        }
-function showTyping() {
-    const messagesDiv = document.getElementById('messages');
-    const typingDiv = document.createElement('div');
-    typingDiv.className = 'message ai';
-    typingDiv.id = 'typing-' + Date.now();
-
-    const avatarHtml = aiAvatar.startsWith('data:image')
-        ? `<img src="${aiAvatar}">`
-        : aiAvatar;
-
-    typingDiv.innerHTML = `
-        <div class="message-avatar">${avatarHtml}</div>
-        <div class="message-content">
-            <div class="typing-indicator">
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            </div>
-        </div>
-    `;
-
-    messagesDiv.appendChild(typingDiv);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    return typingDiv.id;
-}
-
-function hideTyping(id) {
-    const typingDiv = document.getElementById(id);
-    if (typingDiv) typingDiv.remove();
-}
-
         async function sendMessage() {
             const input = document.getElementById('userInput');
             const message = input.value.trim();
             if (!message) return;
 
             const quoteText = input.dataset.quote || '';
-
             const parts = message.split(/\n|(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s);
 
             for (let i = 0; i < parts.length; i++) {
@@ -1289,12 +1110,9 @@ function hideTyping(id) {
                     body: JSON.stringify({
                         model: 'kimi-k2.7-code',
                         messages: [
-    {
-        role: 'system',
-        content: '你想给对方转钱或发红包时，直接说“给你转账520”或“给你发红包13.14”，必须带金额。'
-    },
-    ...conversationHistory
-],
+                            { role: 'system', content: '你想给对方转钱或发红包时，直接说“给你转账520”或“给你发红包13.14”，必须带金额。' },
+                            ...conversationHistory
+                        ],
                         temperature: 1,
                         max_tokens: 2000
                     })
@@ -1310,29 +1128,25 @@ function hideTyping(id) {
                     }
                     saveHistory();
 
-                    const sentences = reply
-                        .split(/\n|(?<=[。！？!?；;])/)
-                        .map(s => s.trim())
-                        .filter(s => s.length > 0);
+                    const sentences = reply.split(/\n|(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s.length > 0);
 
                     for (let i = 0; i < sentences.length; i++) {
-    await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 600));
+                        await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 600));
+                        const text = sentences[i];
 
-    const text = sentences[i];
+                        const transferMatch = text.match(/转账.*?(\d+(?:\.\d+)?)/) || text.match(/(\d+(?:\.\d+)?).*?转账/);
+                        const packetMatch = text.match(/红包.*?(\d+(?:\.\d+)?)/) || text.match(/(\d+(?:\.\d+)?).*?红包/);
 
-    const transferMatch = text.match(/转账.*?(\d+(?:\.\d+)?)/) || text.match(/(\d+(?:\.\d+)?).*?转账/);
-    const packetMatch = text.match(/红包.*?(\d+(?:\.\d+)?)/) || text.match(/(\d+(?:\.\d+)?).*?红包/);
-
-    if (transferMatch && text.includes('转账')) {
-        addTransferFromAI(transferMatch[1]);
-    } else if (packetMatch && text.includes('红包')) {
-        addRedPacketFromAI(packetMatch[1]);
-    } else if (Math.random() < 0.5) {
-        addVoiceMessage(text, 'ai');
-    } else {
-        addMessage(text, 'ai');
-    }
-}
+                        if (transferMatch && text.includes('转账')) {
+                            addTransferFromAI(transferMatch[1]);
+                        } else if (packetMatch && text.includes('红包')) {
+                            addRedPacketFromAI(packetMatch[1]);
+                        } else if (Math.random() < 0.15) {
+                            addVoiceMessage(text, 'ai');
+                        } else {
+                            addMessage(text, 'ai');
+                        }
+                    }
                 } else {
                     addMessage('出错了：' + JSON.stringify(data), 'ai');
                 }
@@ -1342,220 +1156,29 @@ function hideTyping(id) {
             }
         }
 
-        function addMessage(text, type, quoteText) {
+        function showTyping() {
             const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message ' + type;
-
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            if (type === 'user') {
-                if (userAvatar.startsWith('data:image')) {
-                    avatar.innerHTML = `<img src="${userAvatar}">`;
-                } else {
-                    avatar.textContent = userAvatar;
-                }
-            } else {
-                if (aiAvatar.startsWith('data:image')) {
-                    avatar.innerHTML = `<img src="${aiAvatar}">`;
-                } else {
-                    avatar.textContent = aiAvatar;
-                }
-            }
-
-            const content = document.createElement('div');
-            content.className = 'message-content';
-
-            if (quoteText) {
-                const quoteDiv = document.createElement('div');
-                quoteDiv.className = 'quote-block';
-                quoteDiv.textContent = quoteText;
-                content.appendChild(quoteDiv);
-            }
-
-            const replyDiv = document.createElement('div');
-            replyDiv.textContent = text;
-            content.appendChild(replyDiv);
-
-            const time = document.createElement('div');
-            time.className = 'message-time';
-            time.textContent = getTime();
-
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(content);
-            messageDiv.appendChild(time);
-            messagesDiv.appendChild(messageDiv);
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message ai';
+            typingDiv.id = 'typing-' + Date.now();
+            const avatarHtml = aiAvatar.startsWith('data:image') ? `<img src="${aiAvatar}">` : aiAvatar;
+            typingDiv.innerHTML = `<div class="message-avatar">${avatarHtml}</div><div class="message-content"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;
+            messagesDiv.appendChild(typingDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            saveHistory();
-            addDeleteEvents();
+            return typingDiv.id;
         }
 
-       function addVoiceMessage(text, type) {
-    const messagesDiv = document.getElementById('messages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message ' + type;
-
-    const avatar = document.createElement('div');
-    avatar.className = 'message-avatar';
-    if (type === 'user') {
-        if (userAvatar.startsWith('data:image')) {
-            avatar.innerHTML = `<img src="${userAvatar}">`;
-        } else {
-            avatar.textContent = userAvatar;
-        }
-    } else {
-        if (aiAvatar.startsWith('data:image')) {
-            avatar.innerHTML = `<img src="${aiAvatar}">`;
-        } else {
-            avatar.textContent = aiAvatar;
-        }
-    }
-
-    const content = document.createElement('div');
-    content.className = 'message-content';
-
-    const voice = document.createElement('div');
-    voice.className = 'voice-bubble';
-   voice.innerHTML = `<span class="voice-duration">${Math.max(1, Math.round(text.length / 4))}″</span><div class="voice-text">${text}</div>`;
-    voice.onclick = function() {
-        voice.classList.toggle('open');
-    };
-
-    content.appendChild(voice);
-
-    const time = document.createElement('div');
-    time.className = 'message-time';
-    time.textContent = getTime();
-
-    messageDiv.appendChild(avatar);
-    messageDiv.appendChild(content);
-    messageDiv.appendChild(time);
-    messagesDiv.appendChild(messageDiv);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    saveHistory();
-    addDeleteEvents();
-}
-function addRedPacketFromAI(amount) {
-    const messagesDiv = document.getElementById('messages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message ai';
-
-    const avatar = document.createElement('div');
-    avatar.className = 'message-avatar';
-    if (aiAvatar.startsWith('data:image')) {
-        avatar.innerHTML = `<img src="${aiAvatar}">`;
-    } else {
-        avatar.textContent = aiAvatar;
-    }
-
-    const content = document.createElement('div');
-    content.className = 'message-content red-packet';
-    content.innerHTML = `
-        <div class="packet-title">🧧 恭喜发财，大吉大利</div>
-        <div class="packet-amount">¥${amount}</div>
-        <div class="packet-note">点击领取（虚拟红包）</div>
-    `;
-    content.onclick = function() {
-        if (!this.classList.contains('opened')) {
-            this.classList.add('opened');
-            this.innerHTML = `<div style="font-size:30px;">🎉</div><div style="font-size:14px;margin-top:5px;">已被领取</div>`;
-            saveHistory();
-        }
-    };
-
-    const time = document.createElement('div');
-    time.className = 'message-time';
-    time.textContent = getTime();
-
-    messageDiv.appendChild(avatar);
-    messageDiv.appendChild(content);
-    messageDiv.appendChild(time);
-    messagesDiv.appendChild(messageDiv);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    saveHistory();
-    addDeleteEvents();
-}
-
-function addTransferFromAI(amount) {
-    const messagesDiv = document.getElementById('messages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message ai';
-
-    const avatar = document.createElement('div');
-    avatar.className = 'message-avatar';
-    if (aiAvatar.startsWith('data:image')) {
-        avatar.innerHTML = `<img src="${aiAvatar}">`;
-    } else {
-        avatar.textContent = aiAvatar;
-    }
-
-    const content = document.createElement('div');
-    content.className = 'message-content transfer-card';
-    content.innerHTML = `
-        <div class="transfer-icon">⇋</div>
-        <div>转账给 ${userName}</div>
-        <div class="transfer-amount">¥${amount}</div>
-        <div class="transfer-status">待确认收款（虚拟）</div>
-    `;
-    content.onclick = function() {
-        this.querySelector('.transfer-status').textContent = '✅ 已收款';
-        this.style.background = '#e8f5e9';
-        saveHistory();
-    };
-
-    const time = document.createElement('div');
-    time.className = 'message-time';
-    time.textContent = getTime();
-
-    messageDiv.appendChild(avatar);
-    messageDiv.appendChild(content);
-    messageDiv.appendChild(time);
-    messagesDiv.appendChild(messageDiv);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    saveHistory();
-    addDeleteEvents();
-}
-function showTyping() {
-    const messagesDiv = document.getElementById('messages');
-    const typingDiv = document.createElement('div');
-    typingDiv.className = 'message ai';
-    typingDiv.id = 'typing-' + Date.now();
-
-    const avatarHtml = aiAvatar.startsWith('data:image')
-        ? `<img src="${aiAvatar}">`
-        : aiAvatar;
-
-    typingDiv.innerHTML = `
-        <div class="message-avatar">${avatarHtml}</div>
-        <div class="message-content">
-            <div class="typing-indicator">
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            </div>
-        </div>
-    `;
-
-    messagesDiv.appendChild(typingDiv);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    return typingDiv.id;
-}
-
-function hideTyping(id) {
-    const typingDiv = document.getElementById(id);
-    if (typingDiv) typingDiv.remove();
-}
         function hideTyping(id) {
             const typingDiv = document.getElementById(id);
             if (typingDiv) typingDiv.remove();
         }
 
         function handleKeyPress(event) {
-    if (event.key === 'Enter' && !event.shiftKey) {
-        // 不发送，允许换行
-        return;
-    }
-}
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
     </script>
 </body>
 </html>
