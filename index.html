@@ -1261,13 +1261,25 @@ if (type === 'user') {
             const message = input.value.trim();
             if (!message) return;
 
-            const parts = message.split(/(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s);
+           const parts = message.split(/(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s);
+const quoteText = input.dataset.quote || '';
 
-            for (let i = 0; i < parts.length; i++) {
-                addMessage(parts[i], 'user');
-                conversationHistory.push({ role: 'user', content: parts[i] });
-                await new Promise(resolve => setTimeout(resolve, 400));
-            }
+for (let i = 0; i < parts.length; i++) {
+    let sendText = parts[i];
+
+    if (i === 0 && quoteText) {
+        conversationHistory.push({ role: 'user', content: '我回复你：“' + quoteText + '”，然后说：' + parts[i] });
+        addMessage(parts[i], 'user', quoteText);
+    } else {
+        conversationHistory.push({ role: 'user', content: sendText });
+        addMessage(sendText, 'user');
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 400));
+}
+
+delete input.dataset.quote;
+input.placeholder = '输入消息...';
 
             saveHistory();
             input.value = '';
@@ -1323,43 +1335,53 @@ delete input.dataset.quote;
             }
         }
 
-        function addMessage(text, type) {
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message ' + type;
+        function addMessage(text, type, quoteText) {
+    const messagesDiv = document.getElementById('messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message ' + type;
 
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            if (type === 'user') {
-                if (userAvatar.startsWith('data:image')) {
-                    avatar.innerHTML = `<img src="${userAvatar}">`;
-                } else {
-                    avatar.textContent = userAvatar;
-                }
-            } else {
-                if (aiAvatar.startsWith('data:image')) {
-                    avatar.innerHTML = `<img src="${aiAvatar}">`;
-                } else {
-                    avatar.textContent = aiAvatar;
-                }
-            }
-
-            const content = document.createElement('div');
-            content.className = 'message-content';
-            content.textContent = text;
-
-            const time = document.createElement('div');
-            time.className = 'message-time';
-            time.textContent = getTime();
-
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(content);
-            messageDiv.appendChild(time);
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            saveHistory();
-            addDeleteEvents();
+    const avatar = document.createElement('div');
+    avatar.className = 'message-avatar';
+    if (type === 'user') {
+        if (userAvatar.startsWith('data:image')) {
+            avatar.innerHTML = `<img src="${userAvatar}">`;
+        } else {
+            avatar.textContent = userAvatar;
         }
+    } else {
+        if (aiAvatar.startsWith('data:image')) {
+            avatar.innerHTML = `<img src="${aiAvatar}">`;
+        } else {
+            avatar.textContent = aiAvatar;
+        }
+    }
+
+    const content = document.createElement('div');
+    content.className = 'message-content';
+
+    if (quoteText) {
+        const quoteDiv = document.createElement('div');
+        quoteDiv.className = 'quote-block';
+        quoteDiv.textContent = quoteText;
+        content.appendChild(quoteDiv);
+    }
+
+    const replyDiv = document.createElement('div');
+    replyDiv.textContent = text;
+    content.appendChild(replyDiv);
+
+    const time = document.createElement('div');
+    time.className = 'message-time';
+    time.textContent = getTime();
+
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(content);
+    messageDiv.appendChild(time);
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    saveHistory();
+    addDeleteEvents();
+}
 
         function showTyping() {
             const messagesDiv = document.getElementById('messages');
