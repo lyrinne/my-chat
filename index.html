@@ -529,6 +529,12 @@
     <input class="name-input" id="apiKeyInput" placeholder="填写你的Kimi API Key">
     <button class="name-btn" onclick="saveApiKey()">保存API Key</button>
 </div>
+<div class="settings-section">
+    <h4>🔧 自定义API</h4>
+    <input class="name-input" id="apiUrlInput" placeholder="API地址，如 https://api.moonshot.cn/v1/chat/completions">
+    <input class="name-input" id="apiModelInput" placeholder="模型名，如 kimi-k2.7-code">
+    <button class="name-btn" onclick="saveApiConfig()">保存API配置</button>
+</div>
             <div class="settings-section">
                 <h4>✏️ 修改名字</h4>
                 <input class="name-input" id="aiNameInput" placeholder="AI的名字">
@@ -654,6 +660,8 @@
 
     <script>
         let API_KEY = localStorage.getItem('userApiKey') || '';
+let API_URL = localStorage.getItem('apiUrl') || 'https://api.moonshot.cn/v1/chat/completions';
+let API_MODEL = localStorage.getItem('apiModel') || 'kimi-k2.7-code';
         let conversationHistory = [];
         let aiAvatar = '🤖';
         let userAvatar = '👤';
@@ -671,6 +679,21 @@ function saveApiKey() {
         alert('API Key已保存');
         document.getElementById('apiKeyInput').value = '';
     }
+}
+function saveApiConfig() {
+    const url = document.getElementById('apiUrlInput').value.trim();
+    const model = document.getElementById('apiModelInput').value.trim();
+    if (url) {
+        API_URL = url;
+        localStorage.setItem('apiUrl', url);
+    }
+    if (model) {
+        API_MODEL = model;
+        localStorage.setItem('apiModel', model);
+    }
+    alert('API配置已保存');
+    document.getElementById('apiUrlInput').value = '';
+    document.getElementById('apiModelInput').value = '';
 }
         function toggleStickerPanel() { document.getElementById('stickerPanel').classList.toggle('show'); }
         function toggleNightMode() {
@@ -1199,6 +1222,8 @@ function saveApiKey() {
 if (API_KEY) {
     document.getElementById('apiKeyInput').value = API_KEY;
 }
+if (API_URL) document.getElementById('apiUrlInput').value = API_URL;
+if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
         };
 
         async function sendMessage() {
@@ -1233,14 +1258,14 @@ if (API_KEY) {
             const typingId = showTyping();
 
             try {
-                const response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${API_KEY}`
                     },
                     body: JSON.stringify({
-                        model: 'kimi-k2.7-code',
+                        model: API_MODEL,
                         messages: [
                             { role: 'system', content: '你想给对方转钱或发红包时，直接说“给你转账520”或“给你发红包13.14”，必须带金额。' },
                             ...conversationHistory
