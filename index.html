@@ -16,7 +16,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background 0.5s ease;
         }
 
         .container {
@@ -203,6 +202,7 @@
             animation: fadeIn 0.3s ease;
             align-items: flex-end;
             min-width: 0;
+            position: relative;
         }
 
         @keyframes fadeIn {
@@ -415,72 +415,39 @@
             animation: fadeIn 0.3s ease;
         }
 
-     .voice-bubble {
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    background: transparent !important;
-    border: none !important;
-    padding: 2px 0 !important;
-    cursor: pointer !important;
-    min-width: 70px !important;
-}
-
-.voice-bubble .voice-icon {
-    display: none !important;
-}
-
-.voice-bubble .voice-duration {
-    font-size: 12px !important;
-    color: #888 !important;
-}
-
-.voice-bubble .voice-text {
-    display: none !important;
-    font-size: 13px !important;
-    color: inherit !important;
-    margin-top: 2px !important;
-    line-height: 1.4 !important;
-}
-
-.voice-bubble.open .voice-text {
-    display: block !important;
-}
-
-        body.night-mode {
-            background: #0a0a0f !important;
+        .msg-menu {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            z-index: 50;
+            display: flex;
+            overflow: hidden;
         }
 
-        body.night-mode .container {
-            background: rgba(20, 20, 28, 0.95) !important;
+        .msg-menu-item {
+            padding: 8px 14px;
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+            white-space: nowrap;
         }
 
-        body.night-mode .header {
-            background: #111118 !important;
-        }
+        .msg-menu-item:active { background: #f0f0f0; }
+        .msg-menu-del { color: #e53935; }
 
-        body.night-mode .input-area,
-        body.night-mode .toolbar,
-        body.night-mode .sticker-panel {
-            background: #16161e !important;
-            border-color: #222 !important;
-        }
-
-        body.night-mode .input-area input {
-            background: #1e1e26 !important;
-            color: #eee !important;
-            border-color: #333 !important;
-        }
-
-        body.night-mode .message.ai .message-content {
-            background: #1e1e26 !important;
-            color: #eee !important;
-            border-color: #333 !important;
-        }
-
-        body.night-mode .message.user .message-content {
-            background: #2a2a38 !important;
-            color: #fff !important;
+        .quote-block {
+            background: rgba(0, 0, 0, 0.06);
+            border-left: 3px solid rgba(0, 0, 0, 0.2);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-bottom: 6px;
+            opacity: 0.85;
+            word-break: break-all;
+            white-space: pre-wrap;
         }
 
         @media (max-width: 600px) {
@@ -581,7 +548,7 @@
         <div class="messages" id="messages">
             <div class="message ai">
                 <div class="message-avatar">🤖</div>
-                <div class="message-content">你好！点⚙️设置，双击头像拍一拍</div>
+                <div class="message-content">你好！点⚙️设置，双击头像拍一拍，长按消息有菜单</div>
                 <div class="message-time">00:00</div>
             </div>
         </div>
@@ -711,123 +678,80 @@
             addDeleteEvents();
         }
 
-     function addDeleteEvents() {
-    document.querySelectorAll('#messages .message').forEach(msg => {
-        if (msg.dataset.hasEvent) return;
-        msg.dataset.hasEvent = '1';
+        function addDeleteEvents() {
+            document.querySelectorAll('#messages .message').forEach(msg => {
+                if (msg.dataset.hasEvent) return;
+                msg.dataset.hasEvent = '1';
 
-        msg.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            showMessageMenu(msg);
-        });
+                msg.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    showMessageMenu(msg);
+                });
 
-        let longPressTimer = null;
-        msg.addEventListener('touchstart', function(e) {
-            longPressTimer = setTimeout(function() {
-                showMessageMenu(msg);
-            }, 500);
-        });
-        msg.addEventListener('touchend', function() {
-            clearTimeout(longPressTimer);
-        });
-        msg.addEventListener('touchmove', function() {
-            clearTimeout(longPressTimer);
-        });
-    });
-}
-
-function showMessageMenu(msg) {
-    document.querySelectorAll('.msg-menu').forEach(m => m.remove());
-
-    const text = msg.querySelector('.message-content') ? msg.querySelector('.message-content').textContent : '';
-
-    const menu = document.createElement('div');
-    menu.className = 'msg-menu';
-    menu.innerHTML = `
-        <div class="msg-menu-item" onclick="copyMessage(this)">复制</div>
-        <div class="msg-menu-item" onclick="quoteMessage(this)">引用</div>
-        <div class="msg-menu-item msg-menu-del" onclick="deleteMessage(this)">删除</div>
-    `;
-
-    msg.appendChild(menu);
-}
-
-function copyMessage(el) {
-    const msg = el.closest('.message');
-    const text = msg.querySelector('.message-content').textContent;
-    navigator.clipboard.writeText(text).then(() => {
-        alert('已复制');
-    });
-    el.closest('.msg-menu').remove();
-}
-
-function quoteMessage(el) {
-    const msg = el.closest('.message');
-    const text = msg.querySelector('.message-content').textContent;
-    const input = document.getElementById('userInput');
-    input.value = '「' + text + '」';
-    input.focus();
-    el.closest('.msg-menu').remove();
-}
-
-function deleteMessage(el) {
-    const msg = el.closest('.message');
-    if (confirm('删除这条消息？')) {
-        msg.remove();
-        saveHistory();
-    }
-}
-
-function showMessageMenu(msg) {
-    const text = msg.querySelector('.message-content') ? msg.querySelector('.message-content').textContent : '';
-
-    const menu = document.createElement('div');
-    menu.className = 'msg-menu';
-    menu.innerHTML = `
-        <div class="msg-menu-item" onclick="copyMessage(this)">复制</div>
-        <div class="msg-menu-item" onclick="quoteMessage(this)">引用</div>
-        <div class="msg-menu-item msg-menu-del" onclick="deleteMessage(this)">删除</div>
-    `;
-
-    document.querySelectorAll('.msg-menu').forEach(m => m.remove());
-
-    msg.appendChild(menu);
-    msg.style.position = 'relative';
-
-    document.addEventListener('click', function closeMenu(e) {
-        if (!menu.contains(e.target)) {
-            menu.remove();
-            document.removeEventListener('click', closeMenu);
+                let longPressTimer = null;
+                msg.addEventListener('touchstart', function(e) {
+                    longPressTimer = setTimeout(function() {
+                        showMessageMenu(msg);
+                    }, 500);
+                });
+                msg.addEventListener('touchend', function() {
+                    clearTimeout(longPressTimer);
+                });
+                msg.addEventListener('touchmove', function() {
+                    clearTimeout(longPressTimer);
+                });
+            });
         }
-    }, { once: true });
-}
 
-function copyMessage(el) {
-    const msg = el.closest('.message');
-    const text = msg.querySelector('.message-content').textContent;
-    navigator.clipboard.writeText(text).then(() => {
-        alert('已复制');
-    });
-    el.closest('.msg-menu').remove();
-}
+        function showMessageMenu(msg) {
+            document.querySelectorAll('.msg-menu').forEach(m => m.remove());
 
-function quoteMessage(el) {
-    const msg = el.closest('.message');
-    const text = msg.querySelector('.message-content').textContent;
-    const input = document.getElementById('userInput');
-    input.dataset.quote = text;
-    input.value = '';
-    input.placeholder = '回复：' + text;
-    input.focus();
-    el.closest('.msg-menu').remove();
-}
-function deleteMessage(el) {
-    const msg = el.closest('.message');
-    if (confirm('删除这条消息？')) {
-        msg.remove();
-        saveHistory();
-    }
-}
+            const menu = document.createElement('div');
+            menu.className = 'msg-menu';
+            menu.innerHTML = `
+                <div class="msg-menu-item" onclick="copyMessage(this)">复制</div>
+                <div class="msg-menu-item" onclick="quoteMessage(this)">引用</div>
+                <div class="msg-menu-item msg-menu-del" onclick="deleteMessage(this)">删除</div>
+            `;
+
+            msg.appendChild(menu);
+        }
+
+        function copyMessage(el) {
+            const msg = el.closest('.message');
+            const text = msg.querySelector('.message-content').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('已复制');
+            });
+            el.closest('.msg-menu').remove();
+        }
+
+        function quoteMessage(el) {
+            const input = document.getElementById('userInput');
+
+            if (input.dataset.quote) {
+                delete input.dataset.quote;
+                input.placeholder = '输入消息...';
+            } else {
+                const msg = el.closest('.message');
+                const text = msg.querySelector('.message-content').textContent;
+                input.dataset.quote = text;
+                input.value = '';
+                input.placeholder = '回复：' + text;
+                input.focus();
+            }
+
+            const menu = el.closest('.msg-menu');
+            if (menu) menu.remove();
+        }
+
+        function deleteMessage(el) {
+            const msg = el.closest('.message');
+            if (confirm('删除这条消息？')) {
+                msg.remove();
+                saveHistory();
+            }
+        }
 
         function sendSticker(emoji) {
             const messagesDiv = document.getElementById('messages');
@@ -947,7 +871,7 @@ function deleteMessage(el) {
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             saveHistory();
             addDeleteEvents();
-conversationHistory.push({ role: 'user', content: '我给你发了一个' + amount + '元的红包' });
+            conversationHistory.push({ role: 'user', content: '我给你发了一个' + amount + '元的红包' });
         }
 
         function sendTransfer() {
@@ -977,7 +901,7 @@ conversationHistory.push({ role: 'user', content: '我给你发了一个' + amou
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             saveHistory();
             addDeleteEvents();
-conversationHistory.push({ role: 'user', content: '我给你转账' + amount + '元' });
+            conversationHistory.push({ role: 'user', content: '我给你转账' + amount + '元' });
         }
 
         function changeAIName() {
@@ -1196,8 +1120,7 @@ conversationHistory.push({ role: 'user', content: '我给你转账' + amount + '
                 });
             }
             setTimeout(() => {
-                const messagesDiv = document.getElementById('messages');
-                messagesDiv.querySelectorAll('.message.ai .message-avatar').forEach(av => {
+                document.querySelectorAll('#messages .message.ai .message-avatar').forEach(av => {
                     av.addEventListener('dblclick', function() {
                         addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
                     });
@@ -1213,47 +1136,7 @@ conversationHistory.push({ role: 'user', content: '我给你转账' + amount + '
             messagesDiv.appendChild(div);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             saveHistory();
-conversationHistory.push({ role: 'user', content: '我拍了拍你' });
-        }
-
-        function addVoiceMessage(text, type) {
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message ' + type;
-           const avatar = document.createElement('div');
-avatar.className = 'message-avatar';
-if (type === 'user') {
-    if (userAvatar.startsWith('data:image')) {
-        avatar.innerHTML = `<img src="${userAvatar}">`;
-    } else {
-        avatar.textContent = userAvatar;
-    }
-} else {
-    if (aiAvatar.startsWith('data:image')) {
-        avatar.innerHTML = `<img src="${aiAvatar}">`;
-    } else {
-        avatar.textContent = aiAvatar;
-    }
-}
-            const content = document.createElement('div');
-            content.className = 'message-content';
-            const voice = document.createElement('div');
-            voice.className = 'voice-bubble';
-            voice.innerHTML = `<span class="voice-icon">🎤</span><span class="voice-duration">${Math.max(1, Math.round(text.length / 4))}″</span><div class="voice-text">${text}</div>`;
-            voice.onclick = function() {
-                voice.classList.toggle('open');
-            };
-            content.appendChild(voice);
-            const time = document.createElement('div');
-            time.className = 'message-time';
-            time.textContent = getTime();
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(content);
-            messageDiv.appendChild(time);
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            saveHistory();
-            addDeleteEvents();
+            conversationHistory.push({ role: 'user', content: '我拍了拍你' });
         }
 
         async function sendMessage() {
@@ -1261,30 +1144,25 @@ if (type === 'user') {
             const message = input.value.trim();
             if (!message) return;
 
-           const parts = message.split(/(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s);
-const quoteText = input.dataset.quote || '';
+            const quoteText = input.dataset.quote || '';
 
-for (let i = 0; i < parts.length; i++) {
-    let sendText = parts[i];
+            const parts = message.split(/(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s);
 
-    if (i === 0 && quoteText) {
-        conversationHistory.push({ role: 'user', content: '我回复你：“' + quoteText + '”，然后说：' + parts[i] });
-        addMessage(parts[i], 'user', quoteText);
-    } else {
-        conversationHistory.push({ role: 'user', content: sendText });
-        addMessage(sendText, 'user');
-    }
+            for (let i = 0; i < parts.length; i++) {
+                if (i === 0 && quoteText) {
+                    addMessage(parts[i], 'user', quoteText);
+                    conversationHistory.push({ role: 'user', content: '我回复你：“' + quoteText + '”，然后说：' + parts[i] });
+                } else {
+                    addMessage(parts[i], 'user');
+                    conversationHistory.push({ role: 'user', content: parts[i] });
+                }
+                await new Promise(resolve => setTimeout(resolve, 400));
+            }
 
-    await new Promise(resolve => setTimeout(resolve, 400));
-}
-
-delete input.dataset.quote;
-input.placeholder = '输入消息...';
-
-            saveHistory();
+            delete input.dataset.quote;
+            input.placeholder = '输入消息...';
             input.value = '';
-input.placeholder = '输入消息...';
-delete input.dataset.quote;
+            saveHistory();
 
             const typingId = showTyping();
 
@@ -1320,7 +1198,7 @@ delete input.dataset.quote;
 
                     for (let i = 0; i < sentences.length; i++) {
                         await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 600));
-                        if (Math.random() < 0.15) {
+                        if (Math.random() < 0) {
                             addVoiceMessage(sentences[i], 'ai');
                         } else {
                             addMessage(sentences[i], 'ai');
@@ -1336,52 +1214,56 @@ delete input.dataset.quote;
         }
 
         function addMessage(text, type, quoteText) {
-    const messagesDiv = document.getElementById('messages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message ' + type;
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + type;
 
-    const avatar = document.createElement('div');
-    avatar.className = 'message-avatar';
-    if (type === 'user') {
-        if (userAvatar.startsWith('data:image')) {
-            avatar.innerHTML = `<img src="${userAvatar}">`;
-        } else {
-            avatar.textContent = userAvatar;
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            if (type === 'user') {
+                if (userAvatar.startsWith('data:image')) {
+                    avatar.innerHTML = `<img src="${userAvatar}">`;
+                } else {
+                    avatar.textContent = userAvatar;
+                }
+            } else {
+                if (aiAvatar.startsWith('data:image')) {
+                    avatar.innerHTML = `<img src="${aiAvatar}">`;
+                } else {
+                    avatar.textContent = aiAvatar;
+                }
+            }
+
+            const content = document.createElement('div');
+            content.className = 'message-content';
+
+            if (quoteText) {
+                const quoteDiv = document.createElement('div');
+                quoteDiv.className = 'quote-block';
+                quoteDiv.textContent = quoteText;
+                content.appendChild(quoteDiv);
+            }
+
+            const replyDiv = document.createElement('div');
+            replyDiv.textContent = text;
+            content.appendChild(replyDiv);
+
+            const time = document.createElement('div');
+            time.className = 'message-time';
+            time.textContent = getTime();
+
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            messageDiv.appendChild(time);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            saveHistory();
+            addDeleteEvents();
         }
-    } else {
-        if (aiAvatar.startsWith('data:image')) {
-            avatar.innerHTML = `<img src="${aiAvatar}">`;
-        } else {
-            avatar.textContent = aiAvatar;
+
+        function addVoiceMessage(text, type) {
+            addMessage(text, type);
         }
-    }
-
-    const content = document.createElement('div');
-    content.className = 'message-content';
-
-    if (quoteText) {
-        const quoteDiv = document.createElement('div');
-        quoteDiv.className = 'quote-block';
-        quoteDiv.textContent = quoteText;
-        content.appendChild(quoteDiv);
-    }
-
-    const replyDiv = document.createElement('div');
-    replyDiv.textContent = text;
-    content.appendChild(replyDiv);
-
-    const time = document.createElement('div');
-    time.className = 'message-time';
-    time.textContent = getTime();
-
-    messageDiv.appendChild(avatar);
-    messageDiv.appendChild(content);
-    messageDiv.appendChild(time);
-    messagesDiv.appendChild(messageDiv);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    saveHistory();
-    addDeleteEvents();
-}
 
         function showTyping() {
             const messagesDiv = document.getElementById('messages');
