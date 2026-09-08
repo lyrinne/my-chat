@@ -1225,7 +1225,7 @@
 
                     for (let i = 0; i < sentences.length; i++) {
                         await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 600));
-                        if (true) {
+                        if (Math.random() < 0.5) {
                             addVoiceMessage(sentences[i], 'ai');
                         } else {
                             addMessage(sentences[i], 'ai');
