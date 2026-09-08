@@ -1266,7 +1266,13 @@ function hideTyping(id) {
                     },
                     body: JSON.stringify({
                         model: 'kimi-k2.7-code',
-                        messages: conversationHistory,
+                        messages: [
+    {
+        role: 'system',
+        content: '你想给对方转钱或发红包时，直接说“给你转账520”或“给你发红包13.14”，必须带金额。'
+    },
+    ...conversationHistory
+],
                         temperature: 1,
                         max_tokens: 2000
                     })
@@ -1288,13 +1294,23 @@ function hideTyping(id) {
                         .filter(s => s.length > 0);
 
                     for (let i = 0; i < sentences.length; i++) {
-                        await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 600));
-                        if (Math.random() < 0.1) {
-                            addVoiceMessage(sentences[i], 'ai');
-                        } else {
-                            addMessage(sentences[i], 'ai');
-                        }
-                    }
+    await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 600));
+
+    const text = sentences[i];
+
+    const transferMatch = text.match(/转账.*?(\d+(?:\.\d+)?)/) || text.match(/(\d+(?:\.\d+)?).*?转账/);
+    const packetMatch = text.match(/红包.*?(\d+(?:\.\d+)?)/) || text.match(/(\d+(?:\.\d+)?).*?红包/);
+
+    if (transferMatch && text.includes('转账')) {
+        addTransferFromAI(transferMatch[1]);
+    } else if (packetMatch && text.includes('红包')) {
+        addRedPacketFromAI(packetMatch[1]);
+    } else if (Math.random() < 0.5) {
+        addVoiceMessage(text, 'ai');
+    } else {
+        addMessage(text, 'ai');
+    }
+}
                 } else {
                     addMessage('出错了：' + JSON.stringify(data), 'ai');
                 }
@@ -1384,6 +1400,86 @@ function hideTyping(id) {
     };
 
     content.appendChild(voice);
+
+    const time = document.createElement('div');
+    time.className = 'message-time';
+    time.textContent = getTime();
+
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(content);
+    messageDiv.appendChild(time);
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    saveHistory();
+    addDeleteEvents();
+}
+function addRedPacketFromAI(amount) {
+    const messagesDiv = document.getElementById('messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message ai';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'message-avatar';
+    if (aiAvatar.startsWith('data:image')) {
+        avatar.innerHTML = `<img src="${aiAvatar}">`;
+    } else {
+        avatar.textContent = aiAvatar;
+    }
+
+    const content = document.createElement('div');
+    content.className = 'message-content red-packet';
+    content.innerHTML = `
+        <div class="packet-title">🧧 恭喜发财，大吉大利</div>
+        <div class="packet-amount">¥${amount}</div>
+        <div class="packet-note">点击领取（虚拟红包）</div>
+    `;
+    content.onclick = function() {
+        if (!this.classList.contains('opened')) {
+            this.classList.add('opened');
+            this.innerHTML = `<div style="font-size:30px;">🎉</div><div style="font-size:14px;margin-top:5px;">已被领取</div>`;
+            saveHistory();
+        }
+    };
+
+    const time = document.createElement('div');
+    time.className = 'message-time';
+    time.textContent = getTime();
+
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(content);
+    messageDiv.appendChild(time);
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    saveHistory();
+    addDeleteEvents();
+}
+
+function addTransferFromAI(amount) {
+    const messagesDiv = document.getElementById('messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message ai';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'message-avatar';
+    if (aiAvatar.startsWith('data:image')) {
+        avatar.innerHTML = `<img src="${aiAvatar}">`;
+    } else {
+        avatar.textContent = aiAvatar;
+    }
+
+    const content = document.createElement('div');
+    content.className = 'message-content transfer-card';
+    content.innerHTML = `
+        <div class="transfer-icon">💸</div>
+        <div>转账给 ${userName}</div>
+        <div class="transfer-amount">¥${amount}</div>
+        <div class="transfer-status">待确认收款（虚拟）</div>
+    `;
+    content.onclick = function() {
+        this.querySelector('.transfer-status').textContent = '✅ 已收款';
+        this.style.background = '#e8f5e9';
+        saveHistory();
+    };
 
     const time = document.createElement('div');
     time.className = 'message-time';
