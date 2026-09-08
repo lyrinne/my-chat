@@ -1146,7 +1146,7 @@
 
             const quoteText = input.dataset.quote || '';
 
-            const parts = message.split(/(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s);
+            const parts = message.split(/\n|(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s);
 
             for (let i = 0; i < parts.length; i++) {
                 if (i === 0 && quoteText) {
