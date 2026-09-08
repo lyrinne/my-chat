@@ -423,6 +423,91 @@
             .container { width: 100%; height: 100vh; border-radius: 0; }
             .message { max-width: 90%; }
         }
+.call-float {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.85);
+    color: white;
+    border-radius: 14px;
+    padding: 12px 16px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.call-float .call-float-text {
+    flex: 1;
+}
+
+.call-float .call-float-end {
+    background: #e53935;
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.call-invite {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.call-invite-box {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    width: 260px;
+}
+
+.call-invite-box .call-invite-name {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.call-invite-box .call-invite-btns {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.call-invite-box .call-invite-accept {
+    background: #4caf50;
+    color: white;
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.call-invite-box .call-invite-reject {
+    background: #e53935;
+    color: white;
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+}
     </style>
     <style id="customStyle"></style>
 </head>
@@ -557,6 +642,8 @@
             <button class="toolbar-btn" onclick="toggleStickerPanel()">〇</button>
             <button class="toolbar-btn" onclick="sendRedPacket()">￥</button>
             <button class="toolbar-btn" onclick="sendTransfer()">⇋</button>
+<button class="toolbar-btn" onclick="startCall('voice')">✆</button>
+<button class="toolbar-btn" onclick="startCall('video')">⊕</button>
         </div>
 
         <div class="input-area">
@@ -1192,6 +1279,12 @@ if (API_KEY) {
                             addMessage(text, 'ai');
                         }
                     }
+const angryWords = ['滚', '分手', '出轨', '绿了', '草泥马', '死全家', '傻逼', '我不活'];
+const isAngry = angryWords.some(w => reply.includes(w));
+const chance = isAngry ? 0.4 : 0.04;
+if (Math.random() < chance) {
+    incomingCall();
+}
                 } else {
                     addMessage('出错了：' + JSON.stringify(data), 'ai');
                 }
@@ -1217,7 +1310,99 @@ if (API_KEY) {
             const typingDiv = document.getElementById(id);
             if (typingDiv) typingDiv.remove();
         }
+let callTimer = null;
+let callSeconds = 0;
+let callActive = false;
 
+function startCall(type) {
+    if (callActive) return;
+
+    const invite = document.createElement('div');
+    invite.className = 'call-invite';
+    invite.id = 'callInvite';
+    invite.innerHTML = `
+        <div class="call-invite-box">
+            <div class="call-invite-name">正在呼叫${aiName}...</div>
+            <div class="call-invite-btns">
+                <button class="call-invite-reject" onclick="cancelCall()">挂断</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(invite);
+
+    const delay = 3 + Math.floor(Math.random() * 8);
+    setTimeout(function() {
+        const inviteEl = document.getElementById('callInvite');
+        if (inviteEl) {
+            inviteEl.remove();
+            startCallFloat(type);
+        }
+    }, delay * 1000);
+}
+
+function cancelCall() {
+    const inviteEl = document.getElementById('callInvite');
+    if (inviteEl) inviteEl.remove();
+}
+
+function startCallFloat(type) {
+    callActive = true;
+    callSeconds = 0;
+
+    const float = document.createElement('div');
+    float.className = 'call-float';
+    float.id = 'callFloat';
+    float.innerHTML = `
+        <div class="call-float-text">${type === 'voice' ? '☎️' : '📹'} ${aiName} 通话中 <span id="callTime">00:00</span></div>
+        <button class="call-float-end" onclick="endCall()">挂断</button>
+    `;
+    document.body.appendChild(float);
+
+    clearInterval(callTimer);
+    callTimer = setInterval(function() {
+        callSeconds++;
+        const m = Math.floor(callSeconds / 60).toString().padStart(2, '0');
+        const s = (callSeconds % 60).toString().padStart(2, '0');
+        const timeEl = document.getElementById('callTime');
+        if (timeEl) timeEl.textContent = m + ':' + s;
+    }, 1000);
+}
+
+function endCall() {
+    clearInterval(callTimer);
+    callActive = false;
+    const float = document.getElementById('callFloat');
+    if (float) float.remove();
+}
+
+function incomingCall() {
+    if (callActive) return;
+
+    const invite = document.createElement('div');
+    invite.className = 'call-invite';
+    invite.id = 'incomingCall';
+    invite.innerHTML = `
+        <div class="call-invite-box">
+            <div class="call-invite-name">${aiName} 邀请你语音通话</div>
+            <div class="call-invite-btns">
+                <button class="call-invite-accept" onclick="acceptIncomingCall()">接听</button>
+                <button class="call-invite-reject" onclick="rejectIncomingCall()">挂断</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(invite);
+}
+
+function acceptIncomingCall() {
+    const invite = document.getElementById('incomingCall');
+    if (invite) invite.remove();
+    startCallFloat('voice');
+}
+
+function rejectIncomingCall() {
+    const invite = document.getElementById('incomingCall');
+    if (invite) invite.remove();
+}
         function handleKeyPress(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
