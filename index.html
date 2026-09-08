@@ -454,6 +454,33 @@
             .container { width: 100%; height: 100vh; border-radius: 0; }
             .message { max-width: 90%; }
         }
+.voice-bubble {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    padding: 2px 0;
+    cursor: pointer;
+    min-width: 70px;
+}
+
+.voice-bubble .voice-duration {
+    font-size: 12px;
+    color: #888;
+}
+
+.voice-bubble .voice-text {
+    display: none;
+    font-size: 13px;
+    color: inherit;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+.voice-bubble.open .voice-text {
+    display: block;
+}
     </style>
     <style id="customStyle"></style>
 </head>
@@ -1261,35 +1288,51 @@
             addDeleteEvents();
         }
 
-        function addVoiceMessage(text, type) {
-            addMessage(text, type);
+       function addVoiceMessage(text, type) {
+    const messagesDiv = document.getElementById('messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message ' + type;
+
+    const avatar = document.createElement('div');
+    avatar.className = 'message-avatar';
+    if (type === 'user') {
+        if (userAvatar.startsWith('data:image')) {
+            avatar.innerHTML = `<img src="${userAvatar}">`;
+        } else {
+            avatar.textContent = userAvatar;
         }
-
-        function showTyping() {
-            const messagesDiv = document.getElementById('messages');
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message ai';
-            typingDiv.id = 'typing-' + Date.now();
-
-            const avatarHtml = aiAvatar.startsWith('data:image')
-                ? `<img src="${aiAvatar}">`
-                : aiAvatar;
-
-            typingDiv.innerHTML = `
-                <div class="message-avatar">${avatarHtml}</div>
-                <div class="message-content">
-                    <div class="typing-indicator">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                    </div>
-                </div>
-            `;
-
-            messagesDiv.appendChild(typingDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            return typingDiv.id;
+    } else {
+        if (aiAvatar.startsWith('data:image')) {
+            avatar.innerHTML = `<img src="${aiAvatar}">`;
+        } else {
+            avatar.textContent = aiAvatar;
         }
+    }
+
+    const content = document.createElement('div');
+    content.className = 'message-content';
+
+    const voice = document.createElement('div');
+    voice.className = 'voice-bubble';
+   voice.innerHTML = `<span class="voice-duration">${Math.max(1, Math.round(text.length / 4))}″</span><div class="voice-text">${text}</div>`;
+    voice.onclick = function() {
+        voice.classList.toggle('open');
+    };
+
+    content.appendChild(voice);
+
+    const time = document.createElement('div');
+    time.className = 'message-time';
+    time.textContent = getTime();
+
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(content);
+    messageDiv.appendChild(time);
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    saveHistory();
+    addDeleteEvents();
+}
 
         function hideTyping(id) {
             const typingDiv = document.getElementById(id);
