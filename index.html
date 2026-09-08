@@ -481,6 +481,23 @@
 .voice-bubble.open .voice-text {
     display: block;
 }
+.input-area {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+}
+
+.input-area input,
+.input-area textarea {
+    flex: 1 !important;
+    min-width: 0 !important;
+    margin-right: 10px !important;
+}
+
+.input-area button {
+    flex-shrink: 0 !important;
+}
     </style>
     <style id="customStyle"></style>
 </head>
@@ -754,23 +771,23 @@
         }
 
         function quoteMessage(el) {
-            const input = document.getElementById('userInput');
+    const input = document.getElementById('userInput');
 
-            if (input.dataset.quote) {
-                delete input.dataset.quote;
-                input.placeholder = '输入消息...';
-            } else {
-                const msg = el.closest('.message');
-                const text = msg.querySelector('.message-content').textContent;
-                input.dataset.quote = text;
-                input.value = '';
-                input.placeholder = '回复：' + text;
-                input.focus();
-            }
+    if (input.dataset.quote) {
+        delete input.dataset.quote;
+        input.placeholder = '输入消息...';
+    } else {
+        const msg = el.closest('.message');
+        const text = msg.querySelector('.message-content').textContent;
+        input.dataset.quote = text;
+        input.value = '';
+        input.placeholder = '回复：' + text;
+        input.focus();
+    }
 
-            const menu = el.closest('.msg-menu');
-            if (menu) menu.remove();
-        }
+    const menu = el.closest('.msg-menu');
+    if (menu) menu.remove();
+}
 
         function deleteMessage(el) {
             const msg = el.closest('.message');
