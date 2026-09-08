@@ -711,34 +711,82 @@
             addDeleteEvents();
         }
 
-        function addDeleteEvents() {
-            document.querySelectorAll('#messages .message').forEach(msg => {
-                if (msg.dataset.hasEvent) return;
-                msg.dataset.hasEvent = '1';
-                msg.addEventListener('contextmenu', function(e) {
-                    e.preventDefault();
-                    if (confirm('删除这条消息？')) {
-                        msg.remove();
-                        saveHistory();
-                    }
-                });
-                let longPressTimer = null;
-                msg.addEventListener('touchstart', function(e) {
-                    longPressTimer = setTimeout(function() {
-                        if (confirm('删除这条消息？')) {
-                            msg.remove();
-                            saveHistory();
-                        }
-                    }, 500);
-                });
-                msg.addEventListener('touchend', function() {
-                    clearTimeout(longPressTimer);
-                });
-                msg.addEventListener('touchmove', function() {
-                    clearTimeout(longPressTimer);
-                });
-            });
+      function addDeleteEvents() {
+    document.querySelectorAll('#messages .message').forEach(msg => {
+        if (msg.dataset.hasEvent) return;
+        msg.dataset.hasEvent = '1';
+
+        // 右键删除
+        msg.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            showMessageMenu(msg);
+        });
+
+        // 长按弹出菜单
+        let longPressTimer = null;
+        msg.addEventListener('touchstart', function(e) {
+            longPressTimer = setTimeout(function() {
+                showMessageMenu(msg);
+            }, 500);
+        });
+        msg.addEventListener('touchend', function() {
+            clearTimeout(longPressTimer);
+        });
+        msg.addEventListener('touchmove', function() {
+            clearTimeout(longPressTimer);
+        });
+    });
+}
+
+function showMessageMenu(msg) {
+    const text = msg.querySelector('.message-content') ? msg.querySelector('.message-content').textContent : '';
+
+    const menu = document.createElement('div');
+    menu.className = 'msg-menu';
+    menu.innerHTML = `
+        <div class="msg-menu-item" onclick="copyMessage(this)">复制</div>
+        <div class="msg-menu-item" onclick="quoteMessage(this)">引用</div>
+        <div class="msg-menu-item msg-menu-del" onclick="deleteMessage(this)">删除</div>
+    `;
+
+    document.querySelectorAll('.msg-menu').forEach(m => m.remove());
+
+    msg.appendChild(menu);
+    msg.style.position = 'relative';
+
+    document.addEventListener('click', function closeMenu(e) {
+        if (!menu.contains(e.target)) {
+            menu.remove();
+            document.removeEventListener('click', closeMenu);
         }
+    }, { once: true });
+}
+
+function copyMessage(el) {
+    const msg = el.closest('.message');
+    const text = msg.querySelector('.message-content').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('已复制');
+    });
+    el.closest('.msg-menu').remove();
+}
+
+function quoteMessage(el) {
+    const msg = el.closest('.message');
+    const text = msg.querySelector('.message-content').textContent;
+    const input = document.getElementById('userInput');
+    input.value = '引用：' + text + '\n';
+    input.focus();
+    el.closest('.msg-menu').remove();
+}
+
+function deleteMessage(el) {
+    const msg = el.closest('.message');
+    if (confirm('删除这条消息？')) {
+        msg.remove();
+        saveHistory();
+    }
+}
 
         function sendSticker(emoji) {
             const messagesDiv = document.getElementById('messages');
