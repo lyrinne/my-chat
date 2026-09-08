@@ -711,52 +711,71 @@
             addDeleteEvents();
         }
 
-    function quoteMessage(el) {
+     function addDeleteEvents() {
+    document.querySelectorAll('#messages .message').forEach(msg => {
+        if (msg.dataset.hasEvent) return;
+        msg.dataset.hasEvent = '1';
+
+        msg.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            showMessageMenu(msg);
+        });
+
+        let longPressTimer = null;
+        msg.addEventListener('touchstart', function(e) {
+            longPressTimer = setTimeout(function() {
+                showMessageMenu(msg);
+            }, 500);
+        });
+        msg.addEventListener('touchend', function() {
+            clearTimeout(longPressTimer);
+        });
+        msg.addEventListener('touchmove', function() {
+            clearTimeout(longPressTimer);
+        });
+    });
+}
+
+function showMessageMenu(msg) {
+    document.querySelectorAll('.msg-menu').forEach(m => m.remove());
+
+    const text = msg.querySelector('.message-content') ? msg.querySelector('.message-content').textContent : '';
+
+    const menu = document.createElement('div');
+    menu.className = 'msg-menu';
+    menu.innerHTML = `
+        <div class="msg-menu-item" onclick="copyMessage(this)">复制</div>
+        <div class="msg-menu-item" onclick="quoteMessage(this)">引用</div>
+        <div class="msg-menu-item msg-menu-del" onclick="deleteMessage(this)">删除</div>
+    `;
+
+    msg.appendChild(menu);
+}
+
+function copyMessage(el) {
     const msg = el.closest('.message');
     const text = msg.querySelector('.message-content').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('已复制');
+    });
     el.closest('.msg-menu').remove();
-    
-    const messagesDiv = document.getElementById('messages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message user';
-    
-    const avatar = document.createElement('div');
-    avatar.className = 'message-avatar';
-    if (userAvatar.startsWith('data:image')) {
-        avatar.innerHTML = `<img src="${userAvatar}">`;
-    } else {
-        avatar.textContent = userAvatar;
+}
+
+function quoteMessage(el) {
+    const msg = el.closest('.message');
+    const text = msg.querySelector('.message-content').textContent;
+    const input = document.getElementById('userInput');
+    input.value = '「' + text + '」';
+    input.focus();
+    el.closest('.msg-menu').remove();
+}
+
+function deleteMessage(el) {
+    const msg = el.closest('.message');
+    if (confirm('删除这条消息？')) {
+        msg.remove();
+        saveHistory();
     }
-    
-    const content = document.createElement('div');
-    content.className = 'message-content';
-    
-    const quoteDiv = document.createElement('div');
-    quoteDiv.className = 'quote-box';
-    quoteDiv.textContent = text;
-    
-    const replyDiv = document.createElement('div');
-    replyDiv.className = 'quote-reply';
-    replyDiv.textContent = ' ';
-    replyDiv.contentEditable = 'true';
-    replyDiv.setAttribute('data-placeholder', '回复...');
-    
-    content.appendChild(quoteDiv);
-    content.appendChild(replyDiv);
-    
-    const time = document.createElement('div');
-    time.className = 'message-time';
-    time.textContent = getTime();
-    
-    messageDiv.appendChild(avatar);
-    messageDiv.appendChild(content);
-    messageDiv.appendChild(time);
-    messagesDiv.appendChild(messageDiv);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    saveHistory();
-    addDeleteEvents();
-    
-    replyDiv.focus();
 }
 
 function showMessageMenu(msg) {
