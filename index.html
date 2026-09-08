@@ -815,11 +815,12 @@ function quoteMessage(el) {
     const msg = el.closest('.message');
     const text = msg.querySelector('.message-content').textContent;
     const input = document.getElementById('userInput');
-    input.value = '引用：' + text + '\n';
+    input.dataset.quote = text;
+    input.value = '';
+    input.placeholder = '回复：' + text;
     input.focus();
     el.closest('.msg-menu').remove();
 }
-
 function deleteMessage(el) {
     const msg = el.closest('.message');
     if (confirm('删除这条消息？')) {
@@ -1270,6 +1271,8 @@ if (type === 'user') {
 
             saveHistory();
             input.value = '';
+input.placeholder = '输入消息...';
+delete input.dataset.quote;
 
             const typingId = showTyping();
 
