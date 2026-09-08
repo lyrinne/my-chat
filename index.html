@@ -705,7 +705,15 @@
             div.className = 'message ai';
             const av = document.createElement('div');
             av.className = 'message-avatar';
-            av.textContent = aiAvatar;
+            if (aiAvatar.startsWith('data:image')) {
+    av.innerHTML = `<img src="${aiAvatar}">`;
+} else {
+    if (aiAvatar.startsWith('data:image')) {
+    av.innerHTML = `<img src="${aiAvatar}">`;
+} else {
+    av.textContent = aiAvatar;
+}
+}
             const content = document.createElement('div');
             content.className = 'message-content red-packet';
             content.innerHTML = `<div class="packet-title">🧧 恭喜发财</div><div class="packet-amount">¥${amount}</div>`;
@@ -734,7 +742,11 @@
             div.className = 'message ai';
             const av = document.createElement('div');
             av.className = 'message-avatar';
-            av.textContent = aiAvatar;
+            if (aiAvatar.startsWith('data:image')) {
+    av.innerHTML = `<img src="${aiAvatar}">`;
+} else {
+    av.textContent = aiAvatar;
+}
             const content = document.createElement('div');
             content.className = 'message-content transfer-card';
             content.innerHTML = `<div class="transfer-icon">⇋</div><div class="transfer-amount">¥${amount}</div><div class="transfer-status">待确认收款</div>`;
@@ -761,7 +773,11 @@
     div.className = 'message user';
     const av = document.createElement('div');
     av.className = 'message-avatar';
+    if (userAvatar.startsWith('data:image')) {
+    av.innerHTML = `<img src="${userAvatar}">`;
+} else {
     av.textContent = userAvatar;
+}
     const content = document.createElement('div');
     content.className = 'red-packet';
     content.innerHTML = `<div class="packet-title">🧧 恭喜发财</div><div class="packet-amount">¥${amount}</div>`;
@@ -778,36 +794,44 @@
     conversationHistory.push({ role: 'user', content: '我给你发了一个' + amount + '元的红包' });
 }
 
-       function sendTransfer() {
-    const amount = prompt('转账金额（虚拟）：', '100.00');
-    if (!amount) return;
-    const div = document.createElement('div');
-    div.className = 'message user';
-    const av = document.createElement('div');
-    av.className = 'message-avatar';
+        function sendTransfer() {
+            const amount = prompt('转账金额（虚拟）：', '100.00');
+            if (!amount) return;
+            const div = document.createElement('div');
+            div.className = 'message user';
+            const av = document.createElement('div');
+            av.className = 'message-avatar';
+            if (userAvatar.startsWith('data:image')) {
+    av.innerHTML = `<img src="${userAvatar}">`;
+} else {
     av.textContent = userAvatar;
-    const content = document.createElement('div');
-    content.className = 'transfer-card';
-    content.innerHTML = `<div class="transfer-icon">⇋</div><div class="transfer-amount">¥${amount}</div><div class="transfer-status">待确认收款</div>`;
-    const time = document.createElement('div');
-    time.className = 'message-time';
-    time.textContent = getTime();
-    div.appendChild(av);
-    div.appendChild(content);
-    div.appendChild(time);
-    document.getElementById('messages').appendChild(div);
-    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-    saveHistory();
-    addDeleteEvents();
-    conversationHistory.push({ role: 'user', content: '我给你转账' + amount + '元' });
 }
+            const content = document.createElement('div');
+            content.className = 'message-content transfer-card';
+            content.innerHTML = `<div class="transfer-icon">⇋</div><div class="transfer-amount">¥${amount}</div><div class="transfer-status">待确认收款</div>`;
+            const time = document.createElement('div');
+            time.className = 'message-time';
+            time.textContent = getTime();
+            div.appendChild(av);
+            div.appendChild(content);
+            div.appendChild(time);
+            document.getElementById('messages').appendChild(div);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+            saveHistory();
+            addDeleteEvents();
+            conversationHistory.push({ role: 'user', content: '我给你转账' + amount + '元' });
+        }
 
         function sendSticker(emoji) {
             const div = document.createElement('div');
             div.className = 'message user';
             const av = document.createElement('div');
             av.className = 'message-avatar';
-            av.textContent = userAvatar;
+            if (userAvatar.startsWith('data:image')) {
+    av.innerHTML = `<img src="${userAvatar}">`;
+} else {
+    av.textContent = userAvatar;
+}
             const content = document.createElement('div');
             content.className = 'message-content message-sticker';
             content.style.fontSize = '60px';
