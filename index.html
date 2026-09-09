@@ -1245,20 +1245,22 @@ function saveApiConfig() {
         }
 
                 function initPokeEvents() {
-            const headerAvatar = document.getElementById('headerAvatar');
-            if (headerAvatar) {
-                let lastTap = 0;
-                headerAvatar.addEventListener('click', function() {
-                    const now = Date.now();
-                    if (now - lastTap < 400) {
-                        addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
-                        lastTap = 0;
-                    } else {
-                        lastTap = now;
-                    }
-                });
+    document.querySelectorAll('.message.ai .message-avatar, .avatar').forEach(function(av) {
+        if (av.dataset.poke) return;
+        av.dataset.poke = '1';
+
+        let lastTap = 0;
+        av.addEventListener('click', function() {
+            const now = Date.now();
+            if (now - lastTap < 400) {
+                addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
+                lastTap = 0;
+            } else {
+                lastTap = now;
             }
-        }
+        });
+    });
+}
 
         function addPokeMessage(text) {
             const div = document.createElement('div');
@@ -1315,21 +1317,6 @@ function saveApiConfig() {
             loadCustomStickers();
             loadHistory();
             initPokeEvents();
-setTimeout(function() {
-    const headerAvatar = document.getElementById('headerAvatar');
-    if (headerAvatar) {
-        let lastTap = 0;
-        headerAvatar.addEventListener('click', function() {
-            const now = Date.now();
-            if (now - lastTap < 400) {
-                addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
-                lastTap = 0;
-            } else {
-                lastTap = now;
-            }
-        });
-    }
-}, 300);
 if (API_KEY) {
     document.getElementById('apiKeyInput').value = API_KEY;
 }
