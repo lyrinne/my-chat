@@ -770,7 +770,7 @@ function addAIImageSticker(imageData) {
         av.textContent = aiAvatar;
     }
     const content = document.createElement('div');
-    content.className = 'message-content message-sticker';
+    content.className = 'message-sticker';
     content.innerHTML = `<img src="${imageData}">`;
     const time = document.createElement('div');
     time.className = 'message-time';
@@ -1109,8 +1109,8 @@ function saveApiConfig() {
 
        function uploadStickers(event) {
     const files = event.target.files;
-   const group = prompt('这个表情放在哪个分组？\n可选：开心 / 生气 / 卖萌 / 伤心 / 哭哭 / 想你 / 爱你 / 得意', '开心');
-const validGroup = ['开心','生气','卖萌','伤心','哭哭','想你','爱你','得意'].includes(group) ? group : '开心';
+    const group = prompt('这个表情放在哪个分组？\n可选：开心 / 生气 / 卖萌 / 伤心 / 哭哭 / 想你 / 爱你 / 得意', '开心');
+    const validGroup = ['开心','生气','卖萌','伤心','哭哭','想你','爱你','得意'].includes(group) ? group : '开心';
 
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -1129,14 +1129,14 @@ const validGroup = ['开心','生气','卖萌','伤心','哭哭','想你','爱�
     const span = document.createElement('span');
     span.className = 'sticker-item';
     span.dataset.group = group || '开心';
-    span.innerHTML = `<img src="${imageData}"><div class="delete-btn" onclick="deleteSticker(this)">×</div>`;
+    span.innerHTML = `<img src="${imageData}">`;
     span.onclick = function() {
         sendImageSticker(imageData, span.dataset.group);
     };
     container.appendChild(span);
 }
 
-        function sendImageSticker(imageData, group) {
+       function sendImageSticker(imageData, group) {
     const div = document.createElement('div');
     div.className = 'message user';
     const av = document.createElement('div');
@@ -1147,7 +1147,7 @@ const validGroup = ['开心','生气','卖萌','伤心','哭哭','想你','爱�
         av.textContent = userAvatar;
     }
     const content = document.createElement('div');
-    content.className = 'message-content message-sticker';
+    content.className = 'message-sticker';
     content.innerHTML = `<img src="${imageData}">`;
     const time = document.createElement('div');
     time.className = 'message-time';
@@ -1160,42 +1160,36 @@ const validGroup = ['开心','生气','卖萌','伤心','哭哭','想你','爱�
     saveHistory();
     addDeleteEvents();
     document.getElementById('stickerPanel').classList.remove('show');
-
-    const groupText = group || '开心';
-    conversationHistory.push({ role: 'user', content: '我发了一个' + groupText + '的表情' });
+    conversationHistory.push({ role: 'user', content: '我发了一个' + (group || '开心') + '的表情' });
 }
 
-        function deleteSticker(btn) {
-            btn.parentElement.remove();
-            saveCustomStickers();
-        }
+       function deleteSticker(btn) {
+    btn.closest('.sticker-item').remove();
+    saveCustomStickers();
+}
 
 function saveCustomStickers() {
     const arr = [];
     document.querySelectorAll('#customStickers .sticker-item').forEach(function(item) {
         const img = item.querySelector('img');
         if (img) {
-            arr.push({
-                src: img.src,
-                group: item.dataset.group || '开心'
-            });
+            arr.push({ src: img.src, group: item.dataset.group || '开心' });
         }
     });
     localStorage.setItem('customStickers', JSON.stringify(arr));
 }
-
 function loadCustomStickers() {
     const saved = localStorage.getItem('customStickers');
-    if (saved) {
+    if (!saved) return;
+    try {
         JSON.parse(saved).forEach(function(item) {
-            if (item.src) {
-                addCustomSticker(item.src, item.group);
-            } else {
-                addCustomSticker(item, '开心');
+            if (item && item.src) {
+                addCustomSticker(item.src, item.group || '开心');
             }
         });
-    }
-}        function changeAIName() {
+    } catch(e) {}
+}  
+function changeAIName() {
             const v = document.getElementById('aiNameInput').value.trim();
             if (v) { aiName = v; document.getElementById('headerName').textContent = v; localStorage.setItem('aiName', v); }
         }
