@@ -530,17 +530,23 @@ body.night-mode .input-area input {
     border-color: #333 !important;
 }
 
-body.night-mode .message.ai .message-content {
-    background: #262626 !important;
-    color: #eee !important;
-    border-color: #333 !important;
+body.night-mode .message.user .message-content {
+    background: #fce8ef !important;
+    color: #3a2e34 !important;
 }
 
-body.night-mode .message.user .message-content {
-    background: #3a2e34 !important;
-    color: #fce8ef !important;
+body.night-mode .message.user .message-content::after {
+    background: #fce8ef !important;
 }
-    </style>
+
+body.night-mode .message.ai .message-content {
+    background: #ececec !important;
+    color: #333333 !important;
+}
+
+body.night-mode .message.ai .message-content::after {
+    background: #ececec !important;
+}    </style>
     <style id="customStyle"></style>
 </head>
 <body>
@@ -1308,6 +1314,21 @@ function saveApiConfig() {
             loadCustomStickers();
             loadHistory();
             initPokeEvents();
+setTimeout(function() {
+    const headerAvatar = document.getElementById('headerAvatar');
+    if (headerAvatar) {
+        let lastTap = 0;
+        headerAvatar.addEventListener('click', function() {
+            const now = Date.now();
+            if (now - lastTap < 400) {
+                addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
+                lastTap = 0;
+            } else {
+                lastTap = now;
+            }
+        });
+    }
+}, 300);
 if (API_KEY) {
     document.getElementById('apiKeyInput').value = API_KEY;
 }
