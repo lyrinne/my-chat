@@ -529,24 +529,7 @@ body.night-mode .input-area input {
     color: #eee !important;
     border-color: #333 !important;
 }
-
-body.night-mode .message.user .message-content {
-    background: #fce8ef !important;
-    color: #3a2e34 !important;
-}
-
-body.night-mode .message.user .message-content::after {
-    background: #fce8ef !important;
-}
-
-body.night-mode .message.ai .message-content {
-    background: #ececec !important;
-    color: #333333 !important;
-}
-
-body.night-mode .message.ai .message-content::after {
-    background: #ececec !important;
-}    </style>
+ </style>
     <style id="customStyle"></style>
 </head>
 <body>
@@ -700,7 +683,7 @@ body.night-mode .message.ai .message-content::after {
         </div>
 
         <div class="input-area">
-            <input id="userInput" placeholder="输入消息..." onkeypress="handleKeyPress(event)">
+            <textarea id="userInput" placeholder="输入消息..." rows="1"></textarea>
             <button onclick="sendMessage()">发送</button>
         </div>
     </div>
@@ -1576,12 +1559,6 @@ function rejectIncomingCall() {
                 alert('总结完成，继续聊吧');
             }
         }
-        function handleKeyPress(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendMessage();
-            }
-        }
-    </script>
+            </script>
 </body>
 </html>
