@@ -1170,18 +1170,32 @@ const validGroup = ['开心','生气','卖萌','伤心','哭哭','想你','爱�
             saveCustomStickers();
         }
 
-        function saveCustomStickers() {
-            const arr = [];
-            document.querySelectorAll('#customStickers img').forEach(img => arr.push(img.src));
-            localStorage.setItem('customStickers', JSON.stringify(arr));
+function saveCustomStickers() {
+    const arr = [];
+    document.querySelectorAll('#customStickers .sticker-item').forEach(function(item) {
+        const img = item.querySelector('img');
+        if (img) {
+            arr.push({
+                src: img.src,
+                group: item.dataset.group || '开心'
+            });
         }
+    });
+    localStorage.setItem('customStickers', JSON.stringify(arr));
+}
 
-        function loadCustomStickers() {
-            const saved = localStorage.getItem('customStickers');
-            if (saved) JSON.parse(saved).forEach(src => addCustomSticker(src));
-        }
-
-        function changeAIName() {
+function loadCustomStickers() {
+    const saved = localStorage.getItem('customStickers');
+    if (saved) {
+        JSON.parse(saved).forEach(function(item) {
+            if (item.src) {
+                addCustomSticker(item.src, item.group);
+            } else {
+                addCustomSticker(item, '开心');
+            }
+        });
+    }
+}        function changeAIName() {
             const v = document.getElementById('aiNameInput').value.trim();
             if (v) { aiName = v; document.getElementById('headerName').textContent = v; localStorage.setItem('aiName', v); }
         }
