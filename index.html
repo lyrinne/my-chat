@@ -583,6 +583,16 @@ body.night-mode .input-area input {
     <h4>🧠 手动总结</h4>
     <button class="name-btn" onclick="summarizeChat()">总结前面的对话</button>
 </div>
+<div class="settings-section">
+    <h4>😊 AI表情包频率</h4>
+    <select id="aiStickerRate" class="name-input">
+        <option value="0">关闭</option>
+        <option value="0.1">低</option>
+        <option value="0.3">中</option>
+        <option value="0.6">高</option>
+    </select>
+    <button class="name-btn" onclick="saveStickerRate()">保存频率</button>
+</div>
             <div class="settings-section">
                 <h4>✏️ 修改名字</h4>
                 <input class="name-input" id="aiNameInput" placeholder="AI的名字">
@@ -666,27 +676,17 @@ body.night-mode .input-area input {
         </div>
 
         <div class="sticker-panel" id="stickerPanel">
-            <span class="sticker-item" onclick="sendSticker('😂')">😂</span>
-            <span class="sticker-item" onclick="sendSticker('😍')">😍</span>
-            <span class="sticker-item" onclick="sendSticker('😎')">😎</span>
-            <span class="sticker-item" onclick="sendSticker('🥰')">🥰</span>
-            <span class="sticker-item" onclick="sendSticker('😭')">😭</span>
-            <span class="sticker-item" onclick="sendSticker('🤣')">🤣</span>
-            <span class="sticker-item" onclick="sendSticker('😡')">😡</span>
-            <span class="sticker-item" onclick="sendSticker('🤔')">🤔</span>
-            <span class="sticker-item" onclick="sendSticker('👍')">👍</span>
-            <span class="sticker-item" onclick="sendSticker('👎')">👎</span>
-            <span class="sticker-item" onclick="sendSticker('🙏')">🙏</span>
-            <span class="sticker-item" onclick="sendSticker('💪')">💪</span>
-            <span class="sticker-item" onclick="sendSticker('🎉')">🎉</span>
-            <span class="sticker-item" onclick="sendSticker('❤️')">❤️</span>
-            <span class="sticker-item" onclick="sendSticker('💔')">💔</span>
-            <span class="sticker-item" onclick="sendSticker('🔥')">🔥</span>
-            <span class="sticker-item" onclick="sendSticker('💯')">💯</span>
-            <span class="sticker-item" onclick="sendSticker('🐶')">🐶</span>
-            <span class="sticker-item" onclick="sendSticker('🐱')">🐱</span>
-            <span class="sticker-item" onclick="sendSticker('🌈')">🌈</span>
-            <div style="width:100%; border-top:1px dashed #ddd;"></div>
+<div style="width:100%;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:4px;" id="stickerTabs">
+    <button class="name-btn" style="width:auto;padding:6px 12px;margin:0;font-size:12px;" onclick="switchStickerTab('全部')">全部</button>
+    <button class="name-btn" style="width:auto;padding:6px 12px;margin:0;font-size:12px;" onclick="switchStickerTab('开心')">开心</button>
+    <button class="name-btn" style="width:auto;padding:6px 12px;margin:0;font-size:12px;" onclick="switchStickerTab('生气')">生气</button>
+    <button class="name-btn" style="width:auto;padding:6px 12px;margin:0;font-size:12px;" onclick="switchStickerTab('卖萌')">卖萌</button>
+    <button class="name-btn" style="width:auto;padding:6px 12px;margin:0;font-size:12px;" onclick="switchStickerTab('伤心')">伤心</button>
+    <button class="name-btn" style="width:auto;padding:6px 12px;margin:0;font-size:12px;" onclick="switchStickerTab('哭哭')">哭哭</button>
+    <button class="name-btn" style="width:auto;padding:6px 12px;margin:0;font-size:12px;" onclick="switchStickerTab('想你')">想你</button>
+    <button class="name-btn" style="width:auto;padding:6px 12px;margin:0;font-size:12px;" onclick="switchStickerTab('爱你')">爱你</button>
+    <button class="name-btn" style="width:auto;padding:6px 12px;margin:0;font-size:12px;" onclick="switchStickerTab('得意')">得意</button>
+</div>
             <div id="customStickers" style="display:contents;"></div>
             <span class="sticker-item" onclick="document.getElementById('stickerUpload').click()">➕</span>
             <input type="file" id="stickerUpload" accept="image/*" multiple style="display:none" onchange="uploadStickers(event)">
@@ -709,6 +709,7 @@ body.night-mode .input-area input {
     <script>
         let API_KEY = localStorage.getItem('userApiKey') || '';
 let systemPrompt = localStorage.getItem('systemPrompt') || '';
+let aiStickerRate = parseFloat(localStorage.getItem('aiStickerRate') || '0.3');
 let API_URL = localStorage.getItem('apiUrl') || 'https://api.moonshot.cn/v1/chat/completions';
 let API_MODEL = localStorage.getItem('apiModel') || 'kimi-k2.7-code';
         let conversationHistory = [];
@@ -736,6 +737,51 @@ function saveSystemPrompt() {
         localStorage.setItem('systemPrompt', prompt);
         alert('角色设定已保存');
     }
+}
+function saveStickerRate() {
+    const rate = document.getElementById('aiStickerRate').value;
+    aiStickerRate = parseFloat(rate);
+    localStorage.setItem('aiStickerRate', rate);
+    alert('表情频率已保存');
+}
+function switchStickerTab(group) {
+    document.querySelectorAll('#customStickers .sticker-item').forEach(function(item) {
+        if (group === '全部') {
+            item.style.display = '';
+        } else {
+            item.style.display = item.dataset.group === group ? '' : 'none';
+        }
+    });
+}
+function getStickerByGroup(group) {
+    const stickers = document.querySelectorAll('#customStickers .sticker-item[data-group="' + group + '"] img');
+    if (!stickers.length) return null;
+    const randomIndex = Math.floor(Math.random() * stickers.length);
+    return stickers[randomIndex].src;
+}
+function addAIImageSticker(imageData) {
+    const div = document.createElement('div');
+    div.className = 'message ai';
+    const av = document.createElement('div');
+    av.className = 'message-avatar';
+    if (aiAvatar.startsWith('data:image')) {
+        av.innerHTML = `<img src="${aiAvatar}">`;
+    } else {
+        av.textContent = aiAvatar;
+    }
+    const content = document.createElement('div');
+    content.className = 'message-content message-sticker';
+    content.innerHTML = `<img src="${imageData}">`;
+    const time = document.createElement('div');
+    time.className = 'message-time';
+    time.textContent = getTime();
+    div.appendChild(av);
+    div.appendChild(content);
+    div.appendChild(time);
+    document.getElementById('messages').appendChild(div);
+    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    saveHistory();
+    addDeleteEvents();
 }
 function saveApiConfig() {
     const url = document.getElementById('apiUrlInput').value.trim();
@@ -1061,50 +1107,63 @@ function saveApiConfig() {
             document.getElementById('stickerPanel').classList.remove('show');
         }
 
-        function uploadStickers(event) {
-            const files = event.target.files;
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    addCustomSticker(e.target.result);
-                    saveCustomStickers();
-                };
-                reader.readAsDataURL(file);
-            }
-            event.target.value = '';
-        }
+       function uploadStickers(event) {
+    const files = event.target.files;
+   const group = prompt('这个表情放在哪个分组？\n可选：开心 / 生气 / 卖萌 / 伤心 / 哭哭 / 想你 / 爱你 / 得意', '开心');
+const validGroup = ['开心','生气','卖萌','伤心','哭哭','想你','爱你','得意'].includes(group) ? group : '开心';
 
-        function addCustomSticker(imageData) {
-            const container = document.getElementById('customStickers');
-            const span = document.createElement('span');
-            span.className = 'sticker-item';
-            span.innerHTML = `<img src="${imageData}"><div class="delete-btn" onclick="deleteSticker(this)">×</div>`;
-            span.onclick = function() { sendImageSticker(imageData); };
-            container.appendChild(span);
-        }
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            addCustomSticker(e.target.result, validGroup);
+            saveCustomStickers();
+        };
+        reader.readAsDataURL(file);
+    }
+    event.target.value = '';
+}
 
-        function sendImageSticker(imageData) {
-            const div = document.createElement('div');
-            div.className = 'message user';
-            const av = document.createElement('div');
-            av.className = 'message-avatar';
-            av.textContent = userAvatar;
-            const content = document.createElement('div');
-            content.className = 'message-content message-sticker';
-            content.innerHTML = `<img src="${imageData}">`;
-            const time = document.createElement('div');
-            time.className = 'message-time';
-            time.textContent = getTime();
-            div.appendChild(av);
-            div.appendChild(content);
-            div.appendChild(time);
-            document.getElementById('messages').appendChild(div);
-            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-            saveHistory();
-            addDeleteEvents();
-            document.getElementById('stickerPanel').classList.remove('show');
-        }
+       function addCustomSticker(imageData, group) {
+    const container = document.getElementById('customStickers');
+    const span = document.createElement('span');
+    span.className = 'sticker-item';
+    span.dataset.group = group || '开心';
+    span.innerHTML = `<img src="${imageData}"><div class="delete-btn" onclick="deleteSticker(this)">×</div>`;
+    span.onclick = function() {
+        sendImageSticker(imageData, span.dataset.group);
+    };
+    container.appendChild(span);
+}
+
+        function sendImageSticker(imageData, group) {
+    const div = document.createElement('div');
+    div.className = 'message user';
+    const av = document.createElement('div');
+    av.className = 'message-avatar';
+    if (userAvatar.startsWith('data:image')) {
+        av.innerHTML = `<img src="${userAvatar}">`;
+    } else {
+        av.textContent = userAvatar;
+    }
+    const content = document.createElement('div');
+    content.className = 'message-content message-sticker';
+    content.innerHTML = `<img src="${imageData}">`;
+    const time = document.createElement('div');
+    time.className = 'message-time';
+    time.textContent = getTime();
+    div.appendChild(av);
+    div.appendChild(content);
+    div.appendChild(time);
+    document.getElementById('messages').appendChild(div);
+    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    saveHistory();
+    addDeleteEvents();
+    document.getElementById('stickerPanel').classList.remove('show');
+
+    const groupText = group || '开心';
+    conversationHistory.push({ role: 'user', content: '我发了一个' + groupText + '的表情' });
+}
 
         function deleteSticker(btn) {
             btn.parentElement.remove();
@@ -1317,6 +1376,9 @@ function saveApiConfig() {
             loadCustomStickers();
             loadHistory();
             initPokeEvents();
+if (document.getElementById('aiStickerRate')) {
+    document.getElementById('aiStickerRate').value = aiStickerRate;
+}
 if (API_KEY) {
     document.getElementById('apiKeyInput').value = API_KEY;
 }
@@ -1383,16 +1445,31 @@ if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
                         conversationHistory.push({ role: 'assistant', content: reply });
                     }
                     saveHistory();
+const sentences = reply.split(/\n|(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s.length > 0);
+const shouldSendSticker = Math.random() < aiStickerRate;
+let stickerGroup = '';
+if (text.includes('滚') || text.includes('草泥马') || text.includes('傻逼') || text.includes('死全家') || text.includes('分手') || text.includes('烦不烦') || text.includes('你他妈')) {
+    stickerGroup = '生气';
+} else if (text.includes('呜呜') || text.includes('TvT') || text.includes('TT') || text.includes('哭') || text.includes('伤心') || text.includes('委屈') || text.includes('难受')) {
+    stickerGroup = '哭哭';
+} else if (text.includes('亲亲') || text.includes('宝宝') || text.includes('老婆') || text.includes('爱你') || text.includes('mua') || text.includes('喜欢')) {
+    stickerGroup = '爱你';
+} else if (text.includes('想你') || text.includes('好想') || text.includes('想见')) {
+    stickerGroup = '想你';
+} else if (text.includes('卖萌') || text.includes('可爱') || text.includes('ovo') || text.includes('qwq') || text.includes('TuT') || text.includes('撒娇')) {
+    stickerGroup = '卖萌';
+} else if (text.includes('哈哈') || text.includes('开心') || text.includes('笑死') || text.includes('好笑') || text.includes('我肚肚')) {
+    stickerGroup = '开心';
+} else if (text.includes('得意') || text.includes('厉害') || text.includes('牛逼') || text.includes('帅') || text.includes('萌')) {
+    stickerGroup = '得意';
+} else if (text.includes('伤心') || text.includes('难过') || text.includes('心碎') || text.includes('难受')) {
+    stickerGroup = '伤心';
+}for (let i = 0; i < sentences.length; i++) {
+    await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 600));
+    const text = sentences[i];
 
-                    const sentences = reply.split(/\n|(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s.length > 0);
-
-                    for (let i = 0; i < sentences.length; i++) {
-                        await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 600));
-                        const text = sentences[i];
-
-                        const transferMatch = text.match(/转账.*?(\d+(?:\.\d+)?)/) || text.match(/(\d+(?:\.\d+)?).*?转账/);
-                        const packetMatch = text.match(/红包.*?(\d+(?:\.\d+)?)/) || text.match(/(\d+(?:\.\d+)?).*?红包/);
-
+    const transferMatch = text.match(/转账.*?(\d+(?:\.\d+)?)/) || text.match(/(\d+(?:\.\d+)?).*?转账/);
+    const packetMatch = text.match(/红包.*?(\d+(?:\.\d+)?)/) || text.match(/(\d+(?:\.\d+)?).*?红包/);
                         if (transferMatch && text.includes('转账')) {
                             addTransferFromAI(transferMatch[1]);
                         } else if (packetMatch && text.includes('红包')) {
@@ -1400,8 +1477,14 @@ if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
                         } else if (Math.random() < 0.15) {
                             addVoiceMessage(text, 'ai');
                         } else {
-                            addMessage(text, 'ai');
-                        }
+    addMessage(text, 'ai');
+   if (shouldSendSticker && stickerGroup) {
+    const stickerSrc = getStickerByGroup(stickerGroup);
+    if (stickerSrc) {
+        addAIImageSticker(stickerSrc);
+    }
+}
+}
                     }
 const angryWords = ['滚', '分手', '出轨', '绿了', '草泥马', '死全家', '傻逼', '我不活'];
 const isAngry = angryWords.some(w => reply.includes(w));
