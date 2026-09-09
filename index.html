@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>我的AI助手</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -508,6 +508,38 @@
     font-size: 14px;
     cursor: pointer;
 }
+body.night-mode .container {
+    background: #111 !important;
+}
+
+body.night-mode .header {
+    background: #1a1a1a !important;
+}
+
+body.night-mode .input-area,
+body.night-mode .toolbar,
+body.night-mode .sticker-panel,
+body.night-mode .settings-panel {
+    background: #1a1a1a !important;
+    color: #eee !important;
+}
+
+body.night-mode .input-area input {
+    background: #222 !important;
+    color: #eee !important;
+    border-color: #333 !important;
+}
+
+body.night-mode .message.ai .message-content {
+    background: #262626 !important;
+    color: #eee !important;
+    border-color: #333 !important;
+}
+
+body.night-mode .message.user .message-content {
+    background: #3a2e34 !important;
+    color: #fce8ef !important;
+}
     </style>
     <style id="customStyle"></style>
 </head>
@@ -534,6 +566,15 @@
     <input class="name-input" id="apiUrlInput" placeholder="API地址，如 https://api.moonshot.cn/v1/chat/completions">
     <input class="name-input" id="apiModelInput" placeholder="模型名，如 kimi-k2.7-code">
     <button class="name-btn" onclick="saveApiConfig()">保存API配置</button>
+</div>
+<div class="settings-section">
+    <h4>🎭 角色设定</h4>
+    <textarea class="css-editor" id="systemPromptInput" placeholder="在这里粘贴角色人设"></textarea>
+    <button class="name-btn" onclick="saveSystemPrompt()">保存角色设定</button>
+</div>
+<div class="settings-section">
+    <h4>🧠 手动总结</h4>
+    <button class="name-btn" onclick="summarizeChat()">总结前面的对话</button>
 </div>
             <div class="settings-section">
                 <h4>✏️ 修改名字</h4>
@@ -660,6 +701,7 @@
 
     <script>
         let API_KEY = localStorage.getItem('userApiKey') || '';
+let systemPrompt = localStorage.getItem('systemPrompt') || '';
 let API_URL = localStorage.getItem('apiUrl') || 'https://api.moonshot.cn/v1/chat/completions';
 let API_MODEL = localStorage.getItem('apiModel') || 'kimi-k2.7-code';
         let conversationHistory = [];
@@ -678,6 +720,14 @@ function saveApiKey() {
         localStorage.setItem('userApiKey', key);
         alert('API Key已保存');
         document.getElementById('apiKeyInput').value = '';
+    }
+}
+function saveSystemPrompt() {
+    const prompt = document.getElementById('systemPromptInput').value.trim();
+    if (prompt) {
+        systemPrompt = prompt;
+        localStorage.setItem('systemPrompt', prompt);
+        alert('角色设定已保存');
     }
 }
 function saveApiConfig() {
@@ -818,8 +868,40 @@ function saveApiConfig() {
             addDeleteEvents();
         }
 
-        function addVoiceMessage(text, type) {
-            addMessage(text, type);
+                function addVoiceMessage(text, type) {
+            const messagesDiv = document.getElementById('messages');
+            const div = document.createElement('div');
+            div.className = 'message ' + type;
+
+            const av = document.createElement('div');
+            av.className = 'message-avatar';
+            const src = type === 'user' ? userAvatar : aiAvatar;
+            if (src.startsWith('data:image')) av.innerHTML = `<img src="${src}">`;
+            else av.textContent = src;
+
+            const content = document.createElement('div');
+            content.className = 'message-content';
+
+            const voice = document.createElement('div');
+            voice.className = 'voice-bubble';
+            voice.innerHTML = `<span class="voice-duration">${Math.max(1, Math.round(text.length / 4))}″</span><div class="voice-text">${text}</div>`;
+            voice.onclick = function() {
+                voice.classList.toggle('open');
+            };
+
+            content.appendChild(voice);
+
+            const time = document.createElement('div');
+            time.className = 'message-time';
+            time.textContent = getTime();
+
+            div.appendChild(av);
+            div.appendChild(content);
+            div.appendChild(time);
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            saveHistory();
+            addDeleteEvents();
         }
 
         function addRedPacketFromAI(amount) {
@@ -1155,11 +1237,18 @@ function saveApiConfig() {
             location.reload();
         }
 
-        function initPokeEvents() {
+                function initPokeEvents() {
             const headerAvatar = document.getElementById('headerAvatar');
             if (headerAvatar) {
-                headerAvatar.addEventListener('dblclick', function() {
-                    addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
+                let lastTap = 0;
+                headerAvatar.addEventListener('click', function() {
+                    const now = Date.now();
+                    if (now - lastTap < 400) {
+                        addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
+                        lastTap = 0;
+                    } else {
+                        lastTap = now;
+                    }
                 });
             }
         }
@@ -1267,9 +1356,10 @@ if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
                     body: JSON.stringify({
                         model: API_MODEL,
                         messages: [
-                            { role: 'system', content: '你想给对方转钱或发红包时，直接说“给你转账520”或“给你发红包13.14”，必须带金额。' },
-                            ...conversationHistory
-                        ],
+    { role: 'system', content: '你想给对方转钱或发红包时，直接说“给你转账520”或“给你发红包13.14”，必须带金额。' },
+    { role: 'system', content: systemPrompt || '你是聊天助手' },
+    ...conversationHistory
+],
                         temperature: 1,
                         max_tokens: 2000
                     })
@@ -1428,6 +1518,43 @@ function rejectIncomingCall() {
     const invite = document.getElementById('incomingCall');
     if (invite) invite.remove();
 }
+        async function summarizeChat() {
+            if (conversationHistory.length < 6) {
+                alert('消息太少，先聊一会儿再总结');
+                return;
+            }
+
+            const toSummarize = conversationHistory.slice(0, -4);
+            const recent = conversationHistory.slice(-4);
+
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: API_MODEL,
+                    messages: [
+                        { role: 'system', content: '用一两句话总结以下对话，不要回复用户，只输出总结。' },
+                        ...toSummarize
+                    ],
+                    temperature: 1,
+                    max_tokens: 500
+                })
+            });
+
+            const data = await response.json();
+            if (data.choices && data.choices[0]) {
+                const summary = data.choices[0].message.content.trim();
+                conversationHistory = [
+                    { role: 'system', content: '之前的对话总结：' + summary },
+                    ...recent
+                ];
+                saveHistory();
+                alert('总结完成，继续聊吧');
+            }
+        }
         function handleKeyPress(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
