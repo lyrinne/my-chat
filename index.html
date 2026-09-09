@@ -1150,7 +1150,7 @@ function saveApiConfig() {
     const span = document.createElement('span');
     span.className = 'sticker-item';
     span.dataset.group = group || '开心';
-    span.innerHTML = `<img src="${imageData}"><div class="delete-btn" onclick="deleteSticker(this)">×</div>`;
+    span.innerHTML = `<img src="${imageData}"><div class="delete-btn" onclick="deleteSticker(this, event)">×</div>`;
     span.onclick = function() {
         sendImageSticker(imageData, span.dataset.group);
     };
@@ -1184,7 +1184,10 @@ function saveApiConfig() {
     conversationHistory.push({ role: 'user', content: '我发了一个' + (group || '开心') + '的表情' });
 }
 
-       function deleteSticker(btn) {
+       function deleteSticker(btn, event) {
+    if (event) {
+        event.stopPropagation();
+    }
     btn.closest('.sticker-item').remove();
     saveCustomStickers();
 }
