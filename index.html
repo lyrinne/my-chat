@@ -1542,15 +1542,7 @@ if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
         alert('请先在设置里填写API Key');
         return;
     }
-    const lastTime = localStorage.getItem('lastMsgTime');
-    const now = Date.now();
-    if (lastTime) {
-        const minutes = Math.floor((now - parseInt(lastTime)) / 60000);
-        if (minutes > 5) {
-            conversationHistory.push({ role: 'system', content: '（距离上次聊天已经过了' + minutes + '分钟）' });
-        }
-    }
-    localStorage.setItem('lastMsgTime', now);
+
     const input = document.getElementById('userInput');
     const message = input.value.trim();
     if (!message && !fromSticker && !pendingSticker) return;
@@ -1590,7 +1582,7 @@ if (pendingSticker) {
                     body: JSON.stringify({
                         model: API_MODEL,
                         messages: [
-    { role: 'system', content: '你想给对方转钱或发红包时，直接说“给你转账520”或“给你发红包13.14”，必须带金额。你想发语音时，就写“【语音】你要说的话”，我会看到语音条。你想拍一拍对方时，就写“【拍一拍】”，我会显示你拍了拍对方。' },
+   { role: 'system', content: '你想给对方转钱或发红包时，直接说“给你转账520”或“给你发红包13.14”，必须带金额。你想发语音时，就写“【语音】你要说的话”，我会看到语音条。你想拍一拍对方时，就写“【拍一拍】”。每次回复多换行，一句话一行。' },
     { role: 'system', content: systemPrompt || '你是聊天助手' },
     ...conversationHistory
 ],
@@ -1608,7 +1600,7 @@ if (pendingSticker) {
                         conversationHistory.push({ role: 'assistant', content: reply });
                     }
                     saveHistory();
-const sentences = reply.split(/\n|(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s.length > 0);
+const sentences = reply.split(/\n/).map(s => s.trim()).filter(s => s.length > 0);
 const shouldSendSticker = Math.random() < aiStickerRate;
 
 for (let i = 0; i < sentences.length; i++) {
