@@ -598,15 +598,9 @@ body.night-mode .input-area input {
 </div>
 <div class="settings-section">
     <h4>💬 主动发消息</h4>
-    <select id="autoMsgRate" class="name-input">
-        <option value="0">关闭</option>
-        <option value="300000">5分钟</option>
-        <option value="600000">10分钟</option>
-        <option value="1800000">30分钟</option>
-    </select>
+    <input class="name-input" id="autoMsgRate" type="number" placeholder="间隔分钟，0为关闭">
     <button class="name-btn" onclick="saveAutoMsgRate()">保存</button>
-</div>
-<div class="settings-section">
+</div><div class="settings-section">
     <h4>📦 数据备份</h4>
     <button class="name-btn" onclick="exportData()">导出数据</button>
     <button class="name-btn" onclick="importData()">导入数据</button>
@@ -776,13 +770,12 @@ function saveStickerRate() {
     alert('表情频率已保存');
 }
 function saveAutoMsgRate() {
-    const rate = document.getElementById('autoMsgRate').value;
-    autoMsgRate = parseInt(rate);
-    localStorage.setItem('autoMsgRate', rate);
-    alert('已保存');
+    const minutes = parseInt(document.getElementById('autoMsgRate').value) || 0;
+    autoMsgRate = minutes * 60000;
+    localStorage.setItem('autoMsgRate', autoMsgRate);
+    alert(minutes === 0 ? '已关闭' : '已设置，每' + minutes + '分钟主动发一次');
     startAutoMessage();
 }
-
 function startAutoMessage() {
     clearInterval(autoMsgTimer);
     if (autoMsgRate <= 0) return;
@@ -1529,7 +1522,7 @@ function changeAIName() {
             loadHistory();
             initPokeEvents();
 if (document.getElementById('autoMsgRate')) {
-    document.getElementById('autoMsgRate').value = autoMsgRate;
+    document.getElementById('autoMsgRate').value = autoMsgRate > 0 ? (autoMsgRate / 60000) : 0;
 }
 startAutoMessage();
 if (document.getElementById('aiStickerRate')) {
