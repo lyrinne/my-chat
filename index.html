@@ -547,6 +547,19 @@ body.night-mode .input-area input {
 .input-area textarea:focus {
     border-color: #667eea;
 }
+.message-sticker {
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+.message-sticker img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    display: block;
+}
  </style>
     <style id="customStyle"></style>
 </head>
@@ -582,6 +595,11 @@ body.night-mode .input-area input {
 <div class="settings-section">
     <h4>🧠 手动总结</h4>
     <button class="name-btn" onclick="summarizeChat()">总结前面的对话</button>
+</div>
+<div class="settings-section">
+    <h4>📦 数据备份</h4>
+    <button class="name-btn" onclick="exportData()">导出数据</button>
+    <button class="name-btn" onclick="importData()">导入数据</button>
 </div>
 <div class="settings-section">
     <h4>😊 AI表情包频率</h4>
@@ -710,6 +728,7 @@ body.night-mode .input-area input {
         let API_KEY = localStorage.getItem('userApiKey') || '';
 let systemPrompt = localStorage.getItem('systemPrompt') || '';
 let aiStickerRate = parseFloat(localStorage.getItem('aiStickerRate') || '0.3');
+let pendingSticker = null;
 let API_URL = localStorage.getItem('apiUrl') || 'https://api.moonshot.cn/v1/chat/completions';
 let API_MODEL = localStorage.getItem('apiModel') || 'kimi-k2.7-code';
         let conversationHistory = [];
@@ -743,6 +762,59 @@ function saveStickerRate() {
     aiStickerRate = parseFloat(rate);
     localStorage.setItem('aiStickerRate', rate);
     alert('表情频率已保存');
+}
+function exportData() {
+    const data = {
+        chatHistory: localStorage.getItem('chatHistory'),
+        chatMessages: localStorage.getItem('chatMessages'),
+        customStickers: localStorage.getItem('customStickers'),
+        systemPrompt: localStorage.getItem('systemPrompt'),
+        aiStickerRate: localStorage.getItem('aiStickerRate'),
+        aiName: localStorage.getItem('aiName'),
+        userName: localStorage.getItem('userName'),
+        aiAvatar: localStorage.getItem('aiAvatar'),
+        userAvatar: localStorage.getItem('userAvatar'),
+        chatBg: localStorage.getItem('chatBg'),
+        nightMode: localStorage.getItem('nightMode'),
+        pokeAISuffix: localStorage.getItem('pokeAISuffix'),
+        pokeUserSuffix: localStorage.getItem('pokeUserSuffix'),
+        exportedAt: new Date().toISOString()
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'chat-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function importData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            try {
+                const data = JSON.parse(ev.target.result);
+                Object.keys(data).forEach(function(key) {
+                    if (key !== 'exportedAt' && data[key]) {
+                        localStorage.setItem(key, data[key]);
+                    }
+                });
+                alert('导入成功，刷新页面生效');
+                location.reload();
+            } catch(err) {
+                alert('导入失败，文件格式不对');
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
 }
 function switchStickerTab(group) {
     document.querySelectorAll('#customStickers .sticker-item').forEach(function(item) {
@@ -1159,12 +1231,14 @@ function saveApiConfig() {
     span.dataset.group = group || '开心';
     span.innerHTML = `<img src="${imageData}"><div class="delete-btn" onclick="deleteSticker(this, event)">×</div>`;
     span.onclick = function() {
-        sendImageSticker(imageData, span.dataset.group);
-    };
+    pendingSticker = { src: imageData, group: span.dataset.group };
+    document.getElementById('stickerPanel').classList.remove('show');
+    alert('表情已选，输入文字后点发送');
+};
     container.appendChild(span);
 }
 
-       function sendImageSticker(imageData, group) {
+      function sendImageSticker(imageData, group, noReply) {
     const div = document.createElement('div');
     div.className = 'message user';
     const av = document.createElement('div');
@@ -1187,8 +1261,12 @@ function saveApiConfig() {
     document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
     saveHistory();
     addDeleteEvents();
-    document.getElementById('stickerPanel').classList.remove('show');
+
     conversationHistory.push({ role: 'user', content: '我发了一个' + (group || '开心') + '的表情' });
+
+    if (!noReply) {
+        sendMessage(true);
+    }
 }
 
        function deleteSticker(btn, event) {
@@ -1428,7 +1506,7 @@ if (API_URL) document.getElementById('apiUrlInput').value = API_URL;
 if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
         };
 
-        async function sendMessage() {
+        async function sendMessage(fromSticker) {
     if (!API_KEY) {
         alert('请先在设置里填写API Key');
         return;
@@ -1436,7 +1514,7 @@ if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
 
     const input = document.getElementById('userInput');
     const message = input.value.trim();
-    if (!message) return;
+    if (!message && !fromSticker && !pendingSticker) return;
 
             const quoteText = input.dataset.quote || '';
             const parts = message.split(/\n|(?<=[。！？!?；;])/).map(s => s.trim()).filter(s => s);
@@ -1444,7 +1522,7 @@ if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
             for (let i = 0; i < parts.length; i++) {
                 if (i === 0 && quoteText) {
                     addMessage(parts[i], 'user', quoteText);
-                    conversationHistory.push({ role: 'user', content: '我回复你：“' + quoteText + '”，然后说：' + parts[i] });
+                    conversationHistory.push({ role: 'user', content: '你之前说：“' + quoteText + '”，我回复：' + parts[i] });
                 } else {
                     addMessage(parts[i], 'user');
                     conversationHistory.push({ role: 'user', content: parts[i] });
@@ -1455,8 +1533,12 @@ if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
             delete input.dataset.quote;
             input.placeholder = '输入消息...';
             input.value = '';
-            saveHistory();
+saveHistory();
 
+if (pendingSticker) {
+    sendImageSticker(pendingSticker.src, pendingSticker.group, true);
+    pendingSticker = null;
+}
             const typingId = showTyping();
 
             try {
@@ -1469,7 +1551,7 @@ if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
                     body: JSON.stringify({
                         model: API_MODEL,
                         messages: [
-    { role: 'system', content: '你想给对方转钱或发红包时，直接说“给你转账520”或“给你发红包13.14”，必须带金额。' },
+    { role: 'system', content: '你想给对方转钱或发红包时，直接说“给你转账520”或“给你发红包13.14”，必须带金额。你想发语音时，就写“【语音】你要说的话”，我会看到语音条。你想拍一拍对方时，就写“【拍一拍】”，我会显示你拍了拍对方。' },
     { role: 'system', content: systemPrompt || '你是聊天助手' },
     ...conversationHistory
 ],
@@ -1493,25 +1575,32 @@ const shouldSendSticker = Math.random() < aiStickerRate;
 for (let i = 0; i < sentences.length; i++) {
     await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 600));
     const text = sentences[i];
-
+if (text.startsWith('【语音】')) {
+    addVoiceMessage(text.replace('【语音】', ''), 'ai');
+    continue;
+}
+if (text.startsWith('【拍一拍】')) {
+    addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
+    continue;
+}
     let stickerGroup = '';
-    if (text.includes('滚') || text.includes('草泥马') || text.includes('傻逼') || text.includes('死全家') || text.includes('分手') || text.includes('烦不烦') || text.includes('你他妈')) {
-        stickerGroup = '生气';
-    } else if (text.includes('呜呜') || text.includes('TvT') || text.includes('TT') || text.includes('哭') || text.includes('伤心') || text.includes('委屈') || text.includes('难受')) {
-        stickerGroup = '哭哭';
-    } else if (text.includes('亲亲') || text.includes('宝宝') || text.includes('老婆') || text.includes('爱你') || text.includes('mua') || text.includes('喜欢')) {
-        stickerGroup = '爱你';
-    } else if (text.includes('想你') || text.includes('好想') || text.includes('想见')) {
-        stickerGroup = '想你';
-    } else if (text.includes('卖萌') || text.includes('可爱') || text.includes('ovo') || text.includes('qwq') || text.includes('TuT') || text.includes('撒娇')) {
-        stickerGroup = '卖萌';
-    } else if (text.includes('哈哈') || text.includes('开心') || text.includes('笑死') || text.includes('好笑') || text.includes('我肚肚')) {
-        stickerGroup = '开心';
-    } else if (text.includes('得意') || text.includes('厉害') || text.includes('牛逼') || text.includes('帅') || text.includes('萌')) {
-        stickerGroup = '得意';
-    } else if (text.includes('伤心') || text.includes('难过') || text.includes('心碎') || text.includes('难受')) {
-        stickerGroup = '伤心';
-    }
+if (text.includes('滚') || text.includes('烦') || text.includes('别闹') || text.includes('走开') || text.includes('不想理') || text.includes('再说一遍') || text.includes('吃醋') || text.includes('傻逼') || text.includes('分手') || text.includes('你他妈') || text.includes('草泥马')) {
+    stickerGroup = '生气';
+} else if (text.includes('呜呜') || text.includes('TvT') || text.includes('TT') || text.includes('哭') || text.includes('委屈') || text.includes('难受') || text.includes('伤心') || text.includes('不开心') || text.includes('心碎')) {
+    stickerGroup = '哭哭';
+} else if (text.includes('爱你') || text.includes('喜欢') || text.includes('亲亲') || text.includes('mua') || text.includes('抱') || text.includes('贴') || text.includes('老婆') || text.includes('宝宝')) {
+    stickerGroup = '爱你';
+} else if (text.includes('想你') || text.includes('好想') || text.includes('想见') || text.includes('等你') || text.includes('回来')) {
+    stickerGroup = '想你';
+} else if (text.includes('卖萌') || text.includes('可爱') || text.includes('ovo') || text.includes('qwq') || text.includes('TuT') || text.includes('撒娇') || text.includes('乖') || text.includes('哼')) {
+    stickerGroup = '卖萌';
+} else if (text.includes('哈哈') || text.includes('开心') || text.includes('高兴') || text.includes('笑死') || text.includes('好笑') || text.includes('我肚肚') || text.includes('不错') || text.includes('有趣')) {
+    stickerGroup = '开心';
+} else if (text.includes('得意') || text.includes('厉害') || text.includes('牛逼') || text.includes('牛') || text.includes('当然') || text.includes('帅') || text.includes('萌')) {
+    stickerGroup = '得意';
+} else if (text.includes('难过') || text.includes('伤心') || text.includes('心碎') || text.includes('委屈') || text.includes('不想说话')) {
+    stickerGroup = '伤心';
+}
 
     const transferMatch = text.match(/转账.*?(\d+(?:\.\d+)?)/) || text.match(/(\d+(?:\.\d+)?).*?转账/);
     const packetMatch = text.match(/红包.*?(\d+(?:\.\d+)?)/) || text.match(/(\d+(?:\.\d+)?).*?红包/);
