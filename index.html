@@ -786,9 +786,17 @@ function saveAutoMsgRate() {
 function startAutoMessage() {
     clearInterval(autoMsgTimer);
     if (autoMsgRate <= 0) return;
-    autoMsgTimer = setInterval(function() {
-        sendMessage(true);
-    }, autoMsgRate);
+   autoMsgTimer = setInterval(function() {
+    const lastTime = localStorage.getItem('lastMsgTime');
+    const now = Date.now();
+    if (lastTime) {
+        const minutes = Math.floor((now - parseInt(lastTime)) / 60000);
+        if (minutes > 5) {
+            conversationHistory.push({ role: 'system', content: '（距离上次聊天已经过了' + minutes + '分钟，对方一直没理你）' });
+        }
+    }
+    sendMessage(true);
+}, autoMsgRate);
 }
 function exportData() {
     const data = {
