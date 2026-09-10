@@ -597,6 +597,16 @@ body.night-mode .input-area input {
     <button class="name-btn" onclick="summarizeChat()">总结前面的对话</button>
 </div>
 <div class="settings-section">
+    <h4>💬 主动发消息</h4>
+    <select id="autoMsgRate" class="name-input">
+        <option value="0">关闭</option>
+        <option value="300000">5分钟</option>
+        <option value="600000">10分钟</option>
+        <option value="1800000">30分钟</option>
+    </select>
+    <button class="name-btn" onclick="saveAutoMsgRate()">保存</button>
+</div>
+<div class="settings-section">
     <h4>📦 数据备份</h4>
     <button class="name-btn" onclick="exportData()">导出数据</button>
     <button class="name-btn" onclick="importData()">导入数据</button>
@@ -729,6 +739,8 @@ body.night-mode .input-area input {
 let systemPrompt = localStorage.getItem('systemPrompt') || '';
 let aiStickerRate = parseFloat(localStorage.getItem('aiStickerRate') || '0.3');
 let pendingSticker = null;
+let autoMsgRate = parseInt(localStorage.getItem('autoMsgRate') || '0');
+let autoMsgTimer = null;
 let API_URL = localStorage.getItem('apiUrl') || 'https://api.moonshot.cn/v1/chat/completions';
 let API_MODEL = localStorage.getItem('apiModel') || 'kimi-k2.7-code';
         let conversationHistory = [];
@@ -762,6 +774,21 @@ function saveStickerRate() {
     aiStickerRate = parseFloat(rate);
     localStorage.setItem('aiStickerRate', rate);
     alert('表情频率已保存');
+}
+function saveAutoMsgRate() {
+    const rate = document.getElementById('autoMsgRate').value;
+    autoMsgRate = parseInt(rate);
+    localStorage.setItem('autoMsgRate', rate);
+    alert('已保存');
+    startAutoMessage();
+}
+
+function startAutoMessage() {
+    clearInterval(autoMsgTimer);
+    if (autoMsgRate <= 0) return;
+    autoMsgTimer = setInterval(function() {
+        sendMessage(true);
+    }, autoMsgRate);
 }
 function exportData() {
     const data = {
@@ -1493,6 +1520,10 @@ function changeAIName() {
             loadCustomStickers();
             loadHistory();
             initPokeEvents();
+if (document.getElementById('autoMsgRate')) {
+    document.getElementById('autoMsgRate').value = autoMsgRate;
+}
+startAutoMessage();
 if (document.getElementById('aiStickerRate')) {
     document.getElementById('aiStickerRate').value = aiStickerRate;
 }
@@ -1511,7 +1542,15 @@ if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
         alert('请先在设置里填写API Key');
         return;
     }
-
+    const lastTime = localStorage.getItem('lastMsgTime');
+    const now = Date.now();
+    if (lastTime) {
+        const minutes = Math.floor((now - parseInt(lastTime)) / 60000);
+        if (minutes > 5) {
+            conversationHistory.push({ role: 'system', content: '（距离上次聊天已经过了' + minutes + '分钟）' });
+        }
+    }
+    localStorage.setItem('lastMsgTime', now);
     const input = document.getElementById('userInput');
     const message = input.value.trim();
     if (!message && !fromSticker && !pendingSticker) return;
