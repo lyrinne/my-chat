@@ -823,8 +823,6 @@ function addDeleteEvents() {
     document.querySelectorAll('#messages .message').forEach(msg => {
         if (msg.dataset.hasEvent) return;
         msg.dataset.hasEvent = '1';
-msg.style.webkitUserSelect = 'none';
-msg.style.userSelect = 'none';
         msg.addEventListener('contextmenu', e => { e.preventDefault(); showMessageMenu(msg); });
         let t;
         msg.addEventListener('touchstart', e => { t = setTimeout(() => showMessageMenu(msg), 500); });
@@ -1449,6 +1447,7 @@ startAutoMessage();
 renderMoments();
     startAutoMoment();
 loadCustomStickers();
+setTimeout(addDeleteEvents, 300);
 const savedAiAvatar = localStorage.getItem('aiAvatar');
 const savedUserAvatar = localStorage.getItem('userAvatar');
 if (savedAiAvatar) {
