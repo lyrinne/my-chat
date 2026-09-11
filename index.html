@@ -994,10 +994,13 @@ async function sendMessage(fromSticker) {
     }
     localStorage.setItem('lastMsgTime', now);
 
-    if (message) {
-        addMessage(message, 'user');
-        conversationHistory.push({ role: 'user', content: message });
+  if (message) {
+    const userLines = message.split(/\n/).map(s => s.trim()).filter(s => s.length > 0);
+    for (let i = 0; i < userLines.length; i++) {
+        addMessage(userLines[i], 'user');
+        conversationHistory.push({ role: 'user', content: userLines[i] });
     }
+}
     input.value = '';
     saveHistory();
 
