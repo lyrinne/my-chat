@@ -538,7 +538,11 @@ body {
                 <input id="aiStickerRate" type="number" placeholder="0-1之间，如0.3">
                 <button onclick="saveStickerRate()">保存频率</button>
             </div>
-
+<div class="settings-section">
+    <h4>🌍 自动发朋友圈</h4>
+    <input id="autoMomentRate" type="number" placeholder="间隔分钟，0为关闭">
+    <button onclick="saveAutoMomentRate()">保存</button>
+</div>
             <div class="settings-section">
                 <h4>💬 主动发消息</h4>
                 <input id="autoMsgRate" type="number" placeholder="间隔分钟，0为关闭">
@@ -760,7 +764,12 @@ function saveAutoMsgRate() {
     localStorage.setItem('autoMsgRate', autoMsgRate);
     startAutoMessage();
 }
-
+function saveAutoMomentRate() {
+    const minutes = parseInt(document.getElementById('autoMomentRate').value) || 0;
+    autoMomentRate = minutes * 60000;
+    localStorage.setItem('autoMomentRate', autoMomentRate);
+    startAutoMoment();
+}
 function startAutoMessage() {
     clearInterval(autoMsgTimer);
     if (autoMsgRate <= 0) return;
@@ -929,7 +938,21 @@ function addPokeMessage(text) {
     saveHistory();
     conversationHistory.push({ role: 'user', content: '我拍了拍你' });
 }
-
+function initPokeEvents() {
+    const headerAvatar = document.getElementById('headerAvatar');
+    if (headerAvatar) {
+        let lastTap = 0;
+        headerAvatar.addEventListener('click', function() {
+            const now = Date.now();
+            if (now - lastTap < 400) {
+                addPokeMessage('你拍了拍' + aiName + pokeAISuffix);
+                lastTap = 0;
+            } else {
+                lastTap = now;
+            }
+        });
+    }
+}
 function sendRedPacket() {
     const amount = prompt('红包金额：', '8.88');
     if (!amount) return;
@@ -1119,10 +1142,14 @@ async function summarizeChat() {
 }
 
 function startCall(type) {
-    conversationHistory.push({ role: 'user', content: type === 'video' ? '我给你打了视频通话' : '我给你打了语音通话' });
-    alert('正在呼叫...');
+    if (type === 'video') {
+        conversationHistory.push({ role: 'user', content: '我给你打了视频通话' });
+    } else {
+        conversationHistory.push({ role: 'user', content: '我给你打了语音通话' });
+    }
+    saveHistory();
+    alert(type === 'video' ? '视频通话中...' : '语音通话中...');
 }
-
 function showTyping() {
     const messagesDiv = document.getElementById('messages');
     const typingDiv = document.createElement('div');
@@ -1270,8 +1297,12 @@ function likeMoment(index) {
     moments[index].liked = !moments[index].liked;
     saveMoments();
     renderMoments();
+    if (moments[index].liked) {
+        conversationHistory.push({ role: 'user', content: '我给你的朋友圈点了赞' });
+    } else {
+        conversationHistory.push({ role: 'user', content: '我取消了点赞' });
+    }
 }
-
 function commentMoment(index) {
     const comment = prompt('评论：');
     if (!comment) return;
@@ -1376,11 +1407,13 @@ async function aiCommentMyMoment(index, text) {
                 renderMoments();
             }
         }
-    } catch(e) {}
+  } catch(e) { alert('评论失败：' + e.message); }
 }
 let momentTimer = null;
+let autoMomentRate = parseInt(localStorage.getItem('autoMomentRate') || '0');
 function startAutoMoment() {
     clearInterval(momentTimer);
+    if (autoMomentRate <= 0) return;
     momentTimer = setInterval(async function() {
         if (!API_KEY) return;
         try {
@@ -1408,7 +1441,7 @@ function startAutoMoment() {
                 }
             }
         } catch(e) {}
-    }, 60 * 60 * 1000);
+    }, autoMomentRate);
 }
 window.onload = function() {
     const savedBg = localStorage.getItem('chatBg');
@@ -1445,8 +1478,10 @@ window.onload = function() {
     if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
 
     loadHistory();
+initPokeEvents();
     startAutoMessage();
     renderMoments();
+if (autoMomentRate > 0) document.getElementById('autoMomentRate').value = autoMomentRate / 60000;
     startAutoMoment();
     loadCustomStickers();
     setTimeout(addDeleteEvents, 300);
