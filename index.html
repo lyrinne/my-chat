@@ -1415,6 +1415,7 @@ window.onload = function() {
     const savedAiName = localStorage.getItem('aiName');
     const savedUserName = localStorage.getItem('userName');
     const savedAiAvatar = localStorage.getItem('aiAvatar');
+    const savedUserAvatar = localStorage.getItem('userAvatar');
     const savedNightMode = localStorage.getItem('nightMode');
     const savedCSS = localStorage.getItem('customCSS');
     const savedPokeAISuffix = localStorage.getItem('pokeAISuffix');
@@ -1433,6 +1434,7 @@ window.onload = function() {
         if (savedAiAvatar.startsWith('data:image')) document.getElementById('headerAvatar').innerHTML = '<img src="' + savedAiAvatar + '">';
         else document.getElementById('headerAvatar').textContent = savedAiAvatar;
     }
+    if (savedUserAvatar) userAvatar = savedUserAvatar;
     if (savedNightMode === 'on') document.body.classList.add('night-mode');
     if (savedCSS) { document.getElementById('customStyle').textContent = savedCSS; document.getElementById('cssEditor').value = savedCSS; }
     if (savedPokeAISuffix) pokeAISuffix = savedPokeAISuffix;
@@ -1442,30 +1444,20 @@ window.onload = function() {
     if (API_URL) document.getElementById('apiUrlInput').value = API_URL;
     if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
 
-   loadHistory();
-startAutoMessage();
-renderMoments();
+    loadHistory();
+    startAutoMessage();
+    renderMoments();
     startAutoMoment();
-loadCustomStickers();
-setTimeout(addDeleteEvents, 300);
-const savedAiAvatar = localStorage.getItem('aiAvatar');
-const savedUserAvatar = localStorage.getItem('userAvatar');
-if (savedAiAvatar) {
-    aiAvatar = savedAiAvatar;
-    if (savedAiAvatar.startsWith('data:image')) {
-        document.getElementById('headerAvatar').innerHTML = '<img src="' + savedAiAvatar + '">';
-    } else {
-        document.getElementById('headerAvatar').textContent = savedAiAvatar;
-    }
-}
-if (savedUserAvatar) userAvatar = savedUserAvatar;
-if (aiName) document.getElementById('aiNameInput').value = aiName;
-if (userName) document.getElementById('userNameInput').value = userName;
-if (pokeAISuffix) document.getElementById('pokeAISuffixInput').value = pokeAISuffix;
-if (pokeUserSuffix) document.getElementById('pokeUserSuffixInput').value = pokeUserSuffix;
-if (aiStickerRate) document.getElementById('aiStickerRate').value = aiStickerRate;
-if (autoMsgRate > 0) document.getElementById('autoMsgRate').value = autoMsgRate / 60000;
-if (currentChatId) document.getElementById('chatIdInput').value = currentChatId;
+    loadCustomStickers();
+    setTimeout(addDeleteEvents, 300);
+
+    if (aiName) document.getElementById('aiNameInput').value = aiName;
+    if (userName) document.getElementById('userNameInput').value = userName;
+    if (pokeAISuffix) document.getElementById('pokeAISuffixInput').value = pokeAISuffix;
+    if (pokeUserSuffix) document.getElementById('pokeUserSuffixInput').value = pokeUserSuffix;
+    if (aiStickerRate) document.getElementById('aiStickerRate').value = aiStickerRate;
+    if (autoMsgRate > 0) document.getElementById('autoMsgRate').value = autoMsgRate / 60000;
+    if (currentChatId) document.getElementById('chatIdInput').value = currentChatId;
 };
 </script>
 </body>
