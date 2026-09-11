@@ -404,7 +404,10 @@ body {
 
     <!-- 朋友圈页 -->
     <div class="page" id="page-moments">
-        <div class="moments-header">朋友圈</div>
+        <div class="moments-header">
+    朋友圈
+    <button onclick="generateMoment()" style="float:right;background:none;border:none;font-size:14px;color:#667eea;cursor:pointer;">发一条</button>
+</div>
         <div class="moments-list" id="momentsList"></div>
     </div>
 
@@ -535,12 +538,13 @@ let pendingSticker = null;
 let autoMsgRate = parseInt(localStorage.getItem('autoMsgRate') || '0');
 let autoMsgTimer = null;
 let currentChatId = localStorage.getItem('currentChatId') || '1';
-
+let moments = JSON.parse(localStorage.getItem('moments') || '[]');
 function switchTab(tab) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tabbar-item').forEach(t => t.classList.remove('active'));
     document.getElementById('page-' + tab).classList.add('active');
     event.currentTarget.classList.add('active');
+if (tab === 'moments') renderMoments();
 }
 
 function toggleStickerPanel() {}
@@ -987,7 +991,79 @@ async function sendMessage(fromSticker) {
         addMessage('网络错误：' + error.message, 'ai');
     }
 }
+function saveMoments() {
+    localStorage.setItem('moments', JSON.stringify(moments));
+}
 
+function renderMoments() {
+    const list = document.getElementById('momentsList');
+    if (!list) return;
+    list.innerHTML = '';
+    if (moments.length === 0) {
+        list.innerHTML = '<div style="text-align:center;color:#999;padding:40px 0;font-size:13px;">还没有动态</div>';
+        return;
+    }
+    moments.slice().reverse().forEach(function(m, idx) {
+        const item = document.createElement('div');
+        item.className = 'moment-item';
+        item.innerHTML = `
+            <div class="moment-head">
+                <div class="moment-avatar">${aiAvatar.startsWith('data:image') ? '<img src="' + aiAvatar + '">' : aiAvatar}</div>
+                <div>
+                    <div class="moment-name">${aiName}</div>
+                    <div class="moment-time">${m.time}</div>
+                </div>
+            </div>
+            <div class="moment-text">${m.text}</div>
+            <div class="moment-actions">
+                <span onclick="likeMoment(${moments.length - 1 - idx})">${m.liked ? '❤️ 已赞' : '🤍 点赞'}</span>
+                <span onclick="commentMoment(${moments.length - 1 - idx})">💬 评论</span>
+            </div>
+            ${m.comments && m.comments.length ? '<div style="margin-top:8px;font-size:12px;color:#666;">' + m.comments.map(c => '· ' + c).join('<br>') + '</div>' : ''}
+        `;
+        list.appendChild(item);
+    });
+}
+
+function likeMoment(index) {
+    moments[index].liked = !moments[index].liked;
+    saveMoments();
+    renderMoments();
+}
+
+function commentMoment(index) {
+    const comment = prompt('评论：');
+    if (!comment) return;
+    if (!moments[index].comments) moments[index].comments = [];
+    moments[index].comments.push('我：' + comment);
+    saveMoments();
+    renderMoments();
+    conversationHistory.push({ role: 'user', content: '我评论了你的朋友圈：“' + comment + '”' });
+}
+
+async function generateMoment() {
+    if (!API_KEY) { alert('请先填API Key'); return; }
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
+        body: JSON.stringify({
+            model: API_MODEL,
+            messages: [
+                { role: 'system', content: systemPrompt || '你是聊天助手' },
+                { role: 'system', content: '帮我发一条朋友圈动态，一句话，不要带引号，不要解释。' },
+                ...conversationHistory.slice(-10)
+            ],
+            temperature: 1, max_tokens: 200
+        })
+    });
+    const data = await response.json();
+    if (data.choices && data.choices[0]) {
+        const text = data.choices[0].message.content.trim();
+        moments.push({ text: text, time: new Date().toLocaleString(), liked: false, comments: [] });
+        saveMoments();
+        renderMoments();
+    }
+}
 window.onload = function() {
     const savedBg = localStorage.getItem('chatBg');
     const savedAiName = localStorage.getItem('aiName');
@@ -1020,8 +1096,9 @@ window.onload = function() {
     if (API_URL) document.getElementById('apiUrlInput').value = API_URL;
     if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
 
-    loadHistory();
-    startAutoMessage();
+   loadHistory();
+startAutoMessage();
+renderMoments();
 };
 </script>
 </body>
