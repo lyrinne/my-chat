@@ -560,6 +560,12 @@ body.night-mode .input-area input {
     object-fit: contain;
     display: block;
 }
+.typing-status {
+    font-size: 12px;
+    color: #999;
+    padding: 4px 12px;
+    text-align: left;
+}
  </style>
     <style id="customStyle"></style>
 </head>
@@ -595,6 +601,12 @@ body.night-mode .input-area input {
 <div class="settings-section">
     <h4>🧠 手动总结</h4>
     <button class="name-btn" onclick="summarizeChat()">总结前面的对话</button>
+</div>
+<div class="settings-section">
+    <h4>💬 会话管理</h4>
+    <input class="name-input" id="chatIdInput" placeholder="输入会话编号，如1、2、3">
+    <button class="name-btn" onclick="switchChat()">切换会话</button>
+    <button class="name-btn" onclick="newChat()">新建会话</button>
 </div>
 <div class="settings-section">
     <h4>💬 主动发消息</h4>
@@ -733,6 +745,7 @@ body.night-mode .input-area input {
 let systemPrompt = localStorage.getItem('systemPrompt') || '';
 let aiStickerRate = parseFloat(localStorage.getItem('aiStickerRate') || '0.3');
 let pendingSticker = null;
+let currentChatId = localStorage.getItem('currentChatId') || '1';
 let autoMsgRate = parseInt(localStorage.getItem('autoMsgRate') || '0');
 let autoMsgTimer = null;
 let API_URL = localStorage.getItem('apiUrl') || 'https://api.moonshot.cn/v1/chat/completions';
@@ -768,6 +781,20 @@ function saveStickerRate() {
     aiStickerRate = parseFloat(rate);
     localStorage.setItem('aiStickerRate', rate);
     alert('表情频率已保存');
+}
+function switchChat() {
+    const id = document.getElementById('chatIdInput').value.trim();
+    if (!id) return;
+    currentChatId = id;
+    localStorage.setItem('currentChatId', id);
+    location.reload();
+}
+
+function newChat() {
+    const id = Date.now().toString();
+    currentChatId = id;
+    localStorage.setItem('currentChatId', id);
+    location.reload();
 }
 function saveAutoMsgRate() {
     const minutes = parseInt(document.getElementById('autoMsgRate').value) || 0;
@@ -914,19 +941,20 @@ function saveApiConfig() {
         }
 
         function saveHistory() {
-            localStorage.setItem('chatHistory', JSON.stringify(conversationHistory));
-            localStorage.setItem('chatMessages', document.getElementById('messages').innerHTML);
-        }
+    localStorage.setItem('chatHistory_' + currentChatId, JSON.stringify(conversationHistory));
+    localStorage.setItem('chatMessages_' + currentChatId, document.getElementById('messages').innerHTML);
+    localStorage.setItem('currentChatId', currentChatId);
+}
         function loadHistory() {
-            const savedHistory = localStorage.getItem('chatHistory');
-            const savedMessages = localStorage.getItem('chatMessages');
-            if (savedHistory) conversationHistory = JSON.parse(savedHistory);
-            if (savedMessages) {
-                document.getElementById('messages').innerHTML = savedMessages;
-                document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-                addDeleteEvents();
-            }
-        }
+    const savedHistory = localStorage.getItem('chatHistory_' + currentChatId);
+    const savedMessages = localStorage.getItem('chatMessages_' + currentChatId);
+    if (savedHistory) conversationHistory = JSON.parse(savedHistory);
+    if (savedMessages) {
+        document.getElementById('messages').innerHTML = savedMessages;
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+        addDeleteEvents();
+    }
+}
         function clearChat() {
             conversationHistory = [];
             document.getElementById('messages').innerHTML = `<div class="message ai"><div class="message-avatar">${aiAvatar}</div><div class="message-content">对话已清空</div><div class="message-time">00:00</div></div>`;
@@ -950,7 +978,7 @@ function saveApiConfig() {
             document.querySelectorAll('.msg-menu').forEach(m => m.remove());
             const menu = document.createElement('div');
             menu.className = 'msg-menu';
-            menu.innerHTML = `<div class="msg-menu-item" onclick="copyMessage(this)">复制</div><div class="msg-menu-item" onclick="quoteMessage(this)">引用</div><div class="msg-menu-item msg-menu-del" onclick="deleteMessage(this)">删除</div>`;
+            menu.innerHTML = `<div class="msg-menu-item" onclick="copyMessage(this)">复制</div><div class="msg-menu-item" onclick="quoteMessage(this)">引用</div><div class="msg-menu-item" onclick="recallMessage(this)">撤回</div><div class="msg-menu-item msg-menu-del" onclick="deleteMessage(this)">删除</div>`;
             msg.appendChild(menu);
         }
 
@@ -979,7 +1007,21 @@ function saveApiConfig() {
             const msg = el.closest('.message');
             if (confirm('删除这条消息？')) { msg.remove(); saveHistory(); }
         }
-
+function recallMessage(el) {
+    const msg = el.closest('.message');
+    const text = msg.querySelector('.message-content') ? msg.querySelector('.message-content').textContent : '';
+    
+    if (text) {
+        const index = conversationHistory.findIndex(item => item.content === text && item.role === 'user');
+        if (index !== -1) {
+            conversationHistory.splice(index, 1);
+        }
+    }
+    
+    msg.remove();
+    saveHistory();
+    el.closest('.msg-menu').remove();
+}
         function getTime() {
             const n = new Date();
             return n.getHours().toString().padStart(2, '0') + ':' + n.getMinutes().toString().padStart(2, '0');
@@ -1571,7 +1613,8 @@ if (pendingSticker) {
     sendImageSticker(pendingSticker.src, pendingSticker.group, true);
     pendingSticker = null;
 }
-            const typingId = showTyping();
+            showTypingStatus();
+const typingId = showTyping();
 
             try {
                 const response = await fetch(API_URL, {
@@ -1594,6 +1637,7 @@ if (pendingSticker) {
 
                 const data = await response.json();
                 hideTyping(typingId);
+hideTypingStatus();
 
                 if (data.choices && data.choices[0]) {
                     const reply = data.choices[0].message.content;
@@ -1663,6 +1707,7 @@ if (Math.random() < chance) {
                 }
             } catch (error) {
                 hideTyping(typingId);
+hideTypingStatus();
                 addMessage('网络错误：' + error.message, 'ai');
             }
         }
@@ -1678,7 +1723,20 @@ if (Math.random() < chance) {
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             return typingDiv.id;
         }
+function showTypingStatus() {
+    const messagesDiv = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = 'typing-status';
+    div.id = 'typingStatus';
+    div.textContent = aiName + ' 正在输入...';
+    messagesDiv.appendChild(div);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
 
+function hideTypingStatus() {
+    const el = document.getElementById('typingStatus');
+    if (el) el.remove();
+}
         function hideTyping(id) {
             const typingDiv = document.getElementById(id);
             if (typingDiv) typingDiv.remove();
