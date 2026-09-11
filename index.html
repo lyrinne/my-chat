@@ -1086,8 +1086,33 @@ function commentMoment(index) {
     saveMoments();
     renderMoments();
     conversationHistory.push({ role: 'user', content: '我评论了你的朋友圈：“' + comment + '”' });
+    aiReplyComment(index, comment);
 }
-
+async function aiReplyComment(momentIndex, comment) {
+    if (!API_KEY) return;
+    const moment = moments[momentIndex];
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
+        body: JSON.stringify({
+            model: API_MODEL,
+            messages: [
+                { role: 'system', content: systemPrompt || '你是聊天助手' },
+                { role: 'system', content: '你发了一条朋友圈：“' + moment.text + '”。有人评论：“' + comment + '”。请回复这条评论，一句话，不要引号。' }
+            ],
+            temperature: 1, max_tokens: 200
+        })
+    });
+    const data = await response.json();
+    if (data.choices && data.choices[0]) {
+        let reply = data.choices[0].message.content.trim();
+        reply = reply.replace(/^["“”'']|["“”'']$/g, '').trim();
+        if (!moments[momentIndex].comments) moments[momentIndex].comments = [];
+        moments[momentIndex].comments.push(aiName + '：' + reply);
+        saveMoments();
+        renderMoments();
+    }
+}
 async function generateMoment() {
     if (!API_KEY) { alert('请先填API Key'); return; }
     try {
@@ -1123,13 +1148,42 @@ function publishMyMoment() {
     const input = document.getElementById('myMomentInput');
     const text = input.value.trim();
     if (!text) return;
+    const index = moments.length;
     moments.push({ text: text, time: new Date().toLocaleString(), liked: false, comments: [], fromAI: false });
     saveMoments();
     renderMoments();
     input.value = '';
-    conversationHistory.push({ role: 'user', content: '我发了一条朋友圈：“' + text + '”' });
+    aiCommentMyMoment(index, text);
 }
 
+async function aiCommentMyMoment(index, text) {
+    if (!API_KEY) return;
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
+            body: JSON.stringify({
+                model: API_MODEL,
+                messages: [
+                    { role: 'system', content: systemPrompt || '你是聊天助手' },
+                    { role: 'system', content: '我发了一条朋友圈：“' + text + '”。请你用一句话评论，直接输出评论内容，不要引号，不要解释。' }
+                ],
+                temperature: 1, max_tokens: 200
+            })
+        });
+        const data = await response.json();
+        if (data.choices && data.choices[0]) {
+            let reply = data.choices[0].message.content.trim();
+            reply = reply.replace(/^["“”'']|["“”'']$/g, '').trim();
+            if (reply && reply !== '不评论') {
+                if (!moments[index].comments) moments[index].comments = [];
+                moments[index].comments.push(aiName + '：' + reply);
+                saveMoments();
+                renderMoments();
+            }
+        }
+    } catch(e) {}
+}
 let momentTimer = null;
 function startAutoMoment() {
     clearInterval(momentTimer);
