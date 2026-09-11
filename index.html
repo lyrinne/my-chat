@@ -365,6 +365,24 @@ body {
 .settings-panel {
     display: none !important;
 }
+.sticker-tab {
+    padding: 5px 12px;
+    font-size: 12px;
+    border: none;
+    background: #f0f0f0;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.sticker-upload {
+    padding: 5px 10px;
+    font-size: 11px;
+    border: 1px dashed #ccc;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #666;
+}
 </style>
 </head>
 <body>
@@ -395,7 +413,35 @@ body {
             <button class="toolbar-btn" onclick="startCall('voice')">✆</button>
             <button class="toolbar-btn" onclick="startCall('video')">⊕</button>
         </div>
-
+<div class="sticker-panel" id="stickerPanel" style="display:none;padding:12px;background:#fff;border-top:1px solid #eee;max-height:300px;overflow-y:auto;">
+    <div id="stickerTabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+        <button onclick="switchStickerTab('全部')" class="sticker-tab">全部</button>
+        <button onclick="switchStickerTab('开心')" class="sticker-tab">开心</button>
+        <button onclick="switchStickerTab('生气')" class="sticker-tab">生气</button>
+        <button onclick="switchStickerTab('卖萌')" class="sticker-tab">卖萌</button>
+        <button onclick="switchStickerTab('伤心')" class="sticker-tab">伤心</button>
+        <button onclick="switchStickerTab('哭哭')" class="sticker-tab">哭哭</button>
+        <button onclick="switchStickerTab('想你')" class="sticker-tab">想你</button>
+        <button onclick="switchStickerTab('爱你')" class="sticker-tab">爱你</button>
+        <button onclick="switchStickerTab('得意')" class="sticker-tab">得意</button>
+        <button onclick="switchStickerTab('疑惑')" class="sticker-tab">疑惑</button>
+        <button onclick="switchStickerTab('无语')" class="sticker-tab">无语</button>
+    </div>
+    <div id="customStickers" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+    <div style="width:100%;margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+        <button onclick="uploadToGroup('开心')" class="sticker-upload">➕开心</button>
+        <button onclick="uploadToGroup('生气')" class="sticker-upload">➕生气</button>
+        <button onclick="uploadToGroup('卖萌')" class="sticker-upload">➕卖萌</button>
+        <button onclick="uploadToGroup('伤心')" class="sticker-upload">➕伤心</button>
+        <button onclick="uploadToGroup('哭哭')" class="sticker-upload">➕哭哭</button>
+        <button onclick="uploadToGroup('想你')" class="sticker-upload">➕想你</button>
+        <button onclick="uploadToGroup('爱你')" class="sticker-upload">➕爱你</button>
+        <button onclick="uploadToGroup('得意')" class="sticker-upload">➕得意</button>
+        <button onclick="uploadToGroup('疑惑')" class="sticker-upload">➕疑惑</button>
+        <button onclick="uploadToGroup('无语')" class="sticker-upload">➕无语</button>
+    </div>
+    <input type="file" id="stickerUpload" accept="image/*" multiple style="display:none" onchange="handleStickerUpload(event)">
+</div>
         <div class="input-area">
             <textarea id="userInput" placeholder="输入消息..." rows="1"></textarea>
             <button onclick="sendMessage()">发送</button>
@@ -557,8 +603,98 @@ function switchTab(tab) {
 if (tab === 'moments') renderMoments();
 }
 
-function toggleStickerPanel() {}
+function toggleStickerPanel() {
+    const p = document.getElementById('stickerPanel');
+    p.style.display = p.style.display === 'none' ? 'block' : 'none';
+}
+let pendingStickerUploadGroup = '开心';
 
+function switchStickerTab(group) {
+    document.querySelectorAll('#customStickers .sticker-item').forEach(function(item) {
+        item.style.display = (group === '全部' || item.dataset.group === group) ? '' : 'none';
+    });
+}
+
+function uploadToGroup(group) {
+    pendingStickerUploadGroup = group;
+    document.getElementById('stickerUpload').click();
+}
+
+function handleStickerUpload(event) {
+    const files = event.target.files;
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            addCustomSticker(e.target.result, pendingStickerUploadGroup);
+            saveCustomStickers();
+        };
+        reader.readAsDataURL(file);
+    }
+    event.target.value = '';
+}
+
+function addCustomSticker(imageData, group) {
+    const container = document.getElementById('customStickers');
+    const span = document.createElement('span');
+    span.className = 'sticker-item';
+    span.dataset.group = group || '开心';
+    span.style.cssText = 'position:relative;display:inline-block;cursor:pointer;';
+    span.innerHTML = '<img src="' + imageData + '" style="width:50px;height:50px;object-fit:contain;border-radius:8px;"><div onclick="deleteSticker(this,event)" style="position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:#ff4444;color:#fff;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;">×</div>';
+    span.onclick = function() { sendImageSticker(imageData, span.dataset.group); };
+    container.appendChild(span);
+}
+
+function deleteSticker(btn, event) {
+    if (event) event.stopPropagation();
+    btn.closest('.sticker-item').remove();
+    saveCustomStickers();
+}
+
+function saveCustomStickers() {
+    const arr = [];
+    document.querySelectorAll('#customStickers .sticker-item').forEach(function(item) {
+        const img = item.querySelector('img');
+        if (img) arr.push({ src: img.src, group: item.dataset.group || '开心' });
+    });
+    localStorage.setItem('customStickers', JSON.stringify(arr));
+}
+
+function loadCustomStickers() {
+    const saved = localStorage.getItem('customStickers');
+    if (!saved) return;
+    try {
+        JSON.parse(saved).forEach(function(item) {
+            if (item && item.src) addCustomSticker(item.src, item.group || '开心');
+        });
+    } catch(e) {}
+}
+
+function sendImageSticker(imageData, group) {
+    const div = document.createElement('div');
+    div.className = 'message user';
+    div.innerHTML = '<div class="message-avatar">' + (userAvatar.startsWith('data:image') ? '<img src="' + userAvatar + '">' : userAvatar) + '</div><div class="message-content" style="padding:0;background:transparent;border:none;"><img src="' + imageData + '" style="width:100px;height:100px;object-fit:contain;border-radius:8px;"></div><div class="message-time">' + getTime() + '</div>';
+    document.getElementById('messages').appendChild(div);
+    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    saveHistory();
+    addDeleteEvents();
+    conversationHistory.push({ role: 'user', content: '我发了一个' + (group || '开心') + '的表情' });
+}
+function getStickerByGroup(group) {
+    const stickers = document.querySelectorAll('#customStickers .sticker-item[data-group="' + group + '"] img');
+    if (!stickers.length) return null;
+    return stickers[Math.floor(Math.random() * stickers.length)].src;
+}
+
+function addAIImageSticker(imageData) {
+    const div = document.createElement('div');
+    div.className = 'message ai';
+    div.innerHTML = '<div class="message-avatar">' + (aiAvatar.startsWith('data:image') ? '<img src="' + aiAvatar + '">' : aiAvatar) + '</div><div class="message-content" style="padding:0;background:transparent;border:none;"><img src="' + imageData + '" style="width:100px;height:100px;object-fit:contain;border-radius:8px;"></div><div class="message-time">' + getTime() + '</div>';
+    document.getElementById('messages').appendChild(div);
+    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    saveHistory();
+    addDeleteEvents();
+}
 function saveApiKey() {
     const key = document.getElementById('apiKeyInput').value.trim();
     if (key) {
@@ -1031,7 +1167,36 @@ async function sendMessage(fromSticker) {
             const lines = reply.split(/\n/).map(s => s.trim()).filter(s => s.length > 0);
             for (let i = 0; i < lines.length; i++) {
                 await new Promise(resolve => setTimeout(resolve, i === 0 ? 0 : 600));
-                addMessage(lines[i], 'ai');
+               let stickerGroup = '';
+if (lines[i].includes('滚') || lines[i].includes('烦') || lines[i].includes('生气') || lines[i].includes('傻逼') || lines[i].includes('分手')) {
+    stickerGroup = '生气';
+} else if (lines[i].includes('呜呜') || lines[i].includes('哭') || lines[i].includes('委屈') || lines[i].includes('难受')) {
+    stickerGroup = '哭哭';
+} else if (lines[i].includes('爱你') || lines[i].includes('喜欢') || lines[i].includes('亲亲')) {
+    stickerGroup = '爱你';
+} else if (lines[i].includes('想你') || lines[i].includes('好想')) {
+    stickerGroup = '想你';
+} else if (lines[i].includes('哈哈') || lines[i].includes('开心')) {
+    stickerGroup = '开心';
+} else if (lines[i].includes('得意') || lines[i].includes('厉害')) {
+    stickerGroup = '得意';
+} else if (lines[i].includes('？') || lines[i].includes('疑惑') || lines[i].includes('什么')) {
+    stickerGroup = '疑惑';
+} else if (lines[i].includes('无语') || lines[i].includes('呵呵') || lines[i].includes('服了')) {
+    stickerGroup = '无语';
+} else if (lines[i].includes('可爱') || lines[i].includes('ovo') || lines[i].includes('qwq')) {
+    stickerGroup = '卖萌';
+} else if (lines[i].includes('伤心') || lines[i].includes('难过')) {
+    stickerGroup = '伤心';
+}
+
+if (stickerGroup && Math.random() < aiStickerRate) {
+    const stickerSrc = getStickerByGroup(stickerGroup);
+    if (stickerSrc) {
+        addAIImageSticker(stickerSrc);
+    }
+}
+ addMessage(lines[i], 'ai');
             }
         } else {
             addMessage('出错了：' + JSON.stringify(data), 'ai');
@@ -1255,6 +1420,7 @@ window.onload = function() {
 startAutoMessage();
 renderMoments();
     startAutoMoment();
+loadCustomStickers();
 };
 </script>
 </body>
