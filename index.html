@@ -383,6 +383,28 @@ body {
     cursor: pointer;
     color: #666;
 }
+.msg-menu {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    z-index: 50;
+    display: flex;
+    overflow: hidden;
+}
+
+.msg-menu-item {
+    padding: 8px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.msg-menu-del {
+    color: #e53935;
+}
 </style>
 </head>
 <body>
@@ -1421,6 +1443,13 @@ startAutoMessage();
 renderMoments();
     startAutoMoment();
 loadCustomStickers();
+if (aiName) document.getElementById('aiNameInput').value = aiName;
+if (userName) document.getElementById('userNameInput').value = userName;
+if (pokeAISuffix) document.getElementById('pokeAISuffixInput').value = pokeAISuffix;
+if (pokeUserSuffix) document.getElementById('pokeUserSuffixInput').value = pokeUserSuffix;
+if (aiStickerRate) document.getElementById('aiStickerRate').value = aiStickerRate;
+if (autoMsgRate > 0) document.getElementById('autoMsgRate').value = autoMsgRate / 60000;
+if (currentChatId) document.getElementById('chatIdInput').value = currentChatId;
 };
 </script>
 </body>
