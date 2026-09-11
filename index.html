@@ -436,7 +436,13 @@ body {
                 <textarea id="systemPromptInput" placeholder="粘贴角色人设"></textarea>
                 <button onclick="saveSystemPrompt()">保存角色设定</button>
             </div>
-
+<div class="settings-section">
+    <h4>🤖 AI头像</h4>
+    <button onclick="document.getElementById('avatarInput').click()">上传AI头像</button>
+    <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(event)">
+    <button onclick="document.getElementById('userAvatarInput').click()">上传我的头像</button>
+    <input type="file" id="userAvatarInput" accept="image/*" style="display:none" onchange="uploadUserAvatar(event)">
+</div>
             <div class="settings-section">
                 <h4>✏️ 修改名字</h4>
                 <input id="aiNameInput" placeholder="AI的名字">
@@ -793,7 +799,44 @@ function changeUserName() {
     const v = document.getElementById('userNameInput').value.trim();
     if (v) { userName = v; localStorage.setItem('userName', v); }
 }
+function uploadAvatar(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = 100;
+            canvas.getContext('2d').drawImage(img, 0, 0, 100, 100);
+            const compressed = canvas.toDataURL('image/jpeg', 0.7);
+            aiAvatar = compressed;
+            document.getElementById('headerAvatar').innerHTML = '<img src="' + compressed + '">';
+            localStorage.setItem('aiAvatar', compressed);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
 
+function uploadUserAvatar(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = 100;
+            canvas.getContext('2d').drawImage(img, 0, 0, 100, 100);
+            const compressed = canvas.toDataURL('image/jpeg', 0.7);
+            userAvatar = compressed;
+            localStorage.setItem('userAvatar', compressed);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
 function setPokeAISuffix() {
     const v = document.getElementById('pokeAISuffixInput').value.trim();
     if (v) { pokeAISuffix = v; localStorage.setItem('pokeAISuffix', v); }
@@ -1020,7 +1063,7 @@ function renderMoments() {
             </div>
             <div class="moment-text">${m.text}</div>
             <div class="moment-actions">
-                <span onclick="likeMoment(${moments.length - 1 - idx})">${m.liked ? '❤️ 已赞' : '🤍 点赞'}</span>
+                <span onclick="likeMoment(${moments.length - 1 - idx})">${m.liked ? '❤️ ' + userName : '🤍 点赞'}</span>
                 <span onclick="commentMoment(${moments.length - 1 - idx})">💬 评论</span>
             </div>
             ${m.comments && m.comments.length ? '<div style="margin-top:8px;font-size:12px;color:#666;">' + m.comments.map(c => '· ' + c).join('<br>') + '</div>' : ''}
