@@ -952,7 +952,6 @@ function switchChat() {
 }
 
 function newChat() {
-    saveHistory();
     const id = Date.now().toString();
     currentChatId = id;
     localStorage.setItem('currentChatId', id);
