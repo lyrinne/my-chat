@@ -463,14 +463,91 @@ body {
     font-size: 13px;
     cursor: pointer;
 }
+.contacts-header {
+    background: #fff;
+    padding: 14px 16px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    border-bottom: 1px solid #eee;
+}
+
+.contacts-list {
+    flex: 1;
+    overflow-y: auto;
+    background: #f5f6f8;
+}
+
+.contact-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    align-items: center;
+}
+
+.contact-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    overflow: hidden;
+}
+
+.contact-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.contact-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+}
+
+.contact-preview {
+    font-size: 12px;
+    color: #999;
+    margin-top: 2px;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+    padding: 0 8px;
+}
 </style>
 </head>
 <body>
 <div class="app">
 
-    <!-- 聊天页 -->
-    <div class="page active" id="page-chat">
+    <!-- 联系人页 -->
+<div class="page active" id="page-contacts">
+    <div class="contacts-header">聊天</div>
+    <div class="contacts-list" id="contactsList">
+        <div class="contact-item" onclick="openChat()">
+            <div class="contact-avatar" id="contactAvatar">🤖</div>
+            <div class="contact-info">
+                <div class="contact-name" id="contactName">AI 助手</div>
+                <div class="contact-preview">点击进入聊天</div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 聊天页 -->
+    <div class="page" id="page-chat">
         <div class="chat-header">
+    <button class="back-btn" onclick="backToContacts()">‹</button>
             <div class="header-avatar" id="headerAvatar">🤖</div>
             <div class="header-info">
                 <h1 id="headerName">AI 助手</h1>
@@ -648,7 +725,7 @@ body {
 
     <!-- 底部导航 -->
     <div class="tabbar">
-        <div class="tabbar-item active" onclick="switchTab('chat')">
+        <div class="tabbar-item active" onclick="switchTab('contacts')">
             <div class="tab-icon">💬</div>
             <div>聊天</div>
         </div>
@@ -685,14 +762,26 @@ let autoMsgRate = parseInt(localStorage.getItem('autoMsgRate') || '0');
 let autoMsgTimer = null;
 let currentChatId = localStorage.getItem('currentChatId') || '1';
 let moments = JSON.parse(localStorage.getItem('moments') || '[]');
+function openChat() {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-chat').classList.add('active');
+    document.querySelectorAll('.tabbar-item').forEach(t => t.classList.remove('active'));
+}
+
+function backToContacts() {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-contacts').classList.add('active');
+    document.querySelectorAll('.tabbar-item').forEach((t, i) => {
+        if (i === 0) t.classList.add('active');
+    });
+}
 function switchTab(tab) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tabbar-item').forEach(t => t.classList.remove('active'));
     document.getElementById('page-' + tab).classList.add('active');
     event.currentTarget.classList.add('active');
-if (tab === 'moments') renderMoments();
+    if (tab === 'moments') renderMoments();
 }
-
 function toggleStickerPanel() {
     const p = document.getElementById('stickerPanel');
     p.style.display = p.style.display === 'none' ? 'block' : 'none';
@@ -768,7 +857,7 @@ function loadCustomStickers() {
 function sendImageSticker(imageData, group) {
     const div = document.createElement('div');
     div.className = 'message user';
-    div.innerHTML = '<div class="message-avatar">' + (userAvatar.startsWith('data:image') ? '<img src="' + userAvatar + '">' : userAvatar) + '</div><div class="message-content" style="padding:0;background:transparent;border:none;"><img src="' + imageData + '" style="width:100px;height:100px;object-fit:contain;border-radius:8px;"></div><div class="message-time">' + getTime() + '</div>';
+    div.innerHTML = '<div class="message-avatar">' + (userAvatar.startsWith('data:image') ? '<img src="' + userAvatar + '">' : userAvatar) + '</div><div style="padding:0;background:transparent;border:none;"><img src="' + imageData + '" style="width:100px;height:100px;object-fit:contain;border-radius:8px;"></div><div class="message-time">' + getTime() + '</div>';
     document.getElementById('messages').appendChild(div);
     document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
     saveHistory();
@@ -784,7 +873,7 @@ function getStickerByGroup(group) {
 function addAIImageSticker(imageData) {
     const div = document.createElement('div');
     div.className = 'message ai';
-    div.innerHTML = '<div class="message-avatar">' + (aiAvatar.startsWith('data:image') ? '<img src="' + aiAvatar + '">' : aiAvatar) + '</div><div class="message-content" style="padding:0;background:transparent;border:none;"><img src="' + imageData + '" style="width:100px;height:100px;object-fit:contain;border-radius:8px;"></div><div class="message-time">' + getTime() + '</div>';
+    div.innerHTML = '<div class="message-avatar">' + (aiAvatar.startsWith('data:image') ? '<img src="' + aiAvatar + '">' : aiAvatar) + '</div><div style="padding:0;background:transparent;border:none;"><img src="' + imageData + '" style="width:100px;height:100px;object-fit:contain;border-radius:8px;"></div><div class="message-time">' + getTime() + '</div>';
     document.getElementById('messages').appendChild(div);
     document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
     saveHistory();
@@ -1061,7 +1150,8 @@ function sendTransfer() {
 }
 function changeAIName() {
     const v = document.getElementById('aiNameInput').value.trim();
-    if (v) { aiName = v; document.getElementById('headerName').textContent = v; localStorage.setItem('aiName', v); }
+    if (v) { aiName = v; document.getElementById('headerName').textContent = v;
+if (document.getElementById('contactName')) document.getElementById('contactName').textContent = v; localStorage.setItem('aiName', v); }
 }
 
 function changeUserName() {
@@ -1081,6 +1171,7 @@ function uploadAvatar(event) {
             const compressed = canvas.toDataURL('image/jpeg', 0.7);
             aiAvatar = compressed;
             document.getElementById('headerAvatar').innerHTML = '<img src="' + compressed + '">';
+if (document.getElementById('contactAvatar')) document.getElementById('contactAvatar').innerHTML = '<img src="' + compressed + '">';
             localStorage.setItem('aiAvatar', compressed);
         };
         img.src = e.target.result;
@@ -1574,11 +1665,16 @@ window.onload = function() {
         document.body.style.backgroundSize = 'cover';
         document.body.style.backgroundPosition = 'center';
     }
-    if (savedAiName) { aiName = savedAiName; document.getElementById('headerName').textContent = savedAiName; }
+    if (savedAiName) { 
+    aiName = savedAiName; 
+    document.getElementById('headerName').textContent = savedAiName;
+    if (document.getElementById('contactName')) document.getElementById('contactName').textContent = savedAiName;
+}
     if (savedUserName) userName = savedUserName;
     if (savedAiAvatar) {
         aiAvatar = savedAiAvatar;
         if (savedAiAvatar.startsWith('data:image')) document.getElementById('headerAvatar').innerHTML = '<img src="' + savedAiAvatar + '">';
+if (document.getElementById('contactAvatar')) document.getElementById('contactAvatar').innerHTML = '<img src="' + savedAiAvatar + '">';
         else document.getElementById('headerAvatar').textContent = savedAiAvatar;
     }
     if (savedUserAvatar) userAvatar = savedUserAvatar;
