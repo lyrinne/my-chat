@@ -631,53 +631,16 @@ body {
             </div>
 
             <div class="settings-section">
-                <h4>🎭 角色设定</h4>
-                <textarea id="systemPromptInput" placeholder="粘贴角色人设"></textarea>
-                <button onclick="saveSystemPrompt()">保存角色设定</button>
-            </div>
-<div class="settings-section">
     <h4>❄️ 冻结语料</h4>
     <textarea id="frozenPromptInput" placeholder="写一段最能代表TA的对话，每次聊天都会带上"></textarea>
     <button onclick="saveFrozenPrompt()">保存冻结语料</button>
 </div>
-<div class="settings-section">
-    <h4>🤖 AI头像</h4>
-    <button onclick="document.getElementById('avatarInput').click()">上传AI头像</button>
-    <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(event)">
-    <button onclick="document.getElementById('userAvatarInput').click()">上传我的头像</button>
-    <input type="file" id="userAvatarInput" accept="image/*" style="display:none" onchange="uploadUserAvatar(event)">
-</div>
+            
             <div class="settings-section">
-                <h4>✏️ 修改名字</h4>
-                <input id="aiNameInput" placeholder="AI的名字">
-                <button onclick="changeAIName()">保存AI名字</button>
-                <input id="userNameInput" placeholder="你的名字">
-                <button onclick="changeUserName()">保存我的名字</button>
-            </div>
-
-            <div class="settings-section">
-                <h4>👋 拍一拍后缀</h4>
-                <input id="pokeAISuffixInput" placeholder="你拍他的后缀">
-                <button onclick="setPokeAISuffix()">保存你拍他的后缀</button>
-                <input id="pokeUserSuffixInput" placeholder="他拍你的后缀">
-                <button onclick="setPokeUserSuffix()">保存他拍你的后缀</button>
-            </div>
-
-            <div class="settings-section">
-                     <h4>😊 AI表情包频率</h4>
-                <input id="aiStickerRate" type="number" placeholder="0-1之间，如0.3">
-                <button onclick="saveStickerRate()">保存频率</button>
-            </div>
-<div class="settings-section">
     <h4>🌍 自动发朋友圈</h4>
     <input id="autoMomentRate" type="number" placeholder="间隔分钟，0为关闭">
     <button onclick="saveAutoMomentRate()">保存</button>
 </div>
-            <div class="settings-section">
-                <h4>💬 主动发消息</h4>
-                <input id="autoMsgRate" type="number" placeholder="间隔分钟，0为关闭">
-                <button onclick="saveAutoMsgRate()">保存</button>
-            </div>
 
             <div class="settings-section">
                 <h4>🧠 手动总结</h4>
@@ -714,15 +677,36 @@ body {
 <div class="chat-settings" id="chatSettings" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center;">
     <div style="background:#fff;border-radius:16px;padding:20px;width:85%;max-width:400px;max-height:80vh;overflow-y:auto;">
         <h3 style="margin-bottom:16px;">会话设置</h3>
-        <input class="name-input" id="chatAiNameInput" placeholder="名字">
-        <button class="name-btn" onclick="saveChatAiName()">保存名字</button>
-        <button class="name-btn" onclick="document.getElementById('chatAvatarInput').click()">上传头像</button>
-        <input type="file" id="chatAvatarInput" accept="image/*" style="display:none" onchange="uploadChatAvatar(event)">
-        <textarea class="css-editor" id="chatSystemPromptInput" placeholder="人设"></textarea>
-        <button class="name-btn" onclick="saveChatSystemPrompt()">保存人设</button>
-        <input class="name-input" id="chatPokeAISuffixInput" placeholder="你拍他的后缀">
-        <button class="name-btn" onclick="saveChatPokeSuffix()">保存拍一拍后缀</button>
-        <button class="name-btn" onclick="closeChatSettings()">关闭</button>
+
+<h4 style="font-size:13px;color:#666;margin-bottom:8px;">名字</h4>
+<input class="name-input" id="chatAiNameInput" placeholder="名字">
+<button class="name-btn" onclick="saveChatAiName()">保存名字</button>
+
+<h4 style="font-size:13px;color:#666;margin-bottom:8px;">头像</h4>
+<button class="name-btn" onclick="document.getElementById('chatAvatarInput').click()">上传头像</button>
+<input type="file" id="chatAvatarInput" accept="image/*" style="display:none" onchange="uploadChatAvatar(event)">
+
+<h4 style="font-size:13px;color:#666;margin-bottom:8px;">人设</h4>
+<textarea class="css-editor" id="chatSystemPromptInput" placeholder="人设"></textarea>
+<button class="name-btn" onclick="saveChatSystemPrompt()">保存人设</button>
+
+<h4 style="font-size:13px;color:#666;margin-bottom:8px;">拍一拍后缀</h4>
+<input class="name-input" id="chatPokeAISuffixInput" placeholder="你拍他的后缀">
+<button class="name-btn" onclick="saveChatPokeSuffix()">保存你拍他的后缀</button>
+<input class="name-input" id="chatPokeUserSuffixInput" placeholder="他拍你的后缀">
+<button class="name-btn" onclick="saveChatPokeUserSuffix()">保存他拍你的后缀</button>
+<h4 style="font-size:13px;color:#666;margin-bottom:8px;">表情包频率</h4>
+<input class="name-input" id="chatStickerRateInput" type="number" placeholder="0-1">
+<button class="name-btn" onclick="saveChatStickerRate()">保存频率</button>
+
+<h4 style="font-size:13px;color:#666;margin-bottom:8px;">主动发消息</h4>
+<input class="name-input" id="chatAutoMsgRateInput" type="number" placeholder="间隔分钟，0为关闭">
+<button class="name-btn" onclick="saveChatAutoMsgRate()">保存</button>
+
+<h4 style="font-size:13px;color:#666;margin-bottom:8px;">手动总结</h4>
+<button class="name-btn" onclick="summarizeChat()">总结当前会话</button>
+
+<button class="name-btn" onclick="closeChatSettings()" style="background:#999;">关闭</button>
     </div>
 </div>
     <!-- 底部导航 -->
@@ -839,6 +823,9 @@ function openChat() {
     aiAvatar = localStorage.getItem('aiAvatar_' + currentChatId) || '🤖';
     systemPrompt = localStorage.getItem('systemPrompt_' + currentChatId) || '';
     pokeAISuffix = localStorage.getItem('pokeAISuffix_' + currentChatId) || '的屁股';
+pokeUserSuffix = localStorage.getItem('pokeUserSuffix_' + currentChatId) || '的脸';
+    aiStickerRate = parseFloat(localStorage.getItem('aiStickerRate_' + currentChatId) || '0.3');
+    autoMsgRate = parseInt(localStorage.getItem('autoMsgRate_' + currentChatId) || '0');
 
     document.getElementById('headerName').textContent = aiName;
     if (aiAvatar.startsWith('data:image')) {
@@ -848,6 +835,7 @@ function openChat() {
     }
 
     loadHistory();
+    startAutoMessage();
 }
 function backToContacts() {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1042,8 +1030,10 @@ function openChatSettings() {
     document.getElementById('chatAiNameInput').value = localStorage.getItem('aiName_' + currentChatId) || aiName;
     document.getElementById('chatSystemPromptInput').value = localStorage.getItem('systemPrompt_' + currentChatId) || '';
     document.getElementById('chatPokeAISuffixInput').value = localStorage.getItem('pokeAISuffix_' + currentChatId) || '的屁股';
+document.getElementById('chatPokeUserSuffixInput').value = localStorage.getItem('pokeUserSuffix_' + currentChatId) || '的脸';
+    document.getElementById('chatStickerRateInput').value = parseFloat(localStorage.getItem('aiStickerRate_' + currentChatId) || '0.3');
+    document.getElementById('chatAutoMsgRateInput').value = (parseInt(localStorage.getItem('autoMsgRate_' + currentChatId) || '0')) / 60000;
 }
-
 function closeChatSettings() {
     document.getElementById('chatSettings').style.display = 'none';
 }
@@ -1095,6 +1085,28 @@ function saveChatPokeSuffix() {
         pokeAISuffix = v;
         alert('后缀已保存');
     }
+}
+function saveChatPokeUserSuffix() {
+    const v = document.getElementById('chatPokeUserSuffixInput').value.trim();
+    if (v) {
+        localStorage.setItem('pokeUserSuffix_' + currentChatId, v);
+        pokeUserSuffix = v;
+        alert('已保存');
+    }
+}
+function saveChatStickerRate() {
+    const v = parseFloat(document.getElementById('chatStickerRateInput').value) || 0;
+    localStorage.setItem('aiStickerRate_' + currentChatId, v);
+    aiStickerRate = v;
+    alert('已保存');
+}
+
+function saveChatAutoMsgRate() {
+    const m = parseInt(document.getElementById('chatAutoMsgRateInput').value) || 0;
+    localStorage.setItem('autoMsgRate_' + currentChatId, m * 60000);
+    autoMsgRate = m * 60000;
+    startAutoMessage();
+    alert('已保存');
 }
 function saveHistory() {
     localStorage.setItem('chatHistory_' + currentChatId, JSON.stringify(conversationHistory));
@@ -1834,7 +1846,6 @@ if (document.getElementById('contactAvatar')) document.getElementById('contactAv
     if (savedPokeAISuffix) pokeAISuffix = savedPokeAISuffix;
     if (savedPokeUserSuffix) pokeUserSuffix = savedPokeUserSuffix;
    systemPrompt = localStorage.getItem('systemPrompt_' + currentChatId) || '';
-if (systemPrompt) document.getElementById('systemPromptInput').value = systemPrompt;
     if (API_KEY) document.getElementById('apiKeyInput').value = API_KEY;
     if (API_URL) document.getElementById('apiUrlInput').value = API_URL;
     if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
@@ -1847,13 +1858,6 @@ initPokeEvents();
     startAutoMoment();
     loadCustomStickers();
     setTimeout(addDeleteEvents, 300);
-
-    if (aiName) document.getElementById('aiNameInput').value = aiName;
-    if (userName) document.getElementById('userNameInput').value = userName;
-    if (pokeAISuffix) document.getElementById('pokeAISuffixInput').value = pokeAISuffix;
-    if (pokeUserSuffix) document.getElementById('pokeUserSuffixInput').value = pokeUserSuffix;
-    if (aiStickerRate) document.getElementById('aiStickerRate').value = aiStickerRate;
-    if (autoMsgRate > 0) document.getElementById('autoMsgRate').value = autoMsgRate / 60000;
 };
 </script>
 </body>
