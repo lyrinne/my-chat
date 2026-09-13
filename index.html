@@ -776,9 +776,7 @@ function renderContacts() {
         }
     }
 
-    if (allKeys.length === 0) {
-        allKeys.push(currentChatId);
-    }
+    if (allKeys.length === 0) allKeys.push(currentChatId);
 
     allKeys.sort().reverse().forEach(function(id) {
         const history = JSON.parse(localStorage.getItem('chatHistory_' + id) || '[]');
@@ -793,10 +791,34 @@ function renderContacts() {
             openChat();
         };
         item.innerHTML = '<div class="contact-avatar">' + (aiAvatar.startsWith('data:image') ? '<img src="' + aiAvatar + '">' : aiAvatar) + '</div><div class="contact-info"><div class="contact-name">' + aiName + (id === currentChatId ? '（当前）' : '') + '</div><div class="contact-preview">' + preview + '</div></div>';
+
+        item.oncontextmenu = function(e) {
+            e.preventDefault();
+            deleteContact(id);
+        };
+
+        let pressTimer = null;
+        item.addEventListener('touchstart', function() {
+            pressTimer = setTimeout(function() { deleteContact(id); }, 600);
+        });
+        item.addEventListener('touchend', function() { clearTimeout(pressTimer); });
+        item.addEventListener('touchmove', function() { clearTimeout(pressTimer); });
+
         list.appendChild(item);
     });
 }
 
+function deleteContact(id) {
+    if (!confirm('删除这个会话？')) return;
+    localStorage.removeItem('chatHistory_' + id);
+    localStorage.removeItem('chatMessages_' + id);
+    localStorage.removeItem('systemPrompt_' + id);
+    if (currentChatId === id) {
+        currentChatId = '1';
+        localStorage.setItem('currentChatId', '1');
+    }
+    renderContacts();
+}
 function openChat() {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-chat').classList.add('active');
