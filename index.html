@@ -971,6 +971,10 @@ function loadHistory() {
         localStorage.setItem('chatHistory_' + currentChatId, localStorage.getItem('chatHistory'));
         localStorage.setItem('chatMessages_' + currentChatId, localStorage.getItem('chatMessages'));
     }
+if (!localStorage.getItem('chatHistory_' + currentChatId) && localStorage.getItem('chatHistory')) {
+    localStorage.setItem('chatHistory_' + currentChatId, localStorage.getItem('chatHistory'));
+    localStorage.setItem('chatMessages_' + currentChatId, localStorage.getItem('chatMessages'));
+}
     if (savedHistory) conversationHistory = JSON.parse(savedHistory);
     if (savedMessages) {
         document.getElementById('messages').innerHTML = savedMessages;
@@ -980,6 +984,10 @@ function loadHistory() {
     systemPrompt = localStorage.getItem('systemPrompt_' + currentChatId) || '';
     const spInput = document.getElementById('systemPromptInput');
     if (spInput) spInput.value = systemPrompt;
+}
+systemPrompt = localStorage.getItem('systemPrompt_' + currentChatId) || '';
+if (document.getElementById('systemPromptInput')) {
+    document.getElementById('systemPromptInput').value = systemPrompt;
 }
 function clearChat() {
     conversationHistory = [];
