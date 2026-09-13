@@ -952,12 +952,12 @@ function switchChat() {
 }
 
 function newChat() {
+    saveHistory();
     const id = Date.now().toString();
     currentChatId = id;
     localStorage.setItem('currentChatId', id);
     location.reload();
 }
-
 function saveHistory() {
     localStorage.setItem('chatHistory_' + currentChatId, JSON.stringify(conversationHistory));
     localStorage.setItem('chatMessages_' + currentChatId, document.getElementById('messages').innerHTML);
@@ -977,10 +977,10 @@ function loadHistory() {
         document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
         addDeleteEvents();
     }
+    systemPrompt = localStorage.getItem('systemPrompt_' + currentChatId) || '';
+    const spInput = document.getElementById('systemPromptInput');
+    if (spInput) spInput.value = systemPrompt;
 }
-systemPrompt = localStorage.getItem('systemPrompt_' + currentChatId) || '';
-const spInput = document.getElementById('systemPromptInput');
-if (spInput) spInput.value = systemPrompt;
 function clearChat() {
     conversationHistory = [];
     document.getElementById('messages').innerHTML = `<div class="message ai"><div class="message-avatar">${aiAvatar}</div><div class="message-content">对话已清空</div><div class="message-time">00:00</div></div>`;
