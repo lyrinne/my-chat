@@ -947,6 +947,7 @@ function newChat() {
     const id = Date.now().toString();
     currentChatId = id;
     localStorage.setItem('currentChatId', id);
+    alert('新会话ID：' + id);
     location.reload();
 }
 function saveHistory() {
