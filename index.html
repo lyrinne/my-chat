@@ -543,12 +543,13 @@ body {
     <div class="page" id="page-chat">
         <div class="chat-header">
     <button class="back-btn" onclick="backToContacts()">‹</button>
-            <div class="header-avatar" id="headerAvatar">🤖</div>
-            <div class="header-info">
-                <h1 id="headerName">AI 助手</h1>
-                <p>● 在线</p>
-            </div>
-        </div>
+    <div class="header-avatar" id="headerAvatar">🤖</div>
+    <div class="header-info">
+        <h1 id="headerName">AI 助手</h1>
+        <p>● 在线</p>
+    </div>
+    <button class="back-btn" style="margin-left:auto;" onclick="openChatSettings()">⚙</button>
+</div>
 
         <div class="messages" id="messages">
             <div class="message ai">
@@ -710,7 +711,20 @@ body {
             </div>
         </div>
     </div>
-
+<div class="chat-settings" id="chatSettings" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center;">
+    <div style="background:#fff;border-radius:16px;padding:20px;width:85%;max-width:400px;max-height:80vh;overflow-y:auto;">
+        <h3 style="margin-bottom:16px;">会话设置</h3>
+        <input class="name-input" id="chatAiNameInput" placeholder="名字">
+        <button class="name-btn" onclick="saveChatAiName()">保存名字</button>
+        <button class="name-btn" onclick="document.getElementById('chatAvatarInput').click()">上传头像</button>
+        <input type="file" id="chatAvatarInput" accept="image/*" style="display:none" onchange="uploadChatAvatar(event)">
+        <textarea class="css-editor" id="chatSystemPromptInput" placeholder="人设"></textarea>
+        <button class="name-btn" onclick="saveChatSystemPrompt()">保存人设</button>
+        <input class="name-input" id="chatPokeAISuffixInput" placeholder="你拍他的后缀">
+        <button class="name-btn" onclick="saveChatPokeSuffix()">保存拍一拍后缀</button>
+        <button class="name-btn" onclick="closeChatSettings()">关闭</button>
+    </div>
+</div>
     <!-- 底部导航 -->
     <div class="tabbar">
         <div class="tabbar-item active" onclick="switchTab('contacts')">
@@ -750,11 +764,6 @@ let pendingSticker = null;
 let autoMsgRate = parseInt(localStorage.getItem('autoMsgRate') || '0');
 let autoMsgTimer = null;
 let moments = JSON.parse(localStorage.getItem('moments') || '[]');
-function openChat() {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-chat').classList.add('active');
-    document.querySelectorAll('.tabbar-item').forEach(t => t.classList.remove('active'));
-}
 
 function backToContacts() {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -790,8 +799,10 @@ function renderContacts() {
             localStorage.setItem('currentChatId', id);
             openChat();
         };
-        item.innerHTML = '<div class="contact-avatar">' + (aiAvatar.startsWith('data:image') ? '<img src="' + aiAvatar + '">' : aiAvatar) + '</div><div class="contact-info"><div class="contact-name">' + aiName + (id === currentChatId ? '（当前）' : '') + '</div><div class="contact-preview">' + preview + '</div></div>';
-
+       const cName = localStorage.getItem('aiName_' + id) || 'AI 助手';
+const cAvatar = localStorage.getItem('aiAvatar_' + id) || '🤖';
+const avatarHtml = cAvatar.startsWith('data:image') ? '<img src="' + cAvatar + '">' : cAvatar;
+item.innerHTML = '<div class="contact-avatar">' + avatarHtml + '</div><div class="contact-info"><div class="contact-name">' + cName + (id === currentChatId ? '（当前）' : '') + '</div><div class="contact-preview">' + preview + '</div></div>';
         item.oncontextmenu = function(e) {
             e.preventDefault();
             deleteContact(id);
@@ -823,9 +834,21 @@ function openChat() {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-chat').classList.add('active');
     document.querySelectorAll('.tabbar-item').forEach(t => t.classList.remove('active'));
+
+    aiName = localStorage.getItem('aiName_' + currentChatId) || 'AI 助手';
+    aiAvatar = localStorage.getItem('aiAvatar_' + currentChatId) || '🤖';
+    systemPrompt = localStorage.getItem('systemPrompt_' + currentChatId) || '';
+    pokeAISuffix = localStorage.getItem('pokeAISuffix_' + currentChatId) || '的屁股';
+
+    document.getElementById('headerName').textContent = aiName;
+    if (aiAvatar.startsWith('data:image')) {
+        document.getElementById('headerAvatar').innerHTML = '<img src="' + aiAvatar + '">';
+    } else {
+        document.getElementById('headerAvatar').textContent = aiAvatar;
+    }
+
     loadHistory();
 }
-
 function backToContacts() {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-contacts').classList.add('active');
@@ -1013,6 +1036,65 @@ function newChat() {
     localStorage.setItem('currentChatId', id);
     renderContacts();
     alert('新会话已创建');
+}
+function openChatSettings() {
+    document.getElementById('chatSettings').style.display = 'flex';
+    document.getElementById('chatAiNameInput').value = localStorage.getItem('aiName_' + currentChatId) || aiName;
+    document.getElementById('chatSystemPromptInput').value = localStorage.getItem('systemPrompt_' + currentChatId) || '';
+    document.getElementById('chatPokeAISuffixInput').value = localStorage.getItem('pokeAISuffix_' + currentChatId) || '的屁股';
+}
+
+function closeChatSettings() {
+    document.getElementById('chatSettings').style.display = 'none';
+}
+
+function saveChatAiName() {
+    const v = document.getElementById('chatAiNameInput').value.trim();
+    if (v) {
+        localStorage.setItem('aiName_' + currentChatId, v);
+        aiName = v;
+        document.getElementById('headerName').textContent = v;
+        renderContacts();
+    }
+}
+
+function uploadChatAvatar(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = canvas.height = 100;
+            canvas.getContext('2d').drawImage(img, 0, 0, 100, 100);
+            const compressed = canvas.toDataURL('image/jpeg', 0.7);
+            localStorage.setItem('aiAvatar_' + currentChatId, compressed);
+            aiAvatar = compressed;
+            document.getElementById('headerAvatar').innerHTML = '<img src="' + compressed + '">';
+            renderContacts();
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function saveChatSystemPrompt() {
+    const v = document.getElementById('chatSystemPromptInput').value.trim();
+    if (v) {
+        localStorage.setItem('systemPrompt_' + currentChatId, v);
+        systemPrompt = v;
+        alert('人设已保存');
+    }
+}
+
+function saveChatPokeSuffix() {
+    const v = document.getElementById('chatPokeAISuffixInput').value.trim();
+    if (v) {
+        localStorage.setItem('pokeAISuffix_' + currentChatId, v);
+        pokeAISuffix = v;
+        alert('后缀已保存');
+    }
 }
 function saveHistory() {
     localStorage.setItem('chatHistory_' + currentChatId, JSON.stringify(conversationHistory));
