@@ -741,6 +741,7 @@ body {
 
 <script>
 let API_KEY = localStorage.getItem('userApiKey') || '';
+let currentChatId = localStorage.getItem('currentChatId') || '1';
 let systemPrompt = localStorage.getItem('systemPrompt_' + currentChatId) || '';
 let frozenPrompt = localStorage.getItem('frozenPrompt') || '';
 let API_URL = localStorage.getItem('apiUrl') || 'https://api.moonshot.cn/v1/chat/completions';
@@ -756,7 +757,6 @@ let aiStickerRate = parseFloat(localStorage.getItem('aiStickerRate') || '0.3');
 let pendingSticker = null;
 let autoMsgRate = parseInt(localStorage.getItem('autoMsgRate') || '0');
 let autoMsgTimer = null;
-let currentChatId = localStorage.getItem('currentChatId') || '1';
 let moments = JSON.parse(localStorage.getItem('moments') || '[]');
 function openChat() {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
