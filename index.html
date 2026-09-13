@@ -537,15 +537,7 @@ body {
     聊天
     <button onclick="newChat()" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:22px;color:#667eea;cursor:pointer;">＋</button>
 </div>
-    <div class="contacts-list" id="contactsList">
-        <div class="contact-item" onclick="openChat()">
-            <div class="contact-avatar" id="contactAvatar">🤖</div>
-            <div class="contact-info">
-                <div class="contact-name" id="contactName">AI 助手</div>
-                <div class="contact-preview">点击进入聊天</div>
-            </div>
-        </div>
-    </div>
+    <div class="contacts-list" id="contactsList"></div>
 </div>
 <!-- 聊天页 -->
     <div class="page" id="page-chat">
@@ -771,12 +763,62 @@ function backToContacts() {
         if (i === 0) t.classList.add('active');
     });
 }
+function renderContacts() {
+    const list = document.getElementById('contactsList');
+    if (!list) return;
+    list.innerHTML = '';
+
+    const allKeys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('chatHistory_')) {
+            allKeys.push(key.replace('chatHistory_', ''));
+        }
+    }
+
+    if (allKeys.length === 0) {
+        allKeys.push(currentChatId);
+    }
+
+    allKeys.sort().reverse().forEach(function(id) {
+        const history = JSON.parse(localStorage.getItem('chatHistory_' + id) || '[]');
+        const lastMsg = history.filter(m => m.role !== 'system').slice(-1)[0];
+        const preview = lastMsg ? lastMsg.content.slice(0, 20) : '新会话';
+
+        const item = document.createElement('div');
+        item.className = 'contact-item';
+        item.onclick = function() {
+            currentChatId = id;
+            localStorage.setItem('currentChatId', id);
+            openChat();
+        };
+        item.innerHTML = '<div class="contact-avatar">' + (aiAvatar.startsWith('data:image') ? '<img src="' + aiAvatar + '">' : aiAvatar) + '</div><div class="contact-info"><div class="contact-name">' + aiName + (id === currentChatId ? '（当前）' : '') + '</div><div class="contact-preview">' + preview + '</div></div>';
+        list.appendChild(item);
+    });
+}
+
+function openChat() {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-chat').classList.add('active');
+    document.querySelectorAll('.tabbar-item').forEach(t => t.classList.remove('active'));
+    loadHistory();
+}
+
+function backToContacts() {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-contacts').classList.add('active');
+    document.querySelectorAll('.tabbar-item').forEach((t, i) => {
+        if (i === 0) t.classList.add('active');
+    });
+    renderContacts();
+}
 function switchTab(tab) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tabbar-item').forEach(t => t.classList.remove('active'));
     document.getElementById('page-' + tab).classList.add('active');
     event.currentTarget.classList.add('active');
     if (tab === 'moments') renderMoments();
+    if (tab === 'contacts') renderContacts();
 }
 function toggleStickerPanel() {
     const p = document.getElementById('stickerPanel');
@@ -947,7 +989,8 @@ function newChat() {
     const id = Date.now().toString();
     currentChatId = id;
     localStorage.setItem('currentChatId', id);
-    window.location.href = window.location.href + '?v=' + id;
+    renderContacts();
+    alert('新会话已创建');
 }
 function saveHistory() {
     localStorage.setItem('chatHistory_' + currentChatId, JSON.stringify(conversationHistory));
@@ -1692,7 +1735,8 @@ if (systemPrompt) document.getElementById('systemPromptInput').value = systemPro
     if (API_URL) document.getElementById('apiUrlInput').value = API_URL;
     if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
 
-    loadHistory();
+   renderContacts();
+ loadHistory();
 initPokeEvents();
     startAutoMessage();
     renderMoments();
