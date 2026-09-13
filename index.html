@@ -741,7 +741,7 @@ body {
 
 <script>
 let API_KEY = localStorage.getItem('userApiKey') || '';
-let systemPrompt = localStorage.getItem('systemPrompt') || '';
+let systemPrompt = localStorage.getItem('systemPrompt_' + currentChatId) || '';
 let frozenPrompt = localStorage.getItem('frozenPrompt') || '';
 let API_URL = localStorage.getItem('apiUrl') || 'https://api.moonshot.cn/v1/chat/completions';
 let API_MODEL = localStorage.getItem('apiModel') || 'kimi-k2.7-code';
@@ -896,7 +896,7 @@ function saveSystemPrompt() {
     const prompt = document.getElementById('systemPromptInput').value.trim();
     if (prompt) {
         systemPrompt = prompt;
-        localStorage.setItem('systemPrompt', prompt);
+        localStorage.setItem('systemPrompt_' + currentChatId, prompt);
         alert('角色设定已保存');
     }
 }
@@ -978,7 +978,9 @@ function loadHistory() {
         addDeleteEvents();
     }
 }
-
+systemPrompt = localStorage.getItem('systemPrompt_' + currentChatId) || '';
+const spInput = document.getElementById('systemPromptInput');
+if (spInput) spInput.value = systemPrompt;
 function clearChat() {
     conversationHistory = [];
     document.getElementById('messages').innerHTML = `<div class="message ai"><div class="message-avatar">${aiAvatar}</div><div class="message-content">对话已清空</div><div class="message-time">00:00</div></div>`;
@@ -1685,7 +1687,8 @@ if (document.getElementById('contactAvatar')) document.getElementById('contactAv
     if (savedCSS) { document.getElementById('customStyle').textContent = savedCSS; document.getElementById('cssEditor').value = savedCSS; }
     if (savedPokeAISuffix) pokeAISuffix = savedPokeAISuffix;
     if (savedPokeUserSuffix) pokeUserSuffix = savedPokeUserSuffix;
-    if (savedSystemPrompt) { systemPrompt = savedSystemPrompt; document.getElementById('systemPromptInput').value = savedSystemPrompt; }
+   systemPrompt = localStorage.getItem('systemPrompt_' + currentChatId) || '';
+if (systemPrompt) document.getElementById('systemPromptInput').value = systemPrompt;
     if (API_KEY) document.getElementById('apiKeyInput').value = API_KEY;
     if (API_URL) document.getElementById('apiUrlInput').value = API_URL;
     if (API_MODEL) document.getElementById('apiModelInput').value = API_MODEL;
