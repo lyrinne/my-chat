@@ -943,13 +943,6 @@ function startAutoMessage() {
     }, autoMsgRate);
 }
 
-function switchChat() {
-        if (!id) return;
-    currentChatId = id;
-    localStorage.setItem('currentChatId', id);
-    location.reload();
-}
-
 function newChat() {
     const id = Date.now().toString();
     currentChatId = id;
@@ -1703,7 +1696,6 @@ if (systemPrompt) document.getElementById('systemPromptInput').value = systemPro
 initPokeEvents();
     startAutoMessage();
     renderMoments();
-if (autoMomentRate > 0) document.getElementById('autoMomentRate').value = autoMomentRate / 60000;
     startAutoMoment();
     loadCustomStickers();
     setTimeout(addDeleteEvents, 300);
@@ -1714,7 +1706,6 @@ if (autoMomentRate > 0) document.getElementById('autoMomentRate').value = autoMo
     if (pokeUserSuffix) document.getElementById('pokeUserSuffixInput').value = pokeUserSuffix;
     if (aiStickerRate) document.getElementById('aiStickerRate').value = aiStickerRate;
     if (autoMsgRate > 0) document.getElementById('autoMsgRate').value = autoMsgRate / 60000;
-    if (frozenPrompt) document.getElementById('frozenPromptInput').value = frozenPrompt;
 };
 </script>
 </body>
