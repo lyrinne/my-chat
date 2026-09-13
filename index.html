@@ -944,8 +944,7 @@ function startAutoMessage() {
 }
 
 function switchChat() {
-    const id = document.getElementById('chatIdInput').value.trim();
-    if (!id) return;
+        if (!id) return;
     currentChatId = id;
     localStorage.setItem('currentChatId', id);
     location.reload();
@@ -1715,8 +1714,7 @@ if (autoMomentRate > 0) document.getElementById('autoMomentRate').value = autoMo
     if (pokeUserSuffix) document.getElementById('pokeUserSuffixInput').value = pokeUserSuffix;
     if (aiStickerRate) document.getElementById('aiStickerRate').value = aiStickerRate;
     if (autoMsgRate > 0) document.getElementById('autoMsgRate').value = autoMsgRate / 60000;
-    if (currentChatId) document.getElementById('chatIdInput').value = currentChatId;
-if (frozenPrompt) document.getElementById('frozenPromptInput').value = frozenPrompt;
+    if (frozenPrompt) document.getElementById('frozenPromptInput').value = frozenPrompt;
 };
 </script>
 </body>
