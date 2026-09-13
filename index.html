@@ -533,7 +533,10 @@ body {
 
     <!-- 联系人页 -->
 <div class="page active" id="page-contacts">
-    <div class="contacts-header">聊天</div>
+    <div class="contacts-header" style="position:relative;">
+    聊天
+    <button onclick="newChat()" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:22px;color:#667eea;cursor:pointer;">＋</button>
+</div>
     <div class="contacts-list" id="contactsList">
         <div class="contact-item" onclick="openChat()">
             <div class="contact-avatar" id="contactAvatar">🤖</div>
@@ -668,14 +671,7 @@ body {
             </div>
 
             <div class="settings-section">
-                <h4>💬 会话管理</h4>
-                <input id="chatIdInput" placeholder="会话编号，如1、2、3">
-                <button onclick="switchChat()">切换会话</button>
-                <button onclick="newChat()">新建会话</button>
-            </div>
-
-            <div class="settings-section">
-                <h4>😊 AI表情包频率</h4>
+                     <h4>😊 AI表情包频率</h4>
                 <input id="aiStickerRate" type="number" placeholder="0-1之间，如0.3">
                 <button onclick="saveStickerRate()">保存频率</button>
             </div>
@@ -1485,9 +1481,10 @@ function renderMoments() {
             </div>
             <div class="moment-text">${m.text}</div>
             <div class="moment-actions">
-                <span onclick="likeMoment(${moments.length - 1 - idx})">${m.liked ? '❤️ ' + userName : '🤍 点赞'}</span>
-                <span onclick="commentMoment(${moments.length - 1 - idx})">💬 评论</span>
-            </div>
+    <span onclick="likeMoment(${moments.length - 1 - idx})">${m.liked ? '❤️ ' + userName : '🤍 点赞'}</span>
+    <span onclick="commentMoment(${moments.length - 1 - idx})">💬 评论</span>
+    <span onclick="deleteMoment(${moments.length - 1 - idx})" style="color:#e53935;">删除</span>
+</div>
             ${m.comments && m.comments.length ? '<div style="margin-top:8px;font-size:12px;color:#666;">' + m.comments.map(c => '· ' + c).join('<br>') + '</div>' : ''}
         `;
         list.appendChild(item);
@@ -1503,6 +1500,12 @@ function likeMoment(index) {
     } else {
         conversationHistory.push({ role: 'user', content: '我取消了点赞' });
     }
+}
+function deleteMoment(index) {
+    if (!confirm('删除这条朋友圈？')) return;
+    moments.splice(index, 1);
+    saveMoments();
+    renderMoments();
 }
 function commentMoment(index) {
     const comment = prompt('评论：');
